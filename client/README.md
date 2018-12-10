@@ -1,17 +1,19 @@
-# Introduction
+# Front End Setup
+
+## Introduction
 
 This is the frontend React/Redux for the boilerplate. Based on create-react-app boilerplate
 
-# Features:
+## Features:
 
 Login with forget password feature, Register with email verification (token based).
 
 
-# Deployement on heroku :
+## Deployement on heroku :
 
 Check https://elements.heroku.com/buildpacks/mars/create-react-app-buildpack
 
-# Environment variables:
+## Environment variables:
 
 The env variables needed are :
 
