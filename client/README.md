@@ -18,5 +18,7 @@ Check https://elements.heroku.com/buildpacks/mars/create-react-app-buildpack
 The env variables needed are :
 
 REACT_APP_API_URL set your heroku app server.
+
 REACT_APP_CAPTCHA_KEY, Google captcha key needed, you need to autorise localhost on google dashboard to use it localy.
+
 REACT_APP_SENTRY, Sentry key to report bugs on sentry.
