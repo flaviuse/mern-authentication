@@ -1,7 +1,7 @@
-demo : https://mern-auth-client.herokuapp.com/login
-
 
 # mern-advanced-authentification
+
+demo : https://mern-auth-client.herokuapp.com/login
 
 I'm not a professional, I can't guarantee that this boilerplate is secure enough for real project usage.
 
@@ -29,7 +29,6 @@ Google Captcha,
 
 Notification system.
 
+Backend and Frontend need 2 separate deployment. 
 
-## Backend and Frontend need 2 separate deployment. 
-
-## Setup BackEnd first
+### Setup BackEnd first
