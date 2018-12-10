@@ -6,20 +6,15 @@ This is the frontend React/Redux for the boilerplate. Based on create-react-app 
 
 Login with forget password feature, Register with email verification (token based).
 
-# Usage
 
-The project use react-create-app, the following scripts are available with npm:
-"start": "react-scripts start",
-"build": "react-scripts build",
-"test": "react-scripts test",
-"eject": "react-scripts eject"
+# Deployement on heroku :
 
-# Env variables:
+Check https://elements.heroku.com/buildpacks/mars/create-react-app-buildpack
 
-Make sur to use env variables with process.env.""
-and import them on heroku when building the app on heroku.
+# Environment variables:
 
 The env variables needed are :
-REACT_APP_API_URL=http://localhost:3900/api (default) set your heroku app on .env.production .
-CAPTCHA_KEY, Google captcha key needed, you need to autorise localhost on google dashboard to use it localy.
-SENTRY, Sentry key to report bugs on sentry.
+
+REACT_APP_API_URL set your heroku app server.
+REACT_APP_CAPTCHA_KEY, Google captcha key needed, you need to autorise localhost on google dashboard to use it localy.
+REACT_APP_SENTRY, Sentry key to report bugs on sentry.
