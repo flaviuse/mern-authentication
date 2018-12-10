@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  padding: 0 0 0 0;
+  font-family: sans-serif;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.navbar {
+  margin-bottom: 30px;
+}
