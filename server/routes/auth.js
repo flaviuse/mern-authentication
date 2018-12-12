@@ -86,7 +86,7 @@ router.post("/login/forgot", (req, res) => {
         // Send the mail
         const mail = {
           to: user.email,
-          from: `no-reply@mernauthdemo.com`,
+          from: `no-reply@mern-auth-server.herokuapp.com`,
           subject: "Reset password link",
           text: "Some useless text",
           html: `<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\n
@@ -160,7 +160,7 @@ router.post("/login/reset/:token", (req, res) => {
           // Send mail confirming password change to the user
           const mail = {
             to: user.email,
-            from: `no-reply@mernauthdemo.com`,
+            from: `no-reply@mern-auth-server.herokuapp.com`,
             subject: "Your password has been changed",
             text: "Some useless text",
             html: `<p>This is a confirmation that the password for your account ${
@@ -237,7 +237,7 @@ router.post("/register", async (req, res) => {
           // send verification email
           const message = {
             to: user.email,
-            from: "no-reply@mernauthdemo.com",
+            from: "no-reply@mern-auth-server.herokuapp.com",
             subject: "Email Verification",
             text: "Some uselss text",
             html: `<p>Please verify your account by clicking the link: 
@@ -295,7 +295,7 @@ router.post("/resend", (req, res) => {
       // Send the mail
       const mail = {
         to: user.email,
-        from: `no-reply@mernauthdemo.com`,
+        from: `no-reply@mern-auth-server.herokuapp.com`,
         subject: "Email Verification",
         text: "Some uselss text",
         html: `<p>Please verify your account by clicking the link: 
