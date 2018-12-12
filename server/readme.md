@@ -8,6 +8,8 @@ https://devcenter.heroku.com/articles/getting-started-with-nodejs#deploy-the-app
 
 ### Environment Variables you will need.
 
+set env variables on heroku with 'heroku config:set VAR=VALUE'
+
 You need to setup the following environmental variables :
 
 DB, for db URL
