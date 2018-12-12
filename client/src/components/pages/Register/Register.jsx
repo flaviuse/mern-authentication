@@ -111,7 +111,7 @@ class RegisterForm extends Form {
                     {this.state.data.email}. You have 12 hours to activate your
                     account. It can take up to 15 min to receive our email.
                   </p>
-                  <p>Did not received our email ?</p>
+                  <p>Have not received our email?</p>
                   <button className="btn" onClick={this.resendEmail}>
                     Click here
                   </button>
@@ -124,9 +124,9 @@ class RegisterForm extends Form {
           <React.Fragment>
             <div className="ui container col-md-4">
               <p>
-                Still not received an email ? You may have given the wrong
-                email. Try to register again, if you want to be able to user the
-                same username click here :
+                Still not received an email? You may have given the wrong email.
+                Try to register again, if you want to be able to user the same
+                username click here :
                 <button className="btn" onClick={this.reset}>
                   Retry register
                 </button>

@@ -10,7 +10,6 @@ import R from "./utils/ramda";
 import ConfirmPage from "./components/pages/ConfirmPage/ConfirmPage.jsx";
 import Home from "./components/pages/Home/Home.jsx";
 import Profile from "./components/pages/Profile/Profile.jsx";
-import notFound from "./components/pages/NotFound/NotFound.jsx";
 import NavBar from "./components/pages/NavBar/NavBar.jsx";
 import Login from "./components/pages/Login/Login.jsx";
 import LoginForgot from "./components/pages/LoginForgot/LoginForgot.jsx";
@@ -44,23 +43,27 @@ class App extends Component {
               <NavBar />
               <div className="ui middle aligned center aligned grid">
                 <Switch>
-                  <ProtectedRoute path="/home" component={Home} />
-                  <ProtectedRoute path="/my-profile" component={Profile} />
+                  <Route path="/home" exact component={Home} />
+                  <ProtectedRoute
+                    path="/my-profile"
+                    exact
+                    component={Profile}
+                  />
                   <Route
                     path="/account/confirm/:token"
+                    exact
                     component={ConfirmPage}
                   />
-                  <Route path="/register" component={Register} />
-                  <Route exact path="/login" component={Login} />
-                  <Route path="/login/forgot" component={LoginForgot} />
+                  <Route path="/register" exact component={Register} />
+                  <Route path="/login" exact component={Login} />
+                  <Route path="/login/forgot" exact component={LoginForgot} />
                   <Route
                     path="/login/reset/:token"
                     component={LoginResetPassword}
                   />
-                  <ProtectedRoute path="/logout" component={Logout} />
-                  <Route path="/not-found" component={notFound} />
+                  <ProtectedRoute path="/logout" exact component={Logout} />
                   <Redirect from="/" exact to="/home" />
-                  <Redirect to="/not-found" />
+                  <Redirect to="/home" />
                 </Switch>
               </div>
             </React.Fragment>

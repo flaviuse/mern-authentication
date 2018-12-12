@@ -6,10 +6,10 @@ import { Redirect } from "react-router-dom";
 import { attemptGetConfirmation } from "../../../store/thunks/auth";
 
 class ConfirmPage extends Component {
-  onChange = () => {
+  onChange = async () => {
     try {
       const token = this.props.match.params.token;
-      this.props.dispatch(attemptGetConfirmation(token)).catch(R.identity);
+      await this.props.attemptGetConfirmation(token);
     } catch (err) {
       console.log(err);
     }
@@ -42,4 +42,11 @@ function mapStateToProps({ user }) {
   };
 }
 
-export default connect(mapStateToProps)(ConfirmPage);
+const mapDispatchToProps = dispatch => ({
+  attemptGetConfirmation: token => dispatch(attemptGetConfirmation(token))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ConfirmPage);
