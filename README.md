@@ -5,7 +5,7 @@ Demo : https://mern-auth-client.herokuapp.com/login
 
 I'm not a professional, I can't guarantee that this boilerplate is secure enough for real project usage.
 
-## Boilerplate 
+## :computer: Boilerplate 
 
 MERN Stack with advanced authentification :
 
@@ -31,4 +31,4 @@ Notification system.
 
 Backend and Frontend need 2 separate deployment. 
 
-### Setup BackEnd first
+### :bangbang: Setup BackEnd first
