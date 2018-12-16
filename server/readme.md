@@ -1,20 +1,36 @@
-## BACKEND SETUP
+# :rocket: Back-end Setup
 
 This API uses SendGrid to send emails. Make sure to have a sendgrid account to use this boilerplate.
 
-The folder is ready to push on heroku, check heroku doc for deployement : 
+## :heavy_check_mark: Local
+
+To try locally, create a .env file with the environment variables needed :
+
+DB=mongodb://localhost/boilerplate
+
+HOST=localhost:3000
+
+SENDGRID_API_KEY=YOUR_KEY_HERE
+
+SESSION_KEY=YOUR_KEY_HERE
+
+Be awared that the emails sent via sendgrid give links in https that doesn't work locally. 
+
+You have to delete the 's' to use the links from an email or change it on the routes/auth.js.
+
+## :heavy_check_mark: Deployment
+
+The back-end is ready to push on heroku, check heroku doc for deployement : 
 
 https://devcenter.heroku.com/articles/getting-started-with-nodejs#deploy-the-app
 
-### Environment Variables you will need.
+## :heavy_check_mark: Environment Variables 
 
 set env variables on heroku with 'heroku config:set VAR=VALUE'
 
 You need to setup the following environmental variables :
 
 DB, for db URL
-
-PORT, (default is 3000)
 
 SESSION_KEY, Key string
 
