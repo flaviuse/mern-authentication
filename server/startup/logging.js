@@ -17,7 +17,7 @@ module.exports = function() {
 
   // Log on the MongoDB database
   // winston.add(winston.transports.MongoDB, {
-  //   db: process.env.DB || config.get('db'),
+  //   db: process.env.DB,
   //   level: 'info'
   // });
 };

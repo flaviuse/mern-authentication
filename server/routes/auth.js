@@ -10,16 +10,13 @@ const moment = require("moment");
 moment().format();
 const passport = require("passport");
 const express = require("express");
-const config = require("config");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
 
 const router = express.Router();
 
-const host = process.env.HOST || config.get("host-url"); // FRONTEND Host
-sgMail.setApiKey(
-  process.env.SENDGRID_API_KEY || config.get("sendgrid-api-key")
-);
+const host = process.env.HOST; // FRONTEND Host
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Login User inputs :username password
 router.post("/login", (req, res, next) => {
@@ -33,10 +30,10 @@ router.post("/login", (req, res, next) => {
       return next(err);
     }
     if (info && info.message === "Missing credentials") {
-      return res.status(401).send({ message: "Missing credentials" });
+      return res.status(400).send({ message: "Missing credentials" });
     }
     if (!user) {
-      return res.status(401).send(info);
+      return res.status(400).send({ message: "Invalid email or password." });
     }
     if (!user.isVerified)
       return res.status(401).send({
@@ -61,9 +58,7 @@ router.post("/login/forgot", (req, res) => {
       return res.status(500).send({ message: err.message });
     }
     if (!user)
-      return res
-        .status(400)
-        .send({ message: "We were unable to find a user with that email." });
+      return res.status(400).send({ message: "This email is not valid." });
 
     // Create a verification token
     var token = new Token({
@@ -122,8 +117,7 @@ router.post("/login/reset/:token", (req, res) => {
     }
     if (!token)
       return res.status(400).send({
-        message:
-          "We were unable to find a valid token. Your token my have expired."
+        message: "This token is not valid. Your token my have expired."
       });
 
     // If we found a token, find a matching user

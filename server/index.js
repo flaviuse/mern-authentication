@@ -3,9 +3,10 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 const session = require("express-session");
 var MongoStore = require("connect-mongo")(session);
-const config = require("config");
 const bodyParser = require("body-parser");
 const express = require("express");
+
+require("dotenv").config(); // FOR LOCAL USE ONLY
 
 const port = process.env.PORT || 3900;
 const app = express();
@@ -18,12 +19,10 @@ require("./startup/cors")(app);
 require("./startup/db")();
 require("./startup/prod")(app);
 
-app.set("trust proxy", 1); // trust first proxy
-
 // Create session
 app.use(
   session({
-    secret: process.env.SESSION_KEY || config.get("session-key"),
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     // Store session on DB
