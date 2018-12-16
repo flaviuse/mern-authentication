@@ -1,6 +1,6 @@
 # :rocket: Introduction
 
-This is the frontend React/Redux for the boilerplate. Based on create-react-app boilerplate
+This is the frontend part (React/Redux) for the boilerplate. Based on create-react-app boilerplate
 
 # :heavy_check_mark: Features:
 
