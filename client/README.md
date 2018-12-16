@@ -1,4 +1,4 @@
-# :rocket: Introduction
+# :rocket: Front-end Setup
 
 This is the frontend part (React/Redux) for the boilerplate. Based on create-react-app boilerplate
 
