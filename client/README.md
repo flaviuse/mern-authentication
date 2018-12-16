@@ -1,4 +1,4 @@
-# Introduction
+# :rocket: Introduction
 
 This is the frontend React/Redux for the boilerplate. Based on create-react-app boilerplate
 
@@ -27,9 +27,9 @@ To deploy on heroku (install heroku CLI)  use  'heroku create APP_NAME --buildpa
 
 # :heavy_check_mark: Env variables:
 
-set env variables on heroku with 'heroku config:set VAR=VALUE'
+Setup the environmental variables on heroku cli with 'heroku config:set VAR=VALUE' or directly on the website.
 
-The env variables needed are :
+The variables needed are :
 
 REACT_APP_API_URL=   API_URL ending with route /api.
 
@@ -37,5 +37,5 @@ REACT_APP_CAPTCHA_KEY, Google captcha key needed, you need to autorise the clien
 
 REACT_APP_SENTRY, Sentry key to report bugs on sentry.
 
-then 'heroku open'
+then execute 'heroku open' to get redirected to the app.
 
