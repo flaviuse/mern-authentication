@@ -2,11 +2,11 @@
 
 This is the frontend React/Redux for the boilerplate. Based on create-react-app boilerplate
 
-# Features:
+# :heavy_check_mark: Features:
 
 Login with forget password feature, Register with email verification (token based).
 
-# Local
+# :heavy_check_mark: Local
 
 To try locally create a file ".env.development" in the root of the client folder and add the needed env variables.
 
@@ -18,14 +18,14 @@ REACT_APP_SENTRY=PUT_YOUR_KEY_HERE
 
 then execute npm start (make sure the server part is running).
 
-# Build
+# :heavy_check_mark: Build
 
 install dependencies with 'npm i' then run 'npm build'.
 
 To deploy on heroku (install heroku CLI)  use  'heroku create APP_NAME --buildpack mars/create-react-app --region eu'
 
 
-# Env variables:
+# :heavy_check_mark: Env variables:
 
 set env variables on heroku with 'heroku config:set VAR=VALUE'
 
