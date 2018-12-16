@@ -31,7 +31,7 @@ set env variables on heroku with 'heroku config:set VAR=VALUE'
 
 The env variables needed are :
 
-REACT_APP_API_URL=   API_URL .com/api 
+REACT_APP_API_URL=   API_URL ending with route /api.
 
 REACT_APP_CAPTCHA_KEY, Google captcha key needed, you need to autorise the client url on google dashboard to use it.
 
