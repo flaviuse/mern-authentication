@@ -25,7 +25,7 @@ install dependencies with 'npm i' then run 'npm build'.
 To deploy on heroku (install heroku CLI)  use  'heroku create APP_NAME --buildpack mars/create-react-app --region eu'
 
 
-# :heavy_check_mark: Env variables:
+# :heavy_check_mark: Environmental variables:
 
 Setup the environmental variables on heroku cli with 'heroku config:set VAR=VALUE' or directly on the website.
 
