@@ -1,36 +1,37 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import R from "../../../utils/ramda";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Redirect } from "react-router-dom";
 import { attemptGetConfirmation } from "../../../store/thunks/auth";
-
+import styles from "./ConfirmPage.module.css";
 class ConfirmPage extends Component {
   onChange = async () => {
-    try {
-      const token = this.props.match.params.token;
-      await this.props.attemptGetConfirmation(token);
-    } catch (err) {
-      console.log(err);
-    }
+    const token = this.props.match.params.token;
+    await this.props
+      .attemptGetConfirmation(token)
+      .catch(error => console.log(error));
   };
 
   render() {
     if (this.props.isAuth) return <Redirect to="/my-profile" />;
     else {
       return (
-        <React.Fragment>
-          <div className="ui container col-md-4">
-            <p>
-              Click the recaptcha to confirm your inscription. You will be
-              redirected to the login page :
-            </p>
+        <div id={styles.container}>
+          <p id={styles.title}>You're so close ...</p>
+
+          <div class="ui success message" id={styles.messageContainer}>
+            <div class="header">
+              Click the recaptcha to confirm your inscription. <br />
+              <br />
+              You will be redirected to the login page .
+            </div>
+            <br />
             <ReCAPTCHA
               sitekey={process.env.REACT_APP_CAPTCHA_KEY}
               onChange={this.onChange}
             />
           </div>
-        </React.Fragment>
+        </div>
       );
     }
   }

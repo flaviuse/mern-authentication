@@ -2,9 +2,9 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Joi from "joi-browser";
-import Form from "../../common/form.jsx";
+import Form from "../../common/form/form.jsx";
 import { attemptResetPassword } from "../../../store/thunks/auth";
-
+import styles from "./LoginResetPassword.module.css";
 class LoginForgot extends Form {
   state = {
     data: { password: "" },
@@ -19,32 +19,30 @@ class LoginForgot extends Form {
   };
 
   doSubmit = async () => {
-    try {
-      const { data } = this.state;
-      const token = this.props.match.params.token;
-      const password = data.password;
-      await this.props.attemptResetPassword(password, token);
-    } catch (ex) {
-      if (ex.response && ex.response.status === 400) {
+    const { data } = this.state;
+    const token = this.props.match.params.token;
+    const password = data.password;
+    await this.props.attemptResetPassword(password, token).catch(error => {
+      if (error.response && error.response.status === 400) {
         const errors = { ...this.state.errors };
-        errors.username = ex.response.data;
+        errors.password = error.response.data.message;
         this.setState({ errors });
       }
-    }
+    });
   };
 
   render() {
     if (this.props.isAuth) return <Redirect to="/home" />; // ne peut pas se relog si deja log
     return (
-      <React.Fragment>
-        <div className="ui container col-md-4">
-          <h1>Type your new password :</h1>
+      <div id={styles.container}>
+        <p id={styles.title}>New password</p>
+        <div id={styles.formContainer}>
           <form onSubmit={this.handleSubmit} className="ui large form">
             {this.renderInput("password", "Password", "password", "lock icon")}
             {this.renderButton("RESET PASSWORD")}
           </form>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

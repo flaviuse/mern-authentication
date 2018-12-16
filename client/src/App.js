@@ -19,7 +19,6 @@ import Register from "./components/pages/Register/Register.jsx";
 import ProtectedRoute from "./components/common/protectedRoute";
 
 import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
 
 class App extends Component {
   state = {
@@ -41,31 +40,25 @@ class App extends Component {
             <React.Fragment>
               <ToastContainer position="top-right" autoClose={2500} />
               <NavBar />
-              <div className="ui middle aligned center aligned grid">
-                <Switch>
-                  <Route path="/home" exact component={Home} />
-                  <ProtectedRoute
-                    path="/my-profile"
-                    exact
-                    component={Profile}
-                  />
-                  <Route
-                    path="/account/confirm/:token"
-                    exact
-                    component={ConfirmPage}
-                  />
-                  <Route path="/register" exact component={Register} />
-                  <Route path="/login" exact component={Login} />
-                  <Route path="/login/forgot" exact component={LoginForgot} />
-                  <Route
-                    path="/login/reset/:token"
-                    component={LoginResetPassword}
-                  />
-                  <ProtectedRoute path="/logout" exact component={Logout} />
-                  <Redirect from="/" exact to="/home" />
-                  <Redirect to="/home" />
-                </Switch>
-              </div>
+              <Switch>
+                <Route path="/home" exact component={Home} />
+                <ProtectedRoute path="/my-profile" exact component={Profile} />
+                <Route
+                  path="/account/confirm/:token"
+                  exact
+                  component={ConfirmPage}
+                />
+                <Route path="/register" exact component={Register} />
+                <Route path="/login" exact component={Login} />
+                <Route path="/login/forgot" exact component={LoginForgot} />
+                <Route
+                  path="/login/reset/:token"
+                  component={LoginResetPassword}
+                />
+                <ProtectedRoute path="/logout" exact component={Logout} />
+                <Redirect from="/" exact to="/home" />
+                <Redirect to="/home" />
+              </Switch>
             </React.Fragment>
           </ConnectedRouter>
         </Provider>

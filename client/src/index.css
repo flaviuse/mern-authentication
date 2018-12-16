@@ -1,13 +1,17 @@
+html,
 body {
+  height: 100%;
+  min-height: 100% !important;
   margin: 0;
-  padding: 0 0 0 0;
+  padding: 0;
   font-family: sans-serif;
+  background-color: #f9f9f9;
+}
+
+#root {
+  height: 100%;
 }
 
 .clickable {
   cursor: pointer;
-}
-
-.navbar {
-  margin-bottom: 30px;
 }

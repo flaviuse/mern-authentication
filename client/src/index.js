@@ -10,7 +10,6 @@ import configureStore from "./store/configureStore";
 import registerServiceWorker from "./registerServiceWorker";
 
 import "./index.css";
-import "bootstrap/dist/css/bootstrap.css";
 import "semantic-ui-css/semantic.min.css";
 
 logger.init();

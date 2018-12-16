@@ -1,11 +1,11 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import R from "../../../utils/ramda";
-import Joi from "joi-browser";
-import Form from "../../common/form.jsx";
-import { attemptLogin } from "../../../store/thunks/auth";
 
+import Joi from "joi-browser";
+import Form from "../../common/form/form.jsx";
+import { attemptLogin } from "../../../store/thunks/auth";
+import styles from "./Login.module.css";
 class LoginForm extends Form {
   state = {
     data: { username: "", password: "" },
@@ -14,45 +14,44 @@ class LoginForm extends Form {
 
   schema = {
     username: Joi.string()
-      .required()
-      .label("Username"),
+      .label("Username")
+      .required(),
     password: Joi.string()
-      .required()
       .label("Password")
+      .required()
   };
 
-  doSubmit = () => {
-    try {
-      const { data } = this.state;
-      this.props.attemptLogin(data).catch(R.identity);
-    } catch (ex) {
-      if (ex.response && ex.response.status === 400) {
+  doSubmit = async () => {
+    const { data } = this.state;
+    await this.props.attemptLogin(data).catch(error => {
+      if (error.response && error.response.status === 400) {
         const errors = { ...this.state.errors };
-        errors.username = ex.response.data;
+        errors.username = error.response.data.message;
         this.setState({ errors });
       }
-    }
+    });
   };
 
   render() {
     if (this.props.isAuth) return <Redirect to="/home" />; // ne peut pas se relog si deja log
 
     return (
-      <div className="ui container col-md-4">
-        <h2 class="ui teal image header   ">
-          <div class="content ">Log-in to your account</div>
-        </h2>
-        <form onSubmit={this.handleSubmit} className="ui massive form">
-          <div className="ui segment ">
+      <div id={styles.container}>
+        <p id={styles.title}>Log in to your account</p>
+        <div id={styles.formContainer}>
+          <form onSubmit={this.handleSubmit} className="ui large form">
             {this.renderInput("username", "Username", "text", "user icon")}
             {this.renderInput("password", "Password", "password", "lock icon")}
-            {this.renderButton("Login")}
-          </div>
-        </form>
-        <div className="ui message">
-          <a className="ml-3" href="/login/forgot">
-            Forgot your password? Click here.
-          </a>
+            <div id={styles.forgotMessage}>
+              <Link to="/login/forgot">Forgot your password?</Link>
+            </div>
+            {this.renderButton("Login", styles.loginBtn)}
+          </form>
+          <h4 className="ui horizontal divider">Or</h4>
+          <button className="ui big button teal" id={styles.subscribe}>
+            <i className="signup icon" />
+            Sign Up
+          </button>
         </div>
       </div>
     );

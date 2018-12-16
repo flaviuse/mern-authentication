@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import { createLogger } from "redux-logger";
 import { routerMiddleware } from "connected-react-router";
+
 import thunk from "redux-thunk";
 import CreateRootReducer from "./reducers/index";
 

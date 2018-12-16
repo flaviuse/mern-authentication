@@ -2,10 +2,7 @@ import http from "../services/httpService";
 import { handleSuccess, handleError } from "../utils/api";
 // AUTH
 export const postLogin = user =>
-  http
-    .post("/auth/login", user)
-    .then(handleSuccess)
-    .catch(handleError);
+  http.post("/auth/login", user).then(handleSuccess);
 
 export const sendResetPasswordLink = email =>
   http
@@ -26,10 +23,7 @@ export const postLogout = () =>
     .catch(handleError);
 
 export const postRegister = user =>
-  http
-    .post("/auth/register", user)
-    .then(handleSuccess)
-    .catch(handleError);
+  http.post("/auth/register", user).then(handleSuccess);
 
 export const getConfirmation = token =>
   http
