@@ -1,7 +1,7 @@
 
-# mern-advanced-authentification
+# :fire: MERN-Advanced-Authentification
 
-demo : https://mern-auth-client.herokuapp.com/login
+Demo : https://mern-auth-client.herokuapp.com/login
 
 I'm not a professional, I can't guarantee that this boilerplate is secure enough for real project usage.
 
