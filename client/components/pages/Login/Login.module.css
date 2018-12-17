@@ -1,0 +1,42 @@
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 90%;
+  padding: 0;
+  margin: 0;
+}
+
+#formContainer {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 340px;
+  margin: 0px 10px 0px 10px;
+  padding: 30px;
+  background-color: #fff;
+  border: 1px solid #d1d5da;
+  border-radius: 10px;
+  box-shadow: 2px 0px 35px -3px rgba(0, 69, 66, 0.16);
+}
+
+#title {
+  margin: 30px 0;
+  font-size: 35px;
+  font-weight: 1000;
+  text-align: center;
+  color: #00b5ad;
+}
+
+#subscribe {
+  margin-top: 20px;
+}
+
+#loginBtn {
+  margin: 20px 0;
+}
+
+#forgotMessage {
+  text-align: right !important;
+  font-size: 12px;
+}
