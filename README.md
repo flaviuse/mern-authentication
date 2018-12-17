@@ -7,6 +7,8 @@ Demo : https://mern-auth-client.herokuapp.com/login
 
 I'm not a professional, I can't guarantee that this boilerplate is secure enough for real project usage.
 
+Star the project if you liked it.
+
 ### :bangbang: Setup BackEnd first
 
 Instructions on server & client folders.
