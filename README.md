@@ -11,6 +11,8 @@ Instructions on server & client folders.
 
 Frontend and Backend run on 2 independent servers.
 
+CSS Of the project is really bad, don't use this architecture.
+
 ## :computer: Boilerplate 
 
 MERN Stack with advanced authentification :
