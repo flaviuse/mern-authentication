@@ -38,8 +38,8 @@ const scroll = {
 
 const erase = {
   screen: `${ESC}2J`,
-  up: `${ESC}1J`,
-  down: `${ESC}J`,
+  up: (count = 1) => `${ESC}1J`.repeat(count),
+  down: (count = 1) => `${ESC}J`.repeat(count),
   line: `${ESC}2K`,
   lineEnd: `${ESC}K`,
   lineStart: `${ESC}1K`,

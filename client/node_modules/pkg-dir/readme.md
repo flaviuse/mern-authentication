@@ -6,7 +6,7 @@
 ## Install
 
 ```
-$ npm install --save pkg-dir
+$ npm install pkg-dir
 ```
 
 
@@ -27,10 +27,12 @@ $ npm install --save pkg-dir
 // example.js
 const pkgDir = require('pkg-dir');
 
-pkgDir(__dirname).then(rootDir => {
+(async () => {
+	const rootDir = await pkgDir(__dirname);
+
 	console.log(rootDir);
 	//=> '/Users/sindresorhus/foo'
-});
+})();
 ```
 
 

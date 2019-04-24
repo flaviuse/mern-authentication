@@ -102,5 +102,5 @@ function transformFile(file, pluginPasses) {
 }
 
 function isThenable(val) {
-  return !!val && (typeof val === "object" || typeof val === "function") && typeof val.then === "function";
+  return !!val && (typeof val === "object" || typeof val === "function") && !!val.then && typeof val.then === "function";
 }

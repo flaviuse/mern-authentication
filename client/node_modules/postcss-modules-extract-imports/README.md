@@ -31,11 +31,27 @@ into:
 composes: className [... className] from "path/to/file.css";
 ```
 
+## Options
+
+- `failOnWrongOrder` `bool` generates exception for unpredictable imports order.
+
+```css
+.aa {
+  composes: b from './b.css';
+  composes: c from './c.css';
+}
+
+.bb {
+  /* "b.css" should be before "c.css" in this case */
+  composes: c from './c.css';
+  composes: b from './b.css';
+}
+```
+
 ## Building
 
 ```
 npm install
-npm build
 npm test
 ```
 

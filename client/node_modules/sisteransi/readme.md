@@ -1,4 +1,4 @@
-# sister ANSI [![Build Status](https://travis-ci.org/terkelg/sisteransi.svg?branch=master)](https://travis-ci.org/terkelg/sisteransi) [![Downloads](https://img.shields.io/npm/dm/sisteransi.svg)](https://www.npmjs.com/package/sisteransi)
+# sister ANSI [![Version](https://img.shields.io/npm/v/sisteransi.svg)](https://www.npmjs.com/package/sisteransi) [![Build Status](https://travis-ci.org/terkelg/sisteransi.svg?branch=master)](https://travis-ci.org/terkelg/sisteransi) [![Downloads](https://img.shields.io/npm/dm/sisteransi.svg)](https://www.npmjs.com/package/sisteransi)
 
 > Ansi escape codes faster than you can say "[Bam bam](https://www.youtube.com/watch?v=OcaPu9JPenU)".
 
@@ -76,11 +76,11 @@ Scroll display down a specific amount of lines. Default to `1`.
 #### screen
 Erase the screen and move the cursor the top left position.
 
-#### up
-Erase the screen from the current line up to the top of the screen.
+#### up(count = 1)
+Erase the screen from the current line up to the top of the screen. Default to `1`.
 
-#### down
-Erase the screen from the current line down to the bottom of the screen.
+#### down(count = 2)
+Erase the screen from the current line down to the bottom of the screen. Default to `1`.
 
 #### line
 Erase the entire current line.
@@ -97,8 +97,7 @@ Erase from the current cursor position up the specified amount of rows.
 
 ## Credit
 
-This is basically a slimmed down version of [ansi-escapes](https://github.com/sindresorhus/ansi-escapes).
-I've made a few minor tweaks and additions, for example the option to repeat more commands.
+This is a fork of [ansi-escapes](https://github.com/sindresorhus/ansi-escapes).
 
 
 ## License

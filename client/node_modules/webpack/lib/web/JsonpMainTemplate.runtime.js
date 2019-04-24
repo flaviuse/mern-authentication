@@ -12,12 +12,11 @@ module.exports = function() {
 
 	// eslint-disable-next-line no-unused-vars
 	function hotDownloadUpdateChunk(chunkId) {
-		var head = document.getElementsByTagName("head")[0];
 		var script = document.createElement("script");
 		script.charset = "utf-8";
 		script.src = $require$.p + $hotChunkFilename$;
-		$crossOriginLoading$;
-		head.appendChild(script);
+		if ($crossOriginLoading$) script.crossOrigin = $crossOriginLoading$;
+		document.head.appendChild(script);
 	}
 
 	// eslint-disable-next-line no-unused-vars

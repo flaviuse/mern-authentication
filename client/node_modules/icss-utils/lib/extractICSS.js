@@ -3,43 +3,50 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var importPattern = /^:import\(("[^"]*"|'[^']*'|[\w-\.]+)\)$/;
+exports.default = void 0;
+const importPattern = /^:import\(("[^"]*"|'[^']*'|[^"']+)\)$/;
 
-var getDeclsObject = function getDeclsObject(rule) {
-  var object = {};
-  rule.walkDecls(function (decl) {
-    object[decl.raws.before.trim() + decl.prop] = decl.value;
+const getDeclsObject = rule => {
+  const object = {};
+  rule.walkDecls(decl => {
+    const before = decl.raws.before ? decl.raws.before.trim() : "";
+    object[before + decl.prop] = decl.value;
   });
   return object;
 };
 
-var extractICSS = function extractICSS(css) {
-  var removeRules = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-  var icssImports = {};
-  var icssExports = {};
-  css.each(function (node) {
+const extractICSS = (css, removeRules = true) => {
+  const icssImports = {};
+  const icssExports = {};
+  css.each(node => {
     if (node.type === "rule") {
       if (node.selector.slice(0, 7) === ":import") {
-        var matches = importPattern.exec(node.selector);
+        const matches = importPattern.exec(node.selector);
+
         if (matches) {
-          var path = matches[1];
-          var aliases = Object.assign(icssImports[path] || {}, getDeclsObject(node));
-          icssImports[path] = aliases;
+          const path = matches[1].replace(/'|"/g, "");
+          icssImports[path] = Object.assign(icssImports[path] || {}, getDeclsObject(node));
+
           if (removeRules) {
             node.remove();
           }
         }
       }
+
       if (node.selector === ":export") {
         Object.assign(icssExports, getDeclsObject(node));
+
         if (removeRules) {
           node.remove();
         }
       }
     }
   });
-  return { icssImports, icssExports };
+  return {
+    icssImports,
+    icssExports
+  };
 };
 
-exports.default = extractICSS;
+var _default = extractICSS;
+exports.default = _default;

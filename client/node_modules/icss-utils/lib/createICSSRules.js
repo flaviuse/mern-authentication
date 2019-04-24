@@ -1,54 +1,65 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _postcss = require('postcss');
-
-var _postcss2 = _interopRequireDefault(_postcss);
+var _postcss = _interopRequireDefault(require("postcss"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+const createImports = imports => {
+  return Object.keys(imports).map(path => {
+    const aliases = imports[path];
+    const declarations = Object.keys(aliases).map(key => _postcss.default.decl({
+      prop: key,
+      value: aliases[key],
+      raws: {
+        before: "\n  "
+      }
+    }));
+    const hasDeclarations = declarations.length > 0;
 
-var createImports = function createImports(imports) {
-  return Object.keys(imports).map(function (path) {
-    var aliases = imports[path];
-    var declarations = Object.keys(aliases).map(function (key) {
-      return _postcss2.default.decl({
-        prop: key,
-        value: aliases[key],
-        raws: { before: '\n  ' }
-      });
+    const rule = _postcss.default.rule({
+      selector: `:import('${path}')`,
+      raws: {
+        after: hasDeclarations ? "\n" : ""
+      }
     });
-    return _postcss2.default.rule({
-      selector: `:import(${path})`,
-      raws: { after: '\n' }
-    }).append(declarations);
+
+    if (hasDeclarations) {
+      rule.append(declarations);
+    }
+
+    return rule;
   });
 };
 
-var createExports = function createExports(exports) {
-  var declarations = Object.keys(exports).map(function (key) {
-    return _postcss2.default.decl({
-      prop: key,
-      value: exports[key],
-      raws: { before: '\n  ' }
-    });
-  });
+const createExports = exports => {
+  const declarations = Object.keys(exports).map(key => _postcss.default.decl({
+    prop: key,
+    value: exports[key],
+    raws: {
+      before: "\n  "
+    }
+  }));
+
   if (declarations.length === 0) {
     return [];
   }
-  var rule = _postcss2.default.rule({
+
+  const rule = _postcss.default.rule({
     selector: `:export`,
-    raws: { after: '\n' }
+    raws: {
+      after: "\n"
+    }
   }).append(declarations);
+
   return [rule];
 };
 
-var createICSSRules = function createICSSRules(imports, exports) {
-  return [].concat(_toConsumableArray(createImports(imports)), _toConsumableArray(createExports(exports)));
-};
+const createICSSRules = (imports, exports) => [...createImports(imports), ...createExports(exports)];
 
-exports.default = createICSSRules;
+var _default = createICSSRules;
+exports.default = _default;

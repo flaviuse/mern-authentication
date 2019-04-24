@@ -1,58 +1,42 @@
 this.workbox = this.workbox || {};
-this.workbox.navigationPreload = (function (exports,logger_mjs) {
+this.workbox.navigationPreload = (function (exports, logger_mjs) {
   'use strict';
 
   try {
-    self.workbox.v['workbox:navigation-preload:3.6.3'] = 1;
+    self['workbox:navigation-preload:4.3.0'] && _();
   } catch (e) {} // eslint-disable-line
 
   /*
-    Copyright 2018 Google Inc.
+    Copyright 2018 Google LLC
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * @return {boolean} Whether or not the current browser supports enabling
    * navigation preload.
    *
    * @memberof workbox.navigationPreload
    */
+
   function isSupported() {
     return Boolean(self.registration && self.registration.navigationPreload);
   }
 
   /*
-    Copyright 2017 Google Inc.
+    Copyright 2018 Google LLC
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * If the browser supports Navigation Preload, then this will disable it.
    *
    * @memberof workbox.navigationPreload
    */
+
   function disable() {
     if (isSupported()) {
       self.addEventListener('activate', event => {
@@ -70,21 +54,12 @@ this.workbox.navigationPreload = (function (exports,logger_mjs) {
   }
 
   /*
-    Copyright 2017 Google Inc.
+    Copyright 2018 Google LLC
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * If the browser supports Navigation Preload, then this will enable it.
    *
@@ -95,6 +70,7 @@ this.workbox.navigationPreload = (function (exports,logger_mjs) {
    *
    * @memberof workbox.navigationPreload
    */
+
   function enable(headerValue) {
     if (isSupported()) {
       self.addEventListener('activate', event => {
@@ -117,35 +93,11 @@ this.workbox.navigationPreload = (function (exports,logger_mjs) {
   }
 
   /*
-    Copyright 2017 Google Inc.
+    Copyright 2018 Google LLC
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
-
-  /*
-    Copyright 2017 Google Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
 
   exports.disable = disable;
@@ -154,6 +106,5 @@ this.workbox.navigationPreload = (function (exports,logger_mjs) {
 
   return exports;
 
-}({},workbox.core._private));
-
+}({}, workbox.core._private));
 //# sourceMappingURL=workbox-navigation-preload.dev.js.map

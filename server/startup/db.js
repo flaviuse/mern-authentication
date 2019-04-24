@@ -1,5 +1,5 @@
-const winston = require("winston");
-const mongoose = require("mongoose");
+const winston = require('winston');
+const mongoose = require('mongoose');
 
 // Connect to DB from env variable url, create instance
 module.exports = function() {
@@ -10,9 +10,6 @@ module.exports = function() {
     useFindAndModify: false
   };
   mongoose
-    .connect(
-      db,
-      options
-    )
+    .connect(db, options)
     .then(() => winston.info(`Connected to ${db}...`));
 };

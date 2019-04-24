@@ -2,7 +2,7 @@
 # SockJS-client
 
 [![npm version](https://img.shields.io/npm/v/sockjs-client.svg?style=flat-square)](https://www.npmjs.com/package/sockjs-client)[![Build Status](https://img.shields.io/travis/sockjs/sockjs-client/master.svg?style=flat-square)](https://travis-ci.org/sockjs/sockjs-client)[![Dependencies](https://img.shields.io/david/sockjs/sockjs-client.svg?style=flat-square)](https://david-dm.org/sockjs/sockjs-client)[![Chat](https://img.shields.io/badge/Chat-gitter.im-blue.svg?style=flat-square)](https://gitter.im/sockjs/sockjs-client)
-[![Sauce Test Status](https://saucelabs.com/buildstatus/brycekahle)](https://saucelabs.com/u/brycekahle)
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=dW9YdlFsSEI5VzNBVVk5ZS9XT0xaTjJVQkhQMkRkNlZBQURiSWNWMC9jaz0tLXRJM05RbW1tTCt5TlhHaVgycFJUYmc9PQ==--e3ef9b9a9fa071084e6d87874b5fc65b71273821)](https://www.browserstack.com/automate/public-build/dW9YdlFsSEI5VzNBVVk5ZS9XT0xaTjJVQkhQMkRkNlZBQURiSWNWMC9jaz0tLXRJM05RbW1tTCt5TlhHaVgycFJUYmc9PQ==--e3ef9b9a9fa071084e6d87874b5fc65b71273821)
 
 SockJS is a browser JavaScript library that provides a WebSocket-like
 object. SockJS gives you a coherent, cross-browser, Javascript API
@@ -294,12 +294,16 @@ Both commands output into the `build` directory.
 
 ### Testing
 
+Automated testing provided by:
+
+<a href="https://browserstack.com"><img src="img/Browserstack-logo@2x.png" height="50"></a>
+
 Once you've compiled the SockJS-client you may want to check if your changes
 pass all the tests.
 
     npm run test:browser_local
 
-This will start [zuul](https://github.com/defunctzombie/zuul) and a test support server. Open the browser to [http://localhost:9090/_zuul](http://localhost:9090/_zuul) and watch the tests run.
+This will start [karma](https://karma-runner.github.io) and a test support server.
 
 Browser Quirks
 --------------

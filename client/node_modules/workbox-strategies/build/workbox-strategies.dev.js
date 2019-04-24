@@ -1,60 +1,47 @@
 this.workbox = this.workbox || {};
-this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheWrapper_mjs,fetchWrapper_mjs,getFriendlyURL_mjs) {
+this.workbox.strategies = (function (exports, logger_mjs, assert_mjs, cacheNames_mjs, cacheWrapper_mjs, fetchWrapper_mjs, getFriendlyURL_mjs, WorkboxError_mjs) {
   'use strict';
 
   try {
-    self.workbox.v['workbox:strategies:3.6.3'] = 1;
+    self['workbox:strategies:4.3.0'] && _();
   } catch (e) {} // eslint-disable-line
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
 
   const getFriendlyURL = url => {
     const urlObj = new URL(url, location);
+
     if (urlObj.origin === location.origin) {
       return urlObj.pathname;
     }
+
     return urlObj.href;
   };
 
-  var messages = {
+  const messages = {
     strategyStart: (strategyName, request) => `Using ${strategyName} to ` + `respond to '${getFriendlyURL(request.url)}'`,
     printFinalResponse: response => {
       if (response) {
         logger_mjs.logger.groupCollapsed(`View the final response here.`);
-        logger_mjs.logger.unprefixed.log(response);
+        logger_mjs.logger.log(response);
         logger_mjs.logger.groupEnd();
       }
     }
   };
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * An implementation of a [cache-first]{@link https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/#cache-falling-back-to-network}
    * request strategy.
@@ -63,8 +50,12 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
    * such as URLs like `/styles/example.a8f5f1.css`, since they
    * can be cached for long periods of time.
    *
+   * If the network request fails, and there is no cache match, this will throw
+   * a `WorkboxError` exception.
+   *
    * @memberof workbox.strategies
    */
+
   class CacheFirst {
     /**
      * @param {Object} options
@@ -84,37 +75,27 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
       this._fetchOptions = options.fetchOptions || null;
       this._matchOptions = options.matchOptions || null;
     }
-
     /**
      * This method will perform a request strategy and follows an API that
      * will work with the
      * [Workbox Router]{@link workbox.routing.Router}.
      *
      * @param {Object} options
-     * @param {FetchEvent} options.event The fetch event to run this strategy
-     * against.
+     * @param {Request} options.request The request to run this strategy for.
+     * @param {Event} [options.event] The event that triggered the request.
      * @return {Promise<Response>}
      */
-    handle({ event }) {
-      var _this = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        {
-          assert_mjs.assert.isInstance(event, FetchEvent, {
-            moduleName: 'workbox-strategies',
-            className: 'CacheFirst',
-            funcName: 'handle',
-            paramName: 'event'
-          });
-        }
 
-        return _this.makeRequest({
-          event,
-          request: event.request
-        });
-      })();
+    async handle({
+      event,
+      request
+    }) {
+      return this.makeRequest({
+        event,
+        request: request || event.request
+      });
     }
-
     /**
      * This method can be used to perform a make a standalone request outside the
      * context of the [Workbox Router]{@link workbox.routing.Router}.
@@ -130,76 +111,80 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
            be called automatically to extend the service worker's lifetime.
      * @return {Promise<Response>}
      */
-    makeRequest({ event, request }) {
-      var _this2 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        const logs = [];
 
-        if (typeof request === 'string') {
-          request = new Request(request);
-        }
+    async makeRequest({
+      event,
+      request
+    }) {
+      const logs = [];
 
-        {
-          assert_mjs.assert.isInstance(request, Request, {
-            moduleName: 'workbox-strategies',
-            className: 'CacheFirst',
-            funcName: 'makeRequest',
-            paramName: 'request'
-          });
-        }
+      if (typeof request === 'string') {
+        request = new Request(request);
+      }
 
-        let response = yield cacheWrapper_mjs.cacheWrapper.match({
-          cacheName: _this2._cacheName,
-          request,
-          event,
-          matchOptions: _this2._matchOptions,
-          plugins: _this2._plugins
+      {
+        assert_mjs.assert.isInstance(request, Request, {
+          moduleName: 'workbox-strategies',
+          className: 'CacheFirst',
+          funcName: 'makeRequest',
+          paramName: 'request'
         });
+      }
 
-        let error;
-        if (!response) {
-          {
-            logs.push(`No response found in the '${_this2._cacheName}' cache. ` + `Will respond with a network request.`);
-          }
-          try {
-            response = yield _this2._getFromNetwork(request, event);
-          } catch (err) {
-            error = err;
-          }
+      let response = await cacheWrapper_mjs.cacheWrapper.match({
+        cacheName: this._cacheName,
+        request,
+        event,
+        matchOptions: this._matchOptions,
+        plugins: this._plugins
+      });
+      let error;
 
-          {
-            if (response) {
-              logs.push(`Got response from network.`);
-            } else {
-              logs.push(`Unable to get a response from the network.`);
-            }
-          }
-        } else {
-          {
-            logs.push(`Found a cached response in the '${_this2._cacheName}' cache.`);
-          }
+      if (!response) {
+        {
+          logs.push(`No response found in the '${this._cacheName}' cache. ` + `Will respond with a network request.`);
+        }
+
+        try {
+          response = await this._getFromNetwork(request, event);
+        } catch (err) {
+          error = err;
         }
 
         {
-          logger_mjs.logger.groupCollapsed(messages.strategyStart('CacheFirst', request));
-          for (let log of logs) {
-            logger_mjs.logger.log(log);
+          if (response) {
+            logs.push(`Got response from network.`);
+          } else {
+            logs.push(`Unable to get a response from the network.`);
           }
-          messages.printFinalResponse(response);
-          logger_mjs.logger.groupEnd();
+        }
+      } else {
+        {
+          logs.push(`Found a cached response in the '${this._cacheName}' cache.`);
+        }
+      }
+
+      {
+        logger_mjs.logger.groupCollapsed(messages.strategyStart('CacheFirst', request));
+
+        for (let log of logs) {
+          logger_mjs.logger.log(log);
         }
 
-        if (error) {
-          // Don't swallow error as we'll want it to throw and enable catch
-          // handlers in router.
-          throw error;
-        }
+        messages.printFinalResponse(response);
+        logger_mjs.logger.groupEnd();
+      }
 
-        return response;
-      })();
+      if (!response) {
+        throw new WorkboxError_mjs.WorkboxError('no-response', {
+          url: request.url,
+          error
+        });
+      }
+
+      return response;
     }
-
     /**
      * Handles the network and cache part of CacheFirst.
      *
@@ -209,66 +194,60 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *
      * @private
      */
-    _getFromNetwork(request, event) {
-      var _this3 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        const response = yield fetchWrapper_mjs.fetchWrapper.fetch({
-          request,
-          event,
-          fetchOptions: _this3._fetchOptions,
-          plugins: _this3._plugins
-        });
 
-        // Keep the service worker while we put the request to the cache
-        const responseClone = response.clone();
-        const cachePutPromise = cacheWrapper_mjs.cacheWrapper.put({
-          cacheName: _this3._cacheName,
-          request,
-          response: responseClone,
-          event,
-          plugins: _this3._plugins
-        });
+    async _getFromNetwork(request, event) {
+      const response = await fetchWrapper_mjs.fetchWrapper.fetch({
+        request,
+        event,
+        fetchOptions: this._fetchOptions,
+        plugins: this._plugins
+      }); // Keep the service worker while we put the request to the cache
 
-        if (event) {
-          try {
-            event.waitUntil(cachePutPromise);
-          } catch (error) {
-            {
-              logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(event.request.url)}'.`);
-            }
+      const responseClone = response.clone();
+      const cachePutPromise = cacheWrapper_mjs.cacheWrapper.put({
+        cacheName: this._cacheName,
+        request,
+        response: responseClone,
+        event,
+        plugins: this._plugins
+      });
+
+      if (event) {
+        try {
+          event.waitUntil(cachePutPromise);
+        } catch (error) {
+          {
+            logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(request.url)}'.`);
           }
         }
+      }
 
-        return response;
-      })();
+      return response;
     }
+
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * An implementation of a
    * [cache-only]{@link https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/#cache-only}
    * request strategy.
    *
-   * This class is useful if you want to take advantage of any [Workbox plugins]{@link https://developers.google.com/web/tools/workbox/guides/using-plugins}.
+   * This class is useful if you want to take advantage of any
+   * [Workbox plugins]{@link https://developers.google.com/web/tools/workbox/guides/using-plugins}.
+   *
+   * If there is no cache match, this will throw a `WorkboxError` exception.
    *
    * @memberof workbox.strategies
    */
+
   class CacheOnly {
     /**
      * @param {Object} options
@@ -284,37 +263,27 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
       this._plugins = options.plugins || [];
       this._matchOptions = options.matchOptions || null;
     }
-
     /**
      * This method will perform a request strategy and follows an API that
      * will work with the
      * [Workbox Router]{@link workbox.routing.Router}.
      *
      * @param {Object} options
-     * @param {FetchEvent} options.event The fetch event to run this strategy
-     * against.
+     * @param {Request} options.request The request to run this strategy for.
+     * @param {Event} [options.event] The event that triggered the request.
      * @return {Promise<Response>}
      */
-    handle({ event }) {
-      var _this = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        {
-          assert_mjs.assert.isInstance(event, FetchEvent, {
-            moduleName: 'workbox-strategies',
-            className: 'CacheOnly',
-            funcName: 'handle',
-            paramName: 'event'
-          });
-        }
 
-        return _this.makeRequest({
-          event,
-          request: event.request
-        });
-      })();
+    async handle({
+      event,
+      request
+    }) {
+      return this.makeRequest({
+        event,
+        request: request || event.request
+      });
     }
-
     /**
      * This method can be used to perform a make a standalone request outside the
      * context of the [Workbox Router]{@link workbox.routing.Router}.
@@ -330,66 +299,68 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *     be called automatically to extend the service worker's lifetime.
      * @return {Promise<Response>}
      */
-    makeRequest({ event, request }) {
-      var _this2 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        if (typeof request === 'string') {
-          request = new Request(request);
-        }
 
-        {
-          assert_mjs.assert.isInstance(request, Request, {
-            moduleName: 'workbox-strategies',
-            className: 'CacheOnly',
-            funcName: 'makeRequest',
-            paramName: 'request'
-          });
-        }
+    async makeRequest({
+      event,
+      request
+    }) {
+      if (typeof request === 'string') {
+        request = new Request(request);
+      }
 
-        const response = yield cacheWrapper_mjs.cacheWrapper.match({
-          cacheName: _this2._cacheName,
-          request,
-          event,
-          matchOptions: _this2._matchOptions,
-          plugins: _this2._plugins
+      {
+        assert_mjs.assert.isInstance(request, Request, {
+          moduleName: 'workbox-strategies',
+          className: 'CacheOnly',
+          funcName: 'makeRequest',
+          paramName: 'request'
         });
+      }
 
-        {
-          logger_mjs.logger.groupCollapsed(messages.strategyStart('CacheOnly', request));
-          if (response) {
-            logger_mjs.logger.log(`Found a cached response in the '${_this2._cacheName}'` + ` cache.`);
-            messages.printFinalResponse(response);
-          } else {
-            logger_mjs.logger.log(`No response found in the '${_this2._cacheName}' cache.`);
-          }
-          logger_mjs.logger.groupEnd();
+      const response = await cacheWrapper_mjs.cacheWrapper.match({
+        cacheName: this._cacheName,
+        request,
+        event,
+        matchOptions: this._matchOptions,
+        plugins: this._plugins
+      });
+
+      {
+        logger_mjs.logger.groupCollapsed(messages.strategyStart('CacheOnly', request));
+
+        if (response) {
+          logger_mjs.logger.log(`Found a cached response in the '${this._cacheName}'` + ` cache.`);
+          messages.printFinalResponse(response);
+        } else {
+          logger_mjs.logger.log(`No response found in the '${this._cacheName}' cache.`);
         }
 
-        return response;
-      })();
+        logger_mjs.logger.groupEnd();
+      }
+
+      if (!response) {
+        throw new WorkboxError_mjs.WorkboxError('no-response', {
+          url: request.url
+        });
+      }
+
+      return response;
     }
+
   }
 
   /*
-   Copyright 2016 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
-  var cacheOkAndOpaquePlugin = {
+  const cacheOkAndOpaquePlugin = {
     /**
-     * Return return a response (i.e. allow caching) if the
-     * response is ok (i.e. 200) or is opaque.
+     * Returns a valid response (to allow caching) if the status is 200 (OK) or
+     * 0 (opaque).
      *
      * @param {Object} options
      * @param {Response} options.response
@@ -397,29 +368,24 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *
      * @private
      */
-    cacheWillUpdate: ({ response }) => {
-      if (response.ok || response.status === 0) {
+    cacheWillUpdate: ({
+      response
+    }) => {
+      if (response.status === 200 || response.status === 0) {
         return response;
       }
+
       return null;
     }
   };
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * An implementation of a
    * [network first]{@link https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/#network-falling-back-to-cache}
@@ -430,8 +396,12 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
    * Opaque responses are are cross-origin requests where the response doesn't
    * support [CORS]{@link https://enable-cors.org/}.
    *
+   * If the network request fails, and there is no cache match, this will throw
+   * a `WorkboxError` exception.
+   *
    * @memberof workbox.strategies
    */
+
   class NetworkFirst {
     /**
      * @param {Object} options
@@ -463,6 +433,7 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
       }
 
       this._networkTimeoutSeconds = options.networkTimeoutSeconds;
+
       {
         if (this._networkTimeoutSeconds) {
           assert_mjs.assert.isType(this._networkTimeoutSeconds, 'number', {
@@ -477,37 +448,27 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
       this._fetchOptions = options.fetchOptions || null;
       this._matchOptions = options.matchOptions || null;
     }
-
     /**
      * This method will perform a request strategy and follows an API that
      * will work with the
      * [Workbox Router]{@link workbox.routing.Router}.
      *
      * @param {Object} options
-     * @param {FetchEvent} options.event The fetch event to run this strategy
-     * against.
+     * @param {Request} options.request The request to run this strategy for.
+     * @param {Event} [options.event] The event that triggered the request.
      * @return {Promise<Response>}
      */
-    handle({ event }) {
-      var _this = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        {
-          assert_mjs.assert.isInstance(event, FetchEvent, {
-            moduleName: 'workbox-strategies',
-            className: 'NetworkFirst',
-            funcName: 'handle',
-            paramName: 'event'
-          });
-        }
 
-        return _this.makeRequest({
-          event,
-          request: event.request
-        });
-      })();
+    async handle({
+      event,
+      request
+    }) {
+      return this.makeRequest({
+        event,
+        request: request || event.request
+      });
     }
-
     /**
      * This method can be used to perform a make a standalone request outside the
      * context of the [Workbox Router]{@link workbox.routing.Router}.
@@ -523,61 +484,82 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *     be called automatically to extend the service worker's lifetime.
      * @return {Promise<Response>}
      */
-    makeRequest({ event, request }) {
-      var _this2 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        const logs = [];
 
-        if (typeof request === 'string') {
-          request = new Request(request);
+    async makeRequest({
+      event,
+      request
+    }) {
+      const logs = [];
+
+      if (typeof request === 'string') {
+        request = new Request(request);
+      }
+
+      {
+        assert_mjs.assert.isInstance(request, Request, {
+          moduleName: 'workbox-strategies',
+          className: 'NetworkFirst',
+          funcName: 'handle',
+          paramName: 'makeRequest'
+        });
+      }
+
+      const promises = [];
+      let timeoutId;
+
+      if (this._networkTimeoutSeconds) {
+        const {
+          id,
+          promise
+        } = this._getTimeoutPromise({
+          request,
+          event,
+          logs
+        });
+
+        timeoutId = id;
+        promises.push(promise);
+      }
+
+      const networkPromise = this._getNetworkPromise({
+        timeoutId,
+        request,
+        event,
+        logs
+      });
+
+      promises.push(networkPromise); // Promise.race() will resolve as soon as the first promise resolves.
+
+      let response = await Promise.race(promises); // If Promise.race() resolved with null, it might be due to a network
+      // timeout + a cache miss. If that were to happen, we'd rather wait until
+      // the networkPromise resolves instead of returning null.
+      // Note that it's fine to await an already-resolved promise, so we don't
+      // have to check to see if it's still "in flight".
+
+      if (!response) {
+        response = await networkPromise;
+      }
+
+      {
+        logger_mjs.logger.groupCollapsed(messages.strategyStart('NetworkFirst', request));
+
+        for (let log of logs) {
+          logger_mjs.logger.log(log);
         }
 
-        {
-          assert_mjs.assert.isInstance(request, Request, {
-            moduleName: 'workbox-strategies',
-            className: 'NetworkFirst',
-            funcName: 'handle',
-            paramName: 'makeRequest'
-          });
-        }
+        messages.printFinalResponse(response);
+        logger_mjs.logger.groupEnd();
+      }
 
-        const promises = [];
-        let timeoutId;
+      if (!response) {
+        throw new WorkboxError_mjs.WorkboxError('no-response', {
+          url: request.url
+        });
+      }
 
-        if (_this2._networkTimeoutSeconds) {
-          const { id, promise } = _this2._getTimeoutPromise({ request, event, logs });
-          timeoutId = id;
-          promises.push(promise);
-        }
-
-        const networkPromise = _this2._getNetworkPromise({ timeoutId, request, event, logs });
-        promises.push(networkPromise);
-
-        // Promise.race() will resolve as soon as the first promise resolves.
-        let response = yield Promise.race(promises);
-        // If Promise.race() resolved with null, it might be due to a network
-        // timeout + a cache miss. If that were to happen, we'd rather wait until
-        // the networkPromise resolves instead of returning null.
-        // Note that it's fine to await an already-resolved promise, so we don't
-        // have to check to see if it's still "in flight".
-        if (!response) {
-          response = yield networkPromise;
-        }
-
-        {
-          logger_mjs.logger.groupCollapsed(messages.strategyStart('NetworkFirst', request));
-          for (let log of logs) {
-            logger_mjs.logger.log(log);
-          }
-          messages.printFinalResponse(response);
-          logger_mjs.logger.groupEnd();
-        }
-
-        return response;
-      })();
+      return response;
     }
-
     /**
      * @param {Object} options
      * @param {Request} options.request
@@ -587,34 +569,33 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *
      * @private
      */
-    _getTimeoutPromise({ request, logs, event }) {
-      var _this3 = this;
 
+
+    _getTimeoutPromise({
+      request,
+      logs,
+      event
+    }) {
       let timeoutId;
       const timeoutPromise = new Promise(resolve => {
-        const onNetworkTimeout = (() => {
-          var _ref = babelHelpers.asyncToGenerator(function* () {
-            {
-              logs.push(`Timing out the network response at ` + `${_this3._networkTimeoutSeconds} seconds.`);
-            }
+        const onNetworkTimeout = async () => {
+          {
+            logs.push(`Timing out the network response at ` + `${this._networkTimeoutSeconds} seconds.`);
+          }
 
-            resolve((yield _this3._respondFromCache({ request, event })));
-          });
-
-          return function onNetworkTimeout() {
-            return _ref.apply(this, arguments);
-          };
-        })();
+          resolve((await this._respondFromCache({
+            request,
+            event
+          })));
+        };
 
         timeoutId = setTimeout(onNetworkTimeout, this._networkTimeoutSeconds * 1000);
       });
-
       return {
         promise: timeoutPromise,
         id: timeoutId
       };
     }
-
     /**
      * @param {Object} options
      * @param {number|undefined} options.timeoutId
@@ -625,72 +606,79 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *
      * @private
      */
-    _getNetworkPromise({ timeoutId, request, logs, event }) {
-      var _this4 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        let error;
-        let response;
-        try {
-          response = yield fetchWrapper_mjs.fetchWrapper.fetch({
-            request,
-            event,
-            fetchOptions: _this4._fetchOptions,
-            plugins: _this4._plugins
-          });
-        } catch (err) {
-          error = err;
-        }
 
-        if (timeoutId) {
-          clearTimeout(timeoutId);
+    async _getNetworkPromise({
+      timeoutId,
+      request,
+      logs,
+      event
+    }) {
+      let error;
+      let response;
+
+      try {
+        response = await fetchWrapper_mjs.fetchWrapper.fetch({
+          request,
+          event,
+          fetchOptions: this._fetchOptions,
+          plugins: this._plugins
+        });
+      } catch (err) {
+        error = err;
+      }
+
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
+      {
+        if (response) {
+          logs.push(`Got response from network.`);
+        } else {
+          logs.push(`Unable to get a response from the network. Will respond ` + `with a cached response.`);
         }
+      }
+
+      if (error || !response) {
+        response = await this._respondFromCache({
+          request,
+          event
+        });
 
         {
           if (response) {
-            logs.push(`Got response from network.`);
+            logs.push(`Found a cached response in the '${this._cacheName}'` + ` cache.`);
           } else {
-            logs.push(`Unable to get a response from the network. Will respond ` + `with a cached response.`);
+            logs.push(`No response found in the '${this._cacheName}' cache.`);
           }
         }
+      } else {
+        // Keep the service worker alive while we put the request in the cache
+        const responseClone = response.clone();
+        const cachePut = cacheWrapper_mjs.cacheWrapper.put({
+          cacheName: this._cacheName,
+          request,
+          response: responseClone,
+          event,
+          plugins: this._plugins
+        });
 
-        if (error || !response) {
-          response = yield _this4._respondFromCache({ request, event });
-          {
-            if (response) {
-              logs.push(`Found a cached response in the '${_this4._cacheName}'` + ` cache.`);
-            } else {
-              logs.push(`No response found in the '${_this4._cacheName}' cache.`);
-            }
-          }
-        } else {
-          // Keep the service worker alive while we put the request in the cache
-          const responseClone = response.clone();
-          const cachePut = cacheWrapper_mjs.cacheWrapper.put({
-            cacheName: _this4._cacheName,
-            request,
-            response: responseClone,
-            event,
-            plugins: _this4._plugins
-          });
-
-          if (event) {
-            try {
-              // The event has been responded to so we can keep the SW alive to
-              // respond to the request
-              event.waitUntil(cachePut);
-            } catch (err) {
-              {
-                logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(event.request.url)}'.`);
-              }
+        if (event) {
+          try {
+            // The event has been responded to so we can keep the SW alive to
+            // respond to the request
+            event.waitUntil(cachePut);
+          } catch (err) {
+            {
+              logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(request.url)}'.`);
             }
           }
         }
+      }
 
-        return response;
-      })();
+      return response;
     }
-
     /**
      * Used if the network timeouts or fails to make the request.
      *
@@ -701,7 +689,12 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *
      * @private
      */
-    _respondFromCache({ event, request }) {
+
+
+    _respondFromCache({
+      event,
+      request
+    }) {
       return cacheWrapper_mjs.cacheWrapper.match({
         cacheName: this._cacheName,
         request,
@@ -710,32 +703,29 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
         plugins: this._plugins
       });
     }
+
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * An implementation of a
    * [network-only]{@link https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/#network-only}
    * request strategy.
    *
-   * This class is useful if you want to take advantage of any [Workbox plugins]{@link https://developers.google.com/web/tools/workbox/guides/using-plugins}.
+   * This class is useful if you want to take advantage of any
+   * [Workbox plugins]{@link https://developers.google.com/web/tools/workbox/guides/using-plugins}.
+   *
+   * If the network request fails, this will throw a `WorkboxError` exception.
    *
    * @memberof workbox.strategies
    */
+
   class NetworkOnly {
     /**
      * @param {Object} options
@@ -753,37 +743,27 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
       this._plugins = options.plugins || [];
       this._fetchOptions = options.fetchOptions || null;
     }
-
     /**
      * This method will perform a request strategy and follows an API that
      * will work with the
      * [Workbox Router]{@link workbox.routing.Router}.
      *
      * @param {Object} options
-     * @param {FetchEvent} options.event The fetch event to run this strategy
-     * against.
+     * @param {Request} options.request The request to run this strategy for.
+     * @param {Event} [options.event] The event that triggered the request.
      * @return {Promise<Response>}
      */
-    handle({ event }) {
-      var _this = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        {
-          assert_mjs.assert.isInstance(event, FetchEvent, {
-            moduleName: 'workbox-strategies',
-            className: 'NetworkOnly',
-            funcName: 'handle',
-            paramName: 'event'
-          });
-        }
 
-        return _this.makeRequest({
-          event,
-          request: event.request
-        });
-      })();
+    async handle({
+      event,
+      request
+    }) {
+      return this.makeRequest({
+        event,
+        request: request || event.request
+      });
     }
-
     /**
      * This method can be used to perform a make a standalone request outside the
      * context of the [Workbox Router]{@link workbox.routing.Router}.
@@ -799,73 +779,71 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *     be called automatically to extend the service worker's lifetime.
      * @return {Promise<Response>}
      */
-    makeRequest({ event, request }) {
-      var _this2 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        if (typeof request === 'string') {
-          request = new Request(request);
+
+    async makeRequest({
+      event,
+      request
+    }) {
+      if (typeof request === 'string') {
+        request = new Request(request);
+      }
+
+      {
+        assert_mjs.assert.isInstance(request, Request, {
+          moduleName: 'workbox-strategies',
+          className: 'NetworkOnly',
+          funcName: 'handle',
+          paramName: 'request'
+        });
+      }
+
+      let error;
+      let response;
+
+      try {
+        response = await fetchWrapper_mjs.fetchWrapper.fetch({
+          request,
+          event,
+          fetchOptions: this._fetchOptions,
+          plugins: this._plugins
+        });
+      } catch (err) {
+        error = err;
+      }
+
+      {
+        logger_mjs.logger.groupCollapsed(messages.strategyStart('NetworkOnly', request));
+
+        if (response) {
+          logger_mjs.logger.log(`Got response from network.`);
+        } else {
+          logger_mjs.logger.log(`Unable to get a response from the network.`);
         }
 
-        {
-          assert_mjs.assert.isInstance(request, Request, {
-            moduleName: 'workbox-strategies',
-            className: 'NetworkOnly',
-            funcName: 'handle',
-            paramName: 'request'
-          });
-        }
+        messages.printFinalResponse(response);
+        logger_mjs.logger.groupEnd();
+      }
 
-        let error;
-        let response;
-        try {
-          response = yield fetchWrapper_mjs.fetchWrapper.fetch({
-            request,
-            event,
-            fetchOptions: _this2._fetchOptions,
-            plugins: _this2._plugins
-          });
-        } catch (err) {
-          error = err;
-        }
+      if (!response) {
+        throw new WorkboxError_mjs.WorkboxError('no-response', {
+          url: request.url,
+          error
+        });
+      }
 
-        {
-          logger_mjs.logger.groupCollapsed(messages.strategyStart('NetworkOnly', request));
-          if (response) {
-            logger_mjs.logger.log(`Got response from network.`);
-          } else {
-            logger_mjs.logger.log(`Unable to get a response from the network.`);
-          }
-          messages.printFinalResponse(response);
-          logger_mjs.logger.groupEnd();
-        }
-
-        // If there was an error thrown, re-throw it to ensure the Routers
-        // catch handler is triggered.
-        if (error) {
-          throw error;
-        }
-
-        return response;
-      })();
+      return response;
     }
+
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * An implementation of a
    * [stale-while-revalidate]{@link https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/#stale-while-revalidate}
@@ -881,8 +859,12 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
    * Opaque responses are are cross-origin requests where the response doesn't
    * support [CORS]{@link https://enable-cors.org/}.
    *
+   * If the network request fails, and there is no cache match, this will throw
+   * a `WorkboxError` exception.
+   *
    * @memberof workbox.strategies
    */
+
   class StaleWhileRevalidate {
     /**
      * @param {Object} options
@@ -911,37 +893,27 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
       this._fetchOptions = options.fetchOptions || null;
       this._matchOptions = options.matchOptions || null;
     }
-
     /**
      * This method will perform a request strategy and follows an API that
      * will work with the
      * [Workbox Router]{@link workbox.routing.Router}.
      *
      * @param {Object} options
-     * @param {FetchEvent} options.event The fetch event to run this strategy
-     * against.
+     * @param {Request} options.request The request to run this strategy for.
+     * @param {Event} [options.event] The event that triggered the request.
      * @return {Promise<Response>}
      */
-    handle({ event }) {
-      var _this = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        {
-          assert_mjs.assert.isInstance(event, FetchEvent, {
-            moduleName: 'workbox-strategies',
-            className: 'StaleWhileRevalidate',
-            funcName: 'handle',
-            paramName: 'event'
-          });
-        }
 
-        return _this.makeRequest({
-          event,
-          request: event.request
-        });
-      })();
+    async handle({
+      event,
+      request
+    }) {
+      return this.makeRequest({
+        event,
+        request: request || event.request
+      });
     }
-
     /**
      * This method can be used to perform a make a standalone request outside the
      * context of the [Workbox Router]{@link workbox.routing.Router}.
@@ -957,69 +929,87 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *     be called automatically to extend the service worker's lifetime.
      * @return {Promise<Response>}
      */
-    makeRequest({ event, request }) {
-      var _this2 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        const logs = [];
 
-        if (typeof request === 'string') {
-          request = new Request(request);
-        }
+    async makeRequest({
+      event,
+      request
+    }) {
+      const logs = [];
 
-        {
-          assert_mjs.assert.isInstance(request, Request, {
-            moduleName: 'workbox-strategies',
-            className: 'StaleWhileRevalidate',
-            funcName: 'handle',
-            paramName: 'request'
-          });
-        }
+      if (typeof request === 'string') {
+        request = new Request(request);
+      }
 
-        const fetchAndCachePromise = _this2._getFromNetwork({ request, event });
-
-        let response = yield cacheWrapper_mjs.cacheWrapper.match({
-          cacheName: _this2._cacheName,
-          request,
-          event,
-          matchOptions: _this2._matchOptions,
-          plugins: _this2._plugins
+      {
+        assert_mjs.assert.isInstance(request, Request, {
+          moduleName: 'workbox-strategies',
+          className: 'StaleWhileRevalidate',
+          funcName: 'handle',
+          paramName: 'request'
         });
+      }
 
-        if (response) {
-          {
-            logs.push(`Found a cached response in the '${_this2._cacheName}'` + ` cache. Will update with the network response in the background.`);
-          }
+      const fetchAndCachePromise = this._getFromNetwork({
+        request,
+        event
+      });
 
-          if (event) {
-            try {
-              event.waitUntil(fetchAndCachePromise);
-            } catch (error) {
-              {
-                logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(event.request.url)}'.`);
-              }
+      let response = await cacheWrapper_mjs.cacheWrapper.match({
+        cacheName: this._cacheName,
+        request,
+        event,
+        matchOptions: this._matchOptions,
+        plugins: this._plugins
+      });
+      let error;
+
+      if (response) {
+        {
+          logs.push(`Found a cached response in the '${this._cacheName}'` + ` cache. Will update with the network response in the background.`);
+        }
+
+        if (event) {
+          try {
+            event.waitUntil(fetchAndCachePromise);
+          } catch (error) {
+            {
+              logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(request.url)}'.`);
             }
           }
-        } else {
-          {
-            logs.push(`No response found in the '${_this2._cacheName}' cache. ` + `Will wait for the network response.`);
-          }
-          response = yield fetchAndCachePromise;
         }
-
+      } else {
         {
-          logger_mjs.logger.groupCollapsed(messages.strategyStart('StaleWhileRevalidate', request));
-          for (let log of logs) {
-            logger_mjs.logger.log(log);
-          }
-          messages.printFinalResponse(response);
-          logger_mjs.logger.groupEnd();
+          logs.push(`No response found in the '${this._cacheName}' cache. ` + `Will wait for the network response.`);
         }
 
-        return response;
-      })();
-    }
+        try {
+          response = await fetchAndCachePromise;
+        } catch (err) {
+          error = err;
+        }
+      }
 
+      {
+        logger_mjs.logger.groupCollapsed(messages.strategyStart('StaleWhileRevalidate', request));
+
+        for (let log of logs) {
+          logger_mjs.logger.log(log);
+        }
+
+        messages.printFinalResponse(response);
+        logger_mjs.logger.groupEnd();
+      }
+
+      if (!response) {
+        throw new WorkboxError_mjs.WorkboxError('no-response', {
+          url: request.url,
+          error
+        });
+      }
+
+      return response;
+    }
     /**
      * @param {Object} options
      * @param {Request} options.request
@@ -1028,109 +1018,48 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
      *
      * @private
      */
-    _getFromNetwork({ request, event }) {
-      var _this3 = this;
 
-      return babelHelpers.asyncToGenerator(function* () {
-        const response = yield fetchWrapper_mjs.fetchWrapper.fetch({
-          request,
-          event,
-          fetchOptions: _this3._fetchOptions,
-          plugins: _this3._plugins
-        });
 
-        const cachePutPromise = cacheWrapper_mjs.cacheWrapper.put({
-          cacheName: _this3._cacheName,
-          request,
-          response: response.clone(),
-          event,
-          plugins: _this3._plugins
-        });
+    async _getFromNetwork({
+      request,
+      event
+    }) {
+      const response = await fetchWrapper_mjs.fetchWrapper.fetch({
+        request,
+        event,
+        fetchOptions: this._fetchOptions,
+        plugins: this._plugins
+      });
+      const cachePutPromise = cacheWrapper_mjs.cacheWrapper.put({
+        cacheName: this._cacheName,
+        request,
+        response: response.clone(),
+        event,
+        plugins: this._plugins
+      });
 
-        if (event) {
-          try {
-            event.waitUntil(cachePutPromise);
-          } catch (error) {
-            {
-              logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(event.request.url)}'.`);
-            }
+      if (event) {
+        try {
+          event.waitUntil(cachePutPromise);
+        } catch (error) {
+          {
+            logger_mjs.logger.warn(`Unable to ensure service worker stays alive when ` + `updating cache for '${getFriendlyURL_mjs.getFriendlyURL(request.url)}'.`);
           }
         }
+      }
 
-        return response;
-      })();
+      return response;
     }
+
   }
 
   /*
-    Copyright 2017 Google Inc.
+    Copyright 2018 Google LLC
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
-  var publicAPI = /*#__PURE__*/Object.freeze({
-    CacheFirst: CacheFirst,
-    CacheOnly: CacheOnly,
-    NetworkFirst: NetworkFirst,
-    NetworkOnly: NetworkOnly,
-    StaleWhileRevalidate: StaleWhileRevalidate
-  });
-
-  /*
-   Copyright 2016 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-  */
-
-  /**
-   * @function workbox.strategies.cacheFirst
-   * @param {Object} options See the {@link workbox.strategies.CacheFirst}
-   * constructor for more info.
-   */
-
-  /**
-   * @function workbox.strategies.cacheOnly
-   * @param {Object} options See the {@link workbox.strategies.CacheOnly}
-   * constructor for more info.
-   */
-
-  /**
-   * @function workbox.strategies.networkFirst
-   * @param {Object} options See the {@link workbox.strategies.NetworkFirst}
-   * constructor for more info.
-   */
-
-  /**
-   * @function workbox.strategies.networkOnly
-   * @param {Object} options See the {@link workbox.strategies.NetworkOnly}
-   * constructor for more info.
-   */
-
-  /**
-   * @function workbox.strategies.staleWhileRevalidate
-   * @param {Object} options See the
-   * {@link workbox.strategies.StaleWhileRevalidate} constructor for more info.
-   */
-
   const mapping = {
     cacheFirst: CacheFirst,
     cacheOnly: CacheOnly,
@@ -1139,34 +1068,71 @@ this.workbox.strategies = (function (logger_mjs,assert_mjs,cacheNames_mjs,cacheW
     staleWhileRevalidate: StaleWhileRevalidate
   };
 
-  const defaultExport = {};
-  Object.keys(mapping).forEach(keyName => {
-    defaultExport[keyName] = (options = {}) => {
-      const StrategyClass = mapping[keyName];
-      return new StrategyClass(Object.assign(options));
+  const deprecate = strategy => {
+    const StrategyCtr = mapping[strategy];
+    return options => {
+      {
+        const strategyCtrName = strategy[0].toUpperCase() + strategy.slice(1);
+        logger_mjs.logger.warn(`The 'workbox.strategies.${strategy}()' function has been ` + `deprecated and will be removed in a future version of Workbox.\n` + `Please use 'new workbox.strategies.${strategyCtrName}()' instead.`);
+      }
+
+      return new StrategyCtr(options);
     };
-  });
+  };
+  /**
+   * @function workbox.strategies.cacheFirst
+   * @param {Object} options See the {@link workbox.strategies.CacheFirst}
+   * constructor for more info.
+   * @deprecated since v4.0.0
+   */
 
-  /*
-    Copyright 2017 Google Inc.
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  const cacheFirst = deprecate('cacheFirst');
+  /**
+   * @function workbox.strategies.cacheOnly
+   * @param {Object} options See the {@link workbox.strategies.CacheOnly}
+   * constructor for more info.
+   * @deprecated since v4.0.0
+   */
 
-        https://www.apache.org/licenses/LICENSE-2.0
+  const cacheOnly = deprecate('cacheOnly');
+  /**
+   * @function workbox.strategies.networkFirst
+   * @param {Object} options See the {@link workbox.strategies.NetworkFirst}
+   * constructor for more info.
+   * @deprecated since v4.0.0
+   */
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
+  const networkFirst = deprecate('networkFirst');
+  /**
+   * @function workbox.strategies.networkOnly
+   * @param {Object} options See the {@link workbox.strategies.NetworkOnly}
+   * constructor for more info.
+   * @deprecated since v4.0.0
+   */
 
-  const finalExport = Object.assign(defaultExport, publicAPI);
+  const networkOnly = deprecate('networkOnly');
+  /**
+   * @function workbox.strategies.staleWhileRevalidate
+   * @param {Object} options See the
+   * {@link workbox.strategies.StaleWhileRevalidate} constructor for more info.
+   * @deprecated since v4.0.0
+   */
 
-  return finalExport;
+  const staleWhileRevalidate = deprecate('staleWhileRevalidate');
 
-}(workbox.core._private,workbox.core._private,workbox.core._private,workbox.core._private,workbox.core._private,workbox.core._private));
+  exports.CacheFirst = CacheFirst;
+  exports.CacheOnly = CacheOnly;
+  exports.NetworkFirst = NetworkFirst;
+  exports.NetworkOnly = NetworkOnly;
+  exports.StaleWhileRevalidate = StaleWhileRevalidate;
+  exports.cacheFirst = cacheFirst;
+  exports.cacheOnly = cacheOnly;
+  exports.networkFirst = networkFirst;
+  exports.networkOnly = networkOnly;
+  exports.staleWhileRevalidate = staleWhileRevalidate;
 
+  return exports;
+
+}({}, workbox.core._private, workbox.core._private, workbox.core._private, workbox.core._private, workbox.core._private, workbox.core._private, workbox.core._private));
 //# sourceMappingURL=workbox-strategies.dev.js.map

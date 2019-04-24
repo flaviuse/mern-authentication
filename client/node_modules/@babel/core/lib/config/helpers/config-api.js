@@ -47,7 +47,8 @@ function makeAPI(cache) {
     env,
     async: () => false,
     caller,
-    assertVersion
+    assertVersion,
+    tokTypes: undefined
   };
 }
 

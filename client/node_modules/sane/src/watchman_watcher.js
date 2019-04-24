@@ -1,20 +1,20 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var common = require('./common');
-var watchmanClient = require('./watchman_client');
-var EventEmitter = require('events').EventEmitter;
-var RecrawlWarning = require('./utils/recrawl-warning-dedupe');
+const fs = require('fs');
+const path = require('path');
+const common = require('./common');
+const watchmanClient = require('./watchman_client');
+const EventEmitter = require('events').EventEmitter;
+const RecrawlWarning = require('./utils/recrawl-warning-dedupe');
 
 /**
  * Constants
  */
 
-var CHANGE_EVENT = common.CHANGE_EVENT;
-var DELETE_EVENT = common.DELETE_EVENT;
-var ADD_EVENT = common.ADD_EVENT;
-var ALL_EVENT = common.ALL_EVENT;
+const CHANGE_EVENT = common.CHANGE_EVENT;
+const DELETE_EVENT = common.DELETE_EVENT;
+const ADD_EVENT = common.ADD_EVENT;
+const ALL_EVENT = common.ALL_EVENT;
 
 /**
  * Export `WatchmanWatcher` class.
@@ -96,7 +96,7 @@ WatchmanWatcher.prototype.createOptions = function() {
       }
     } else {
       options.expression = ['anyof'];
-      for (var i in this.globs) {
+      for (let i in this.globs) {
         options.expression.push([
           'match',
           this.globs[i],
@@ -143,8 +143,8 @@ WatchmanWatcher.prototype.handleChangeEvent = function(resp) {
  */
 
 WatchmanWatcher.prototype.handleFileChange = function(changeDescriptor) {
-  var absPath;
-  var relativePath;
+  let absPath;
+  let relativePath;
 
   relativePath = changeDescriptor.name;
   absPath = path.join(this.root, relativePath);
@@ -170,7 +170,7 @@ WatchmanWatcher.prototype.handleFileChange = function(changeDescriptor) {
         return;
       }
 
-      var eventType = changeDescriptor.new ? ADD_EVENT : CHANGE_EVENT;
+      let eventType = changeDescriptor.new ? ADD_EVENT : CHANGE_EVENT;
 
       // Change event on dirs are mostly useless.
       if (!(eventType === CHANGE_EVENT && stat.isDirectory())) {

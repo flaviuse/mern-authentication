@@ -1,0 +1,16 @@
+# Installation
+> `npm install --save @types/istanbul-lib-coverage`
+
+# Summary
+This package contains type definitions for istanbul-lib-coverage ( https://github.com/istanbuljs/istanbuljs ).
+
+# Details
+Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/istanbul-lib-coverage
+
+Additional Details
+ * Last updated: Mon, 11 Mar 2019 20:18:58 GMT
+ * Dependencies: none
+ * Global values: none
+
+# Credits
+These definitions were written by Jason Cheatham <https://github.com/jason0x43>, Lorenzo Rapetti <https://github.com/loryman>.

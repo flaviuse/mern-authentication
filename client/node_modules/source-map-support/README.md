@@ -11,13 +11,7 @@ This module provides source map support for stack traces in node via the [V8 sta
 $ npm install source-map-support
 ```
 
-Source maps can be generated using libraries such as [source-map-index-generator](https://github.com/twolfson/source-map-index-generator). Once you have a valid source map, insert the following line at the top of your compiled code:
-
-```js
-require('source-map-support').install();
-```
-
-And place a source mapping comment somewhere in the file (usually done automatically or with an option by your transpiler):
+Source maps can be generated using libraries such as [source-map-index-generator](https://github.com/twolfson/source-map-index-generator). Once you have a valid source map, place a source mapping comment somewhere in the file (usually done automatically or with an option by your transpiler):
 
 ```
 //# sourceMappingURL=path/to/source.map
@@ -27,7 +21,23 @@ If multiple sourceMappingURL comments exist in one file, the last sourceMappingU
 respected (e.g. if a file mentions the comment in code, or went through multiple transpilers).
 The path should either be absolute or relative to the compiled file.
 
-It is also possible to to install the source map support directly by
+From here you have two options.
+
+##### CLI Usage
+
+```bash
+node -r source-map-support/register compiled.js
+```
+
+##### Programmatic Usage
+
+Put the following line at the top of the compiled file.
+
+```js
+require('source-map-support').install();
+```
+
+It is also possible to install the source map support directly by
 requiring the `register` module which can be handy with ES6:
 
 ```js
@@ -92,8 +102,8 @@ require('source-map-support').install({
 });
 ```
 
-The module will by default assume a browser environment if XMLHttpRequest and window are defined. If either of these do not exist it will instead assume a node environment. 
-In some rare cases, e.g. when running a browser emulation and where both variables are also set, you can explictly specify the environment to be either 'browser' or 'node'. 
+The module will by default assume a browser environment if XMLHttpRequest and window are defined. If either of these do not exist it will instead assume a node environment.
+In some rare cases, e.g. when running a browser emulation and where both variables are also set, you can explictly specify the environment to be either 'browser' or 'node'.
 
 ```js
 require('source-map-support').install({
@@ -199,7 +209,30 @@ Error: this is a demo
     at startup (node.js:119:16)
     at node.js:901:3
 ```
-    
+
+There is also the option to use `-r source-map-support/register` with typescript, without the need add the `require('source-map-support').install()` in the code base:
+
+```
+$ npm install source-map-support typescript
+$ node_modules/typescript/bin/tsc  -sourcemap demo.ts
+$ node -r source-map-support/register demo.js
+
+demo.ts:5
+  bar() { throw new Error('this is a demo'); }
+                ^
+Error: this is a demo
+    at Foo.bar (demo.ts:5:17)
+    at new Foo (demo.ts:4:24)
+    at Object.<anonymous> (demo.ts:7:1)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+    at node.js:901:3
+```
+
 #### CoffeeScript Demo
 
 demo.coffee:
@@ -215,8 +248,8 @@ foo()
 Compile and run the file using the CoffeeScript compiler from the terminal:
 
 ```sh
-$ npm install source-map-support coffee-script
-$ node_modules/coffee-script/bin/coffee --map --compile demo.coffee
+$ npm install source-map-support coffeescript
+$ node_modules/.bin/coffee --map --compile demo.coffee
 $ node demo.js
 
 demo.coffee:3

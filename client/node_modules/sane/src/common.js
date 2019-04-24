@@ -1,10 +1,10 @@
 'use strict';
 
-var walker = require('walker');
-var anymatch = require('anymatch');
-var micromatch = require('micromatch');
-var path = require('path');
-var platform = require('os').platform();
+const walker = require('walker');
+const anymatch = require('anymatch');
+const micromatch = require('micromatch');
+const path = require('path');
+const platform = require('os').platform();
 
 /**
  * Constants
@@ -36,11 +36,7 @@ exports.assignOptions = function(watcher, opts) {
   }
   watcher.hasIgnore =
     Boolean(opts.ignored) && !(Array.isArray(opts) && opts.length > 0);
-  watcher.doIgnore = opts.ignored
-    ? anymatch(opts.ignored)
-    : function() {
-        return false;
-      };
+  watcher.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
 
   if (opts.watchman && opts.watchmanPath) {
     watcher.watchmanPath = opts.watchmanPath;
@@ -87,13 +83,11 @@ exports.recReaddir = function(
   ignored
 ) {
   walker(dir)
-    .filterDir(function(currentDir) {
-      return !anymatch(ignored, currentDir);
-    })
+    .filterDir(currentDir => !anymatch(ignored, currentDir))
     .on('dir', normalizeProxy(dirCallback))
     .on('file', normalizeProxy(fileCallback))
     .on('error', errorCallback)
-    .on('end', function() {
+    .on('end', () => {
       if (platform === 'win32') {
         setTimeout(endCallback, 1000);
       } else {
@@ -112,7 +106,5 @@ exports.recReaddir = function(
  */
 
 function normalizeProxy(callback) {
-  return function(filepath, stats) {
-    return callback(path.normalize(filepath), stats);
-  };
+  return (filepath, stats) => callback(path.normalize(filepath), stats);
 }

@@ -1,3 +1,7 @@
+# 4.0.0
+
+- Updating to Acorn 6.
+
 # 3.0.0
 
 - Adding acorn walk support.

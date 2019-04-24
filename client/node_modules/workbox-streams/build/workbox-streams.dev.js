@@ -1,26 +1,18 @@
 this.workbox = this.workbox || {};
-this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
+this.workbox.streams = (function (exports, logger_mjs, assert_mjs) {
   'use strict';
 
   try {
-    self.workbox.v['workbox:streams:3.6.3'] = 1;
+    self['workbox:streams:4.3.0'] && _();
   } catch (e) {} // eslint-disable-line
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * Takes either a Response, a ReadableStream, or a
    * [BodyInit](https://fetch.spec.whatwg.org/#bodyinit) and returns the
@@ -30,6 +22,7 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
    * @return {ReadableStreamReader}
    * @private
    */
+
   function _getReaderFromSource(source) {
     if (source.body && source.body.getReader) {
       return source.body.getReader();
@@ -37,14 +30,13 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
 
     if (source.getReader) {
       return source.getReader();
-    }
-
-    // TODO: This should be possible to do by constructing a ReadableStream, but
+    } // TODO: This should be possible to do by constructing a ReadableStream, but
     // I can't get it to work. As a hack, construct a new Response, and use the
     // reader associated with its body.
+
+
     return new Response(source).body.getReader();
   }
-
   /**
    * Takes multiple source Promises, each of which could resolve to a Response, a
    * ReadableStream, or a [BodyInit](https://fetch.spec.whatwg.org/#bodyinit).
@@ -58,6 +50,8 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
    *
    * @memberof workbox.streams
    */
+
+
   function concatenate(sourcePromises) {
     {
       assert_mjs.assert.isArray(sourcePromises, {
@@ -72,14 +66,12 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
         return _getReaderFromSource(source);
       });
     });
-
     let fullyStreamedResolve;
     let fullyStreamedReject;
     const done = new Promise((resolve, reject) => {
       fullyStreamedResolve = resolve;
       fullyStreamedReject = reject;
     });
-
     let i = 0;
     const logMessages = [];
     const stream = new ReadableStream({
@@ -91,10 +83,12 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
             }
 
             i++;
+
             if (i >= readerPromises.length) {
               // Log all the messages in the group at once in a single group.
               {
                 logger_mjs.logger.groupCollapsed(`Concatenating ${readerPromises.length} sources.`);
+
                 for (const message of logMessages) {
                   if (Array.isArray(message)) {
                     logger_mjs.logger.log(...message);
@@ -102,6 +96,7 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
                     logger_mjs.logger.log(message);
                   }
                 }
+
                 logger_mjs.logger.log('Finished reading all sources.');
                 logger_mjs.logger.groupEnd();
               }
@@ -119,6 +114,7 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
           {
             logger_mjs.logger.error('An error occurred:', error);
           }
+
           fullyStreamedReject(error);
           throw error;
         });
@@ -131,26 +127,21 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
 
         fullyStreamedResolve();
       }
-    });
 
-    return { done, stream };
+    });
+    return {
+      done,
+      stream
+    };
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * This is a utility method that determines whether the current browser supports
    * the features required to create streamed responses. Currently, it checks if
@@ -164,30 +155,25 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
    *
    * @memberof workbox.streams
    */
+
   function createHeaders(headersInit = {}) {
     // See https://github.com/GoogleChrome/workbox/issues/1461
     const headers = new Headers(headersInit);
+
     if (!headers.has('content-type')) {
       headers.set('content-type', 'text/html');
     }
+
     return headers;
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * Takes multiple source Promises, each of which could resolve to a Response, a
    * ReadableStream, or a [BodyInit](https://fetch.spec.whatwg.org/#bodyinit),
@@ -205,32 +191,30 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
    *
    * @memberof workbox.streams
    */
+
   function concatenateToResponse(sourcePromises, headersInit) {
-    const { done, stream } = concatenate(sourcePromises);
-
+    const {
+      done,
+      stream
+    } = concatenate(sourcePromises);
     const headers = createHeaders(headersInit);
-    const response = new Response(stream, { headers });
-
-    return { done, response };
+    const response = new Response(stream, {
+      headers
+    });
+    return {
+      done,
+      response
+    };
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   let cachedIsSupported = undefined;
-
   /**
    * This is a utility method that determines whether the current browser supports
    * the features required to create streamed responses. Currently, it checks if
@@ -242,11 +226,15 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
    *
    * @memberof workbox.streams
    */
+
   function isSupported() {
     if (cachedIsSupported === undefined) {
       // See https://github.com/GoogleChrome/workbox/issues/1473
       try {
-        new ReadableStream({ start() {} });
+        new ReadableStream({
+          start() {}
+
+        });
         cachedIsSupported = true;
       } catch (error) {
         cachedIsSupported = false;
@@ -257,20 +245,12 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
   }
 
   /*
-   Copyright 2018 Google Inc. All Rights Reserved.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+    Copyright 2018 Google LLC
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
-
   /**
    * A shortcut to create a strategy that could be dropped-in to Workbox's router.
    *
@@ -288,84 +268,62 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
    *
    * @memberof workbox.streams
    */
+
   function strategy(sourceFunctions, headersInit) {
-    return (() => {
-      var _ref = babelHelpers.asyncToGenerator(function* ({ event, url, params }) {
-        if (isSupported()) {
-          const { done, response } = concatenateToResponse(sourceFunctions.map(function (sourceFunction) {
-            return sourceFunction({ event, url, params });
-          }), headersInit);
-          event.waitUntil(done);
-          return response;
-        }
+    return async ({
+      event,
+      url,
+      params
+    }) => {
+      if (isSupported()) {
+        const {
+          done,
+          response
+        } = concatenateToResponse(sourceFunctions.map(fn => fn({
+          event,
+          url,
+          params
+        })), headersInit);
+        event.waitUntil(done);
+        return response;
+      }
 
-        {
-          logger_mjs.logger.log(`The current browser doesn't support creating response ` + `streams. Falling back to non-streaming response instead.`);
-        }
+      {
+        logger_mjs.logger.log(`The current browser doesn't support creating response ` + `streams. Falling back to non-streaming response instead.`);
+      } // Fallback to waiting for everything to finish, and concatenating the
+      // responses.
 
-        // Fallback to waiting for everything to finish, and concatenating the
-        // responses.
-        const parts = yield Promise.all(sourceFunctions.map(function (sourceFunction) {
-          return sourceFunction({ event, url, params });
-        }).map((() => {
-          var _ref2 = babelHelpers.asyncToGenerator(function* (responsePromise) {
-            const response = yield responsePromise;
-            if (response instanceof Response) {
-              return response.blob();
-            }
 
-            // Otherwise, assume it's something like a string which can be used
-            // as-is when constructing the final composite blob.
-            return response;
-          });
+      const parts = await Promise.all(sourceFunctions.map(sourceFunction => sourceFunction({
+        event,
+        url,
+        params
+      })).map(async responsePromise => {
+        const response = await responsePromise;
 
-          return function (_x2) {
-            return _ref2.apply(this, arguments);
-          };
-        })()));
+        if (response instanceof Response) {
+          return response.blob();
+        } // Otherwise, assume it's something like a string which can be used
+        // as-is when constructing the final composite blob.
 
-        const headers = createHeaders(headersInit);
-        // Constructing a new Response from a Blob source is well-supported.
-        // So is constructing a new Blob from multiple source Blobs or strings.
-        return new Response(new Blob(parts), { headers });
+
+        return response;
+      }));
+      const headers = createHeaders(headersInit); // Constructing a new Response from a Blob source is well-supported.
+      // So is constructing a new Blob from multiple source Blobs or strings.
+
+      return new Response(new Blob(parts), {
+        headers
       });
-
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    })();
+    };
   }
 
   /*
-    Copyright 2018 Google Inc.
+    Copyright 2018 Google LLC
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  */
-
-  /*
-    Copyright 2018 Google Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    Use of this source code is governed by an MIT-style
+    license that can be found in the LICENSE file or at
+    https://opensource.org/licenses/MIT.
   */
 
   exports.concatenate = concatenate;
@@ -375,6 +333,5 @@ this.workbox.streams = (function (exports,logger_mjs,assert_mjs) {
 
   return exports;
 
-}({},workbox.core._private,workbox.core._private));
-
+}({}, workbox.core._private, workbox.core._private));
 //# sourceMappingURL=workbox-streams.dev.js.map

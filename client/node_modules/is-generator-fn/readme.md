@@ -6,7 +6,7 @@
 ## Install
 
 ```
-$ npm install --save is-generator-fn
+$ npm install is-generator-fn
 ```
 
 
@@ -23,6 +23,11 @@ isGeneratorFn(function () {});
 ```
 
 
+## Related
+
+- [is](https://github.com/sindresorhus/is) - Type check values
+
+
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)

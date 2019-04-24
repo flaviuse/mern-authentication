@@ -30,7 +30,6 @@
     "joi-objectid": "^2.0.0",
     "moment": "^2.22.2",
     "mongoose": "^5.3.7",
-    "npm": "^6.4.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "ramda": "^0.26.0",
