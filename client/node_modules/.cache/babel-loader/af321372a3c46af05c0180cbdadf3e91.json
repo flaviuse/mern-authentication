@@ -1,1 +1,0 @@
-{"ast":null,"code":"import Provider, { createProvider } from './components/Provider';\nimport connectAdvanced from './components/connectAdvanced';\nimport connect from './connect/connect';\nexport { Provider, createProvider, connectAdvanced, connect };","map":null,"metadata":{},"sourceType":"module"}

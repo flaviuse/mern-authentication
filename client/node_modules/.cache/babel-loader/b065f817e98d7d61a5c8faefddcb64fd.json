@@ -1,1 +1,0 @@
-{"ast":null,"code":"/*!\n * Determine if an object is a Buffer\n *\n * @author   Feross Aboukhadijeh <https://feross.org>\n * @license  MIT\n */\nmodule.exports = function isBuffer(obj) {\n  return obj != null && obj.constructor != null && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj);\n};","map":null,"metadata":{},"sourceType":"script"}
