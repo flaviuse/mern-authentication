@@ -1,17 +1,17 @@
-import React from "react";
-import { connect } from "react-redux";
-import Joi from "joi-browser";
-import Form from "../../common/form/form";
-import R from "../../../utils/ramda";
+import Joi from 'joi-browser';
+import React from 'react';
+import { connect } from 'react-redux';
 import {
   attemptRegister,
   attemptResendConfirmation,
   attemptResetRegister
-} from "../../../store/thunks/auth";
-import styles from "./Register.module.css";
+} from '../../../store/thunks/auth';
+import R from '../../../utils/ramda';
+import Form from '../../common/form/form';
+import styles from './Register.module.css';
 class RegisterForm extends Form {
   initialState = {
-    data: { email: "", password: "", username: "" },
+    data: { email: '', password: '', username: '' },
     errors: {},
     submited: false,
     resend: false
@@ -23,11 +23,11 @@ class RegisterForm extends Form {
     email: Joi.string()
       .email({ minDomainAtoms: 2 })
       .required()
-      .label("Email"),
+      .label('Email'),
     password: Joi.string()
       .min(5)
       .required()
-      .label("Password"),
+      .label('Password'),
     username: Joi.string().required()
   };
 
@@ -39,7 +39,7 @@ class RegisterForm extends Form {
       .catch(error => {
         if (error.response && error.response.status === 400) {
           const errors = { ...this.state.errors };
-          if (error.response.data.message.includes("Email")) {
+          if (error.response.data.message.includes('Email')) {
             errors.email = error.response.data.message;
           } else {
             errors.username = error.response.data.message;
@@ -71,31 +71,30 @@ class RegisterForm extends Form {
           <React.Fragment>
             {!this.state.submited && (
               <div>
-                <p id={styles.title}>Create an account</p>
                 <div id={styles.formContainer}>
                   <form onSubmit={this.handleSubmit} className="ui large form">
                     {this.renderInput(
-                      "username",
-                      "Username",
-                      "text",
-                      "user icon"
+                      'username',
+                      'Username',
+                      'text',
+                      'user icon'
                     )}
                     {this.renderInput(
-                      "email",
-                      "Email",
-                      "text",
-                      "envelope icon"
+                      'email',
+                      'Email',
+                      'text',
+                      'envelope icon'
                     )}
                     {this.renderInput(
-                      "password",
-                      "Password",
-                      "password",
-                      "lock icon"
+                      'password',
+                      'Password',
+                      'password',
+                      'lock icon'
                     )}
                     {this.renderButton(
-                      "Sign Up",
+                      'Sign Up',
                       styles.signupBtn,
-                      "signup icon"
+                      'signup icon'
                     )}
                   </form>
                 </div>
@@ -105,8 +104,7 @@ class RegisterForm extends Form {
               <React.Fragment>
                 <div
                   className="ui icon positive message"
-                  id={styles.messageContainer}
-                >
+                  id={styles.messageContainer}>
                   <i className="inbox icon" />
                   <div className="content">
                     <div className="header">
@@ -119,8 +117,7 @@ class RegisterForm extends Form {
                     </p>
                     <button
                       onClick={this.resendEmail}
-                      className="ui basic button"
-                    >
+                      className="ui basic button">
                       Did not receive the email? Click here to send again.
                     </button>
                   </div>
@@ -133,12 +130,11 @@ class RegisterForm extends Form {
           <React.Fragment>
             <div
               className="ui icon warning message"
-              id={styles.messageContainer}
-            >
+              id={styles.messageContainer}>
               <i className="inbox icon" />
               <div className="content">
                 <div class="header">Still not received an email? </div>
-                Try to register again. You may have given the wrong email.{" "}
+                Try to register again. You may have given the wrong email.{' '}
                 <br />
                 If you want to be able to user the same username :<br />
                 <button className="ui small basic button" onClick={this.reset}>

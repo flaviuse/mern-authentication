@@ -1,0 +1,20 @@
+parser: babel-eslint
+extends: airbnb
+rules:
+    func-names: 0
+    semi: [2, never]
+    no-unexpected-multiline: 2
+    no-shadow: 1
+    max-len: ["error", 80]
+
+    import/no-duplicates: 2
+    import/no-commonjs: 2
+    import/imports-first: 2
+
+    react/display-name: 1
+    react/jsx-no-duplicate-props: 2
+    react/jsx-filename-extension: 0
+    react/no-unused-prop-types: 0
+    react/forbid-prop-types: 0
+env:
+    mocha: true
