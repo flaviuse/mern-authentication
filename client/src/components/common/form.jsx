@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import Joi from "joi-browser";
-import Input from "./input";
+import React, { Component } from 'react';
+import Joi from 'joi-browser';
+import Input from './input';
 
 class Form extends Component {
   state = { data: {}, errors: {} };
@@ -45,22 +45,14 @@ class Form extends Component {
   };
 
   renderButton(label) {
-    return (
-      <button
-        disabled={this.validate()}
-        className="ui fluid large teal submit button"
-      >
-        {label}
-      </button>
-    );
+    return <button disabled={this.validate()}>{label}</button>;
   }
 
-  renderInput(name, label, type = "text", icon) {
+  renderInput(name, label, type = 'text') {
     const { data, errors } = this.state;
     return (
       <Input
         type={type}
-        icon={icon}
         name={name}
         value={data[name]}
         label={label}

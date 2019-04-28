@@ -9,20 +9,15 @@
     "joi-browser": "^13.4.0",
     "joi-objectid": "^2.0.0",
     "ramda": "^0.26.0",
-    "raven-js": "^3.27.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-google-recaptcha": "^1.0.5",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.0.0",
-    "react-toastify": "^4.4.3",
     "redux": "^4.0.0",
     "redux-axios-middleware": "^4.0.0",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.84.0"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

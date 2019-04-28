@@ -1,13 +1,16 @@
-import React from "react";
+import React from 'react';
 
 const Input = ({ name, label, error, icon, ...rest }) => {
   return (
-    <div className="field ">
-      <div className="ui left icon input">
-        <i class={icon} />
+    <div>
+      <label htmlFor={name}>{label}</label>
+      <div>
+        <i className={icon} />
         <input {...rest} name={name} id={name} placeholder={label} />
       </div>
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && !error.includes('to be empty') && (
+        <div className="error">{error}</div>
+      )}
     </div>
   );
 };

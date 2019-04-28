@@ -2,9 +2,8 @@ import Joi from 'joi-browser';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { attemptLogin } from '../../../store/thunks/auth';
-import Form from '../../common/form/form.jsx';
-import styles from './Login.module.css';
+import { attemptLogin } from '../../store/thunks/auth';
+import Form from '../common/form.jsx';
 
 class LoginForm extends Form {
   state = {
@@ -36,25 +35,17 @@ class LoginForm extends Form {
     if (this.props.isAuth) return <Redirect to="/home" />; // ne peut pas se relog si deja log
 
     return (
-      <div id={styles.container}>
-        <div id={styles.formContainer}>
-          <form onSubmit={this.handleSubmit} className="ui large form">
-            {this.renderInput('username', 'Username', 'text', 'user icon')}
-            {this.renderInput('password', 'Password', 'password', 'lock icon')}
-            <div id={styles.forgotMessage}>
-              <Link to="/login/forgot">Forgot your password?</Link>
-            </div>
-            {this.renderButton('Login', styles.loginBtn)}
-          </form>
-          <h4 className="ui horizontal divider">Or</h4>
-          <Link
-            to="/register"
-            className="ui big button teal"
-            id={styles.subscribe}>
-            <i className="signup icon" />
-            Sign Up
-          </Link>
-        </div>
+      <div className="container">
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput('username', 'Username', 'text')}
+          {this.renderInput('password', 'Password', 'password')}
+          <div>
+            <Link to="/login/forgot">Forgot your password?</Link>
+          </div>
+          {this.renderButton('Login')}
+        </form>
+        <h4>Or</h4>
+        <Link to="/register">Sign Up</Link>
       </div>
     );
   }

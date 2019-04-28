@@ -1,13 +1,12 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import Joi from "joi-browser";
-import Form from "../../common/form/form.jsx";
-import { attemptResetPassword } from "../../../store/thunks/auth";
-import styles from "./LoginResetPassword.module.css";
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Joi from 'joi-browser';
+import Form from '../common/form.jsx';
+import { attemptResetPassword } from '../../store/thunks/auth';
 class LoginForgot extends Form {
   state = {
-    data: { password: "" },
+    data: { password: '' },
     errors: {}
   };
 
@@ -34,14 +33,12 @@ class LoginForgot extends Form {
   render() {
     if (this.props.isAuth) return <Redirect to="/home" />; // ne peut pas se relog si deja log
     return (
-      <div id={styles.container}>
-        <p id={styles.title}>New password</p>
-        <div id={styles.formContainer}>
-          <form onSubmit={this.handleSubmit} className="ui large form">
-            {this.renderInput("password", "Password", "password", "lock icon")}
-            {this.renderButton("RESET PASSWORD")}
-          </form>
-        </div>
+      <div className="container">
+        <p>New password</p>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput('password', 'Password', 'password')}
+          {this.renderButton('RESET PASSWORD')}
+        </form>
       </div>
     );
   }

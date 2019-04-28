@@ -5,10 +5,9 @@ import {
   attemptRegister,
   attemptResendConfirmation,
   attemptResetRegister
-} from '../../../store/thunks/auth';
-import R from '../../../utils/ramda';
-import Form from '../../common/form/form';
-import styles from './Register.module.css';
+} from '../../store/thunks/auth';
+import Form from '../common/form';
+
 class RegisterForm extends Form {
   initialState = {
     data: { email: '', password: '', username: '' },
@@ -66,58 +65,32 @@ class RegisterForm extends Form {
 
   render() {
     return (
-      <div id={styles.container}>
+      <div>
         {!this.state.resend && (
           <React.Fragment>
             {!this.state.submited && (
               <div>
-                <div id={styles.formContainer}>
-                  <form onSubmit={this.handleSubmit} className="ui large form">
-                    {this.renderInput(
-                      'username',
-                      'Username',
-                      'text',
-                      'user icon'
-                    )}
-                    {this.renderInput(
-                      'email',
-                      'Email',
-                      'text',
-                      'envelope icon'
-                    )}
-                    {this.renderInput(
-                      'password',
-                      'Password',
-                      'password',
-                      'lock icon'
-                    )}
-                    {this.renderButton(
-                      'Sign Up',
-                      styles.signupBtn,
-                      'signup icon'
-                    )}
+                <div className="container">
+                  <form onSubmit={this.handleSubmit}>
+                    {this.renderInput('username', 'Username', 'text')}
+                    {this.renderInput('email', 'Email', 'text')}
+                    {this.renderInput('password', 'Password', 'password')}
+                    {this.renderButton('Sign Up')}
                   </form>
                 </div>
               </div>
             )}
             {this.state.submited && (
               <React.Fragment>
-                <div
-                  className="ui icon positive message"
-                  id={styles.messageContainer}>
-                  <i className="inbox icon" />
-                  <div className="content">
-                    <div className="header">
-                      A verification email has been sent.
-                    </div>
+                <div className="container">
+                  <div>
+                    <p>A verification email has been sent.</p>
                     <p>
                       Check you mailbox : {this.state.data.email}. <br /> You
                       have 12 hours to activate your account. It can take up to
                       15 min to receive our email.
                     </p>
-                    <button
-                      onClick={this.resendEmail}
-                      className="ui basic button">
+                    <button onClick={this.resendEmail}>
                       Did not receive the email? Click here to send again.
                     </button>
                   </div>
@@ -128,19 +101,11 @@ class RegisterForm extends Form {
         )}
         {this.state.resend && (
           <React.Fragment>
-            <div
-              className="ui icon warning message"
-              id={styles.messageContainer}>
-              <i className="inbox icon" />
-              <div className="content">
-                <div class="header">Still not received an email? </div>
-                Try to register again. You may have given the wrong email.{' '}
-                <br />
-                If you want to be able to user the same username :<br />
-                <button className="ui small basic button" onClick={this.reset}>
-                  Click here to try again.
-                </button>
-              </div>
+            <div className="container">
+              <div>Still not received an email? </div>
+              Try to register again. You may have given the wrong email. <br />
+              If you want to be able to user the same username :<br />
+              <button onClick={this.reset}>Click here to try again.</button>
             </div>
           </React.Fragment>
         )}
@@ -148,7 +113,7 @@ class RegisterForm extends Form {
     );
   }
 }
-const mapStateToProps = R.pick([]);
+const mapStateToProps = null;
 
 const mapDispatchToProps = dispatch => ({
   attemptRegister: newUser => dispatch(attemptRegister(newUser)),
