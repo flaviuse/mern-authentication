@@ -5,13 +5,14 @@
 
 Demo : https://mern-auth-client.herokuapp.com/login
 
+:warning: CSS styles, Google Captcha, Sentry usage and some other not essential dependencies like notifications are only in the demo. This repositorie aim to have a fast to use boilerplate from now on.
+
+
 ### :bangbang: Setup BackEnd first
 
 Instructions on server & client folders.
 
 Frontend and Backend run on 2 independent servers.
-
-CSS Of the project is really bad, don't use this architecture.
 
 ## :computer: Boilerplate 
 
