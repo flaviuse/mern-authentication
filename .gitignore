@@ -1,0 +1,8 @@
+client/node_modules/
+server/node_modules/
+server/logfile.log
+server/uncaughtException.log
+
+# dotenv environment variables file
+.env
+.env.test
