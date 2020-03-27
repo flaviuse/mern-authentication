@@ -1,6 +1,8 @@
 
 ## Update 28/04/2019 : Huge simplification of the project for better usability as a boilerplate.
 
+## Todo : convert to hooks in front, add env VAR in back to make email verification optionnal
+
 Based on Create React App for the client.
 
 # MERN STACK authentication with email verification
