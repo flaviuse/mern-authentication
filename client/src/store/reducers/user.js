@@ -1,26 +1,29 @@
-// import update from "immutability-helper";
-import { LOGIN_USER, LOGOUT_USER, UPDATE_USER } from '../actions/user';
-import { isEmpty } from 'ramda/src/isEmpty';
+import { LOGIN_USER, LOGOUT_USER, SET_USER, RESET_USER } from "../actions/user";
 
-export default function user(state = { isAuth: false, user: {} }, action) {
+const initialState = {
+  isAuth: false,
+  user: null,
+};
+
+export default function user(state = initialState, action) {
   switch (action.type) {
     case LOGIN_USER:
       return {
         user: action.user,
-        isAuth: true
+        isAuth: true,
       };
-
     case LOGOUT_USER:
       return {
-        isAuth: false
+        isAuth: false,
+        user: null,
       };
-    case UPDATE_USER: {
-      if (isEmpty(action.user)) {
-        return { user: action.user, isAuth: false };
-      } else {
-        return { user: action.user, isAuth: true };
-      }
-    }
+    case SET_USER:
+      return {
+        user: action.user,
+        isAuth: true,
+      };
+    case RESET_USER:
+      return initialState;
     default:
       return state;
   }

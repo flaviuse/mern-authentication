@@ -1,23 +1,28 @@
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGOUT_USER = "LOGOUT_USER";
-export const UPDATE_USER = "UPDATE_USER";
+export const SET_USER = "SET_USER";
+export const RESET_USER = "RESET_USER";
 
 export function login(user) {
   return {
     type: LOGIN_USER,
-    user
+    user,
   };
 }
 
 export function logout() {
   return {
-    type: LOGOUT_USER
+    type: LOGOUT_USER,
   };
 }
 
-export function updateUser(user) {
+export function setUser(user) {
   return {
-    type: UPDATE_USER,
-    user
+    type: SET_USER,
+    user,
   };
+}
+
+export function resetUser() {
+  return { type: RESET_USER };
 }
