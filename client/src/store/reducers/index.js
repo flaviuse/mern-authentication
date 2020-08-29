@@ -3,8 +3,8 @@ import { connectRouter } from "connected-react-router";
 
 import user from "./user";
 
-export default history =>
+export default (history) =>
   combineReducers({
-    router: connectRouter(history),
-    user
+    router: connectRouter(history), // Connects react router to redux
+    user,
   });
