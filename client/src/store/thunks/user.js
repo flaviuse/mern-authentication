@@ -1,10 +1,9 @@
 import { getUser } from "../../api/index";
-import { updateUser } from "../actions/user";
+import { setUser, resetUser } from "./../actions/user";
 
-// import { dispatchError } from "../../utils/api";
-
-export const attemptGetUser = () => dispatch =>
-  getUser().then(res => {
-    dispatch(updateUser(res.data.user));
-    return res.data.user;
-  });
+export const attemptGetUser = () => async (dispatch) =>
+  await getUser()
+    .then((res) => {
+      dispatch(setUser(res.data.user));
+    })
+    .catch(() => dispatch(resetUser()));
