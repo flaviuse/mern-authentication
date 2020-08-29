@@ -35,7 +35,7 @@ export const attemptResetPassword = (password, token) => async (dispatch) => {
 };
 
 export const attemptLogout = () => async (dispatch) =>
-  postLogout()
+  await postLogout()
     .then(() => {
       dispatch(logout());
       dispatch(push("/login"));
@@ -46,8 +46,8 @@ export const attemptRegister = (newUser) => async (dispatch) => {
   await postRegister(newUser).catch(dispatch(push("/register")));
 };
 
-export const attemptGetConfirmation = (token) => (dispatch) =>
-  getConfirmation(token)
+export const attemptGetConfirmation = (token) => async (dispatch) =>
+  await getConfirmation(token)
     .then(() => {
       dispatch(push("/login"));
     })
