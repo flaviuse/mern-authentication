@@ -2,17 +2,14 @@ const winston = require("winston");
 const passport = require("passport");
 const mongoose = require("mongoose");
 const session = require("express-session");
-var MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo")(session);
 const bodyParser = require("body-parser");
 const express = require("express");
-
-require("dotenv").config(); // FOR LOCAL USE ONLY
 
 const port = process.env.PORT || 3900;
 const app = express();
 
 require("./startup/passport/passport-setup")();
-
 require("./startup/logging")();
 require("./startup/validation")();
 require("./startup/cors")(app);
@@ -22,14 +19,16 @@ require("./startup/prod")(app);
 // Create session
 app.use(
   session({
+    // Used to compute a hash
     secret: process.env.SESSION_KEY,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     // Store session on DB
-    store: new MongoStore({ mongooseConnection: mongoose.connection })
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
   })
 );
 
+// Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
