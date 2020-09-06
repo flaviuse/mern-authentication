@@ -1,0 +1,29 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "20717:20717"
+    volumes:
+      - /data/db #Helps to store MongoDB data in `./mongo/data`
+  client:
+    build: ./client
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:8081
+  server:
+    build: ./server
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - DB=mongodb:mongodb://mongo:27017
+      - HOST=localhost:8080
+      - SENDGRID_API_KEY=<YOUR_KEY_HERE>
+      - SESSION_KEY=<YOUR_KEY_HERE>
