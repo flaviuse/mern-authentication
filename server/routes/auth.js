@@ -5,7 +5,7 @@ const {
   validateEmail,
   validatePassword,
 } = require("../models/user");
-const sanitize = require("mongodb-sanitize");
+const sanitize = require("mongo-sanitize");
 const { Token } = require("../models/token");
 const moment = require("moment");
 moment().format();
