@@ -56,6 +56,6 @@ export const attemptGetConfirmation = (token) => async (dispatch) =>
 export const attemptResendConfirmation = (email) => async (dispatch) =>
   await resendConfirmation(email).catch(dispatch(push("/register")));
 
-export const attemptResetRegister = (email) => async () => {
-  await resetRegister(email);
+export const attemptResetRegister = (email) => async (dispatch) => {
+  await resetRegister(email).catch(dispatch(push("/register")));
 };
