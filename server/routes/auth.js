@@ -5,6 +5,7 @@ const {
   validateEmail,
   validatePassword,
 } = require("../models/user");
+const sanitize = require("mongodb-sanitize");
 const { Token } = require("../models/token");
 const moment = require("moment");
 moment().format();
@@ -22,6 +23,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 router.post("/login", (req, res, next) => {
   const { error } = validateLoginInput(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
+
+  req.body = sanitize(req.body);
 
   req.body.username = req.body.username.toLowerCase();
 
@@ -52,6 +55,8 @@ router.post("/login", (req, res, next) => {
 router.post("/login/forgot", (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
+
+  req.body = sanitize(req.body);
 
   User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
@@ -178,6 +183,8 @@ router.post("/register", async (req, res) => {
   const { error } = validateRegisterInput(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
+  req.body = sanitize(req.body);
+
   //Check for existing username
   let user = await User.findOne({ username: req.body.username.toLowerCase() });
   if (user)
@@ -237,6 +244,8 @@ router.post("/resend", (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
+  req.body = sanitize(req.body);
+
   User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
       return res.status(500).send({ message: err.message });
@@ -284,6 +293,8 @@ router.post("/resend", (req, res) => {
 router.post("/register/reset", (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
+
+  req.body = sanitize(req.body);
 
   User.findOneAndDelete({ email: req.body.email, isVerified: false }, function (err) {
     if (err) {
