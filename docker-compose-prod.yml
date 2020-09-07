@@ -17,9 +17,11 @@ services:
       - NODE_ENV=production
       - REACT_APP_API_URL=http://localhost:8081
     restart: always
-
   server-prod:
-    build: ./server
+    client-prod:
+      build:
+        context: ./server
+        dockerfile: Dockerfile.prod
     depends_on:
       - mongo-prod
     environment:
