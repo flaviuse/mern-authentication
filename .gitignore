@@ -6,3 +6,5 @@ server/uncaughtException.log
 # dotenv environment variables file
 .env
 .env.test
+temp.md
+Todo.md

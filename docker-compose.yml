@@ -3,27 +3,39 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - "20717:20717"
+      - "20717:20717" 
     volumes:
-      - /data/db #Helps to store MongoDB data in `./mongo/data`
+      - /data/db # Create a volume for the DB.
   client:
-    build: ./client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "3000:3000"
     restart: always
     environment:
       - NODE_ENV=development
       - REACT_APP_API_URL=http://localhost:8081
+      - CHOKIDAR_USEPOLLING=true # Hot reloading create react app : https://mherman.org/blog/dockerizing-a-react-app/ ; https://create-react-app.dev/docs/troubleshooting/#npm-start-doesn-t-detect-changes
+    restart: always
+    stdin_open: true # Hot reloading create react app: https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+    volumes: 
+      - ./client:/app #Synchronise docker container with local change
+      - /app/node_modules #Avoid re-copying local node_modules. Cache in container.
   server:
     build: ./server
-    ports:
-      - "8081:8081"
     depends_on:
       - mongo
-    restart: always
     environment:
       - NODE_ENV=development
-      - DB=mongodb:mongodb://mongo:27017
-      - HOST=localhost:8080
+      - MONGO_URI=mongodb://mongo:27017/DEV
+      - PORT=8081
+      - HOST=localhost:3000
       - SENDGRID_API_KEY=<YOUR_KEY_HERE>
       - SESSION_KEY=<YOUR_KEY_HERE>
+    ports:
+      - "8081:8081"
+    restart: always
+    volumes: 
+      - ./server:/app #Synchronise docker container with local change
+      - /app/node_modules #Avoid re-copying local node_modules. Cache in container.
