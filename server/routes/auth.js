@@ -84,7 +84,7 @@ router.post("/login/forgot", (req, res) => {
           subject: "Reset password link",
           text: "Some useless text",
           html: `<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\n
-        <a href="https://${host}/login/reset/${token.token}">https://${host}/login/reset/${token.token}</a> \n\n If you did not request this, please ignore this email and your password will remain unchanged.\n </p>`,
+        <a href="http://${host}/login/reset/${token.token}">http://${host}/login/reset/${token.token}</a> \n\n If you did not request this, please ignore this email and your password will remain unchanged.\n </p>`,
         };
         sgMail
           .send(mail)
@@ -216,7 +216,7 @@ router.post("/register", async (req, res) => {
             subject: "Email Verification",
             text: "Some uselss text",
             html: `<p>Please verify your account by clicking the link: 
-            <a href="https://${host}/account/confirm/${token.token}">https://${host}/account/confirm/${token.token}</a> </p>`,
+            <a href="http://${host}/account/confirm/${token.token}">http://${host}/account/confirm/${token.token}</a> </p>`,
           };
           sgMail
             .send(message)
@@ -266,7 +266,7 @@ router.post("/resend", (req, res) => {
         subject: "Email Verification",
         text: "Some uselss text",
         html: `<p>Please verify your account by clicking the link: 
-        <a href="https://${host}/account/confirm/${token.token}">https://${host}/account/confirm/${token.token}</a> </p>`,
+        <a href="http://${host}/account/confirm/${token.token}">http://${host}/account/confirm/${token.token}</a> </p>`,
       };
       sgMail
         .send(mail)
