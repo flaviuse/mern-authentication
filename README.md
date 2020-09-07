@@ -67,14 +67,23 @@ MERN Stack with advanced authentication :
 
 - Sendgrid API for emails.
 
-## To Do List
+## :lock: Security
+
+This repository is scanned with snyk and code scanning from github for vulnerabilities. Do not use this code blindly, audit it first.
+
+## :construction: To Do List
 
 - Rewrite frontend with Hooks and functionnal components.
 - Remove unwanted inheritance from classes.
 - Make css minimalist for better boilerplate.
 - Extract email templates into seperate folder.
+- Option for email verification ?
+- Google/Facebook Oauth.
+- Test coverage with cypress.
+- Rate limitation on endpoints.
+- CSRF protection.
 
-## Changelog
+## :information_source: Changelog
 
 ### 07/09/2020:
 
