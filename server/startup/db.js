@@ -1,15 +1,14 @@
-const winston = require('winston');
-const mongoose = require('mongoose');
+const winston = require("winston");
+const mongoose = require("mongoose");
 
 // Connect to DB from env variable url, create instance
-module.exports = function() {
-  const db = process.env.DB;
+module.exports = function () {
+  const db = process.env.MONGO_URI || "mongodb://localhost:27017/test";
   const options = {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    useUnifiedTopology: true,
   };
-  mongoose
-    .connect(db, options)
-    .then(() => winston.info(`Connected to ${db}...`));
+  mongoose.connect(db, options).then(() => winston.info(`Connected to ${db}...`));
 };
