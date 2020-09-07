@@ -18,15 +18,14 @@ services:
       - REACT_APP_API_URL=http://localhost:8081
     restart: always
   server-prod:
-    client-prod:
-      build:
-        context: ./server
-        dockerfile: Dockerfile.prod
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
     depends_on:
       - mongo-prod
     environment:
       - NODE_ENV=production
-      - MONGO_URI=mongodb://mongo:27017/DEV
+      - MONGO_URI=mongodb://mongo-prod:27017/PROD
       - PORT=8081
       - HOST=localhost:3000
       - SENDGRID_API_KEY=<YOUR_KEY_HERE>
