@@ -1,8 +1,8 @@
 import http from "../services/httpService";
 
 const postLogin = (user) => http.post("/auth/login", user);
-const sendResetPasswordLink = (email) => http.post("auth/login/forgot", { email });
-const resetPassword = (password, token) => http.post(`auth/login/reset/${token}`, { password });
+const sendResetPasswordLink = (email) => http.post("/auth/login/forgot", { email });
+const resetPassword = (password, token) => http.post(`/auth/login/reset/${token}`, { password });
 const postLogout = () => http.post("/auth/logout");
 const postRegister = (user) => http.post("/auth/register", user);
 const getConfirmation = (token) => http.get(`/auth/confirmation/${token}`);
