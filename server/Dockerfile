@@ -11,4 +11,4 @@ COPY . .
 # Expose the port the app runs in
 EXPOSE 8081
 # Serve the app
-CMD ["npm", "dev"]
+CMD ["npm", "run", "dev"]
