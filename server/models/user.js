@@ -1,5 +1,7 @@
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
+const moment = require("moment");
+moment().format();
 
 const mongoose = require("mongoose");
 const R = require("ramda");
@@ -25,7 +27,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 1024,
   },
   passwordResetToken: { type: String, default: "" },
-  passwordResetExpires: { type: Date, default: Date("2018/06/06") },
+  passwordResetExpires: { type: Date, default: moment().utcOffset(0) },
   isVerified: {
     type: Boolean,
     required: true,
@@ -36,7 +38,7 @@ const userSchema = new mongoose.Schema({
     default: false,
     required: true,
   },
-  expires: { type: Date, default: Date.now, expires: 43200 },
+  expires: { type: Date, default: moment().utcOffset(0), expires: 43200 },
 });
 
 userSchema.methods.validPassword = function (password) {
