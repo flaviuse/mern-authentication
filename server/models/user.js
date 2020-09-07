@@ -67,48 +67,48 @@ userSchema.methods.hidePassword = function () {
 const User = mongoose.model("User", userSchema);
 
 function validateUser(user) {
-  const schema = {
+  const schema = Joi.object({
     username: Joi.string().min(2).max(50).required(),
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().min(5).max(255).required(),
     isAdmin: Joi.boolean().required(),
-  };
+  });
 
-  return Joi.validate(user, schema);
+  return schema.validate(user);
 }
 
 function validateLoginInput(input) {
-  const schema = {
+  const schema = Joi.object({
     username: Joi.string().min(3).max(255).required(),
     password: Joi.string().min(5).max(255).required(),
-  };
+  });
 
-  return Joi.validate(input, schema);
+  return schema.validate(input);
 }
 
 function validateRegisterInput(input) {
-  const schema = {
+  const schema = Joi.object({
     username: Joi.string().min(3).max(255).required(),
     password: Joi.string().min(5).max(255).required(),
     email: Joi.string().min(5).max(255).required().email(),
-  };
+  });
 
-  return Joi.validate(input, schema);
+  return schema.validate(input);
 }
 
 function validateEmail(input) {
-  const schema = {
+  const schema = Joi.object({
     email: Joi.string().min(5).max(255).required().email(),
-  };
+  });
 
-  return Joi.validate(input, schema);
+  return schema.validate(input);
 }
 
 function validatePassword(input) {
-  const schema = {
+  const schema = Joi.object({
     password: Joi.string().min(5).max(255).required(),
-  };
-  return Joi.validate(input, schema);
+  });
+  return schema.validate(input);
 }
 
 exports.User = User;
