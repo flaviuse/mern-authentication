@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
     "start": "node index.js"
   },
   "keywords": [],
@@ -13,26 +14,27 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sendgrid/mail": "^6.3.1",
+    "@sendgrid/mail": "^7.2.5",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.19.0",
     "compression": "^1.7.3",
-    "connect-mongo": "^2.0.1",
+    "connect-mongo": "^3.2.0",
     "cors": "^2.8.4",
     "crypto": "^1.0.1",
-    "dotenv": "^6.2.0",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "express-session": "^1.15.6",
-    "helmet": "^3.15.0",
-    "joi": "^13.4.0",
-    "joi-objectid": "^2.0.0",
-    "moment": "^2.22.2",
-    "mongoose": "^5.7.5",
-    "passport": "^0.4.0",
+    "express-session": "^1.17.1",
+    "helmet": "^4.1.0",
+    "joi": "^17.2.1",
+    "joi-objectid": "^3.0.1",
+    "moment": "^2.27.0",
+    "mongoose": "^5.10.3",
+    "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "ramda": "^0.26.0",
-    "winston": "^2.4.0",
-    "winston-mongodb": "^3.0.0"
+    "ramda": "^0.27.1",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
