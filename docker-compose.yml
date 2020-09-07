@@ -23,7 +23,9 @@ services:
       - ./client:/app #Synchronise docker container with local change
       - /app/node_modules #Avoid re-copying local node_modules. Cache in container.
   server:
-    build: ./server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     depends_on:
       - mongo
     environment:
