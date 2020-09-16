@@ -85,8 +85,10 @@ This repository is scanned with snyk and code scanning from github for vulnerabi
 
 ## :information_source: Changelog
 
-### 07/09/2020:
+### 16/09/2020:
+- Added input sanitization in server side with mongo-sanitize.
 
+### 07/09/2020:
 - Updated all dependencies for server and client.
 - Added docker for development with hot reloading and production with nginx for the frontend. MongoDB in docker as well.
 - Fixed missing error catching,
