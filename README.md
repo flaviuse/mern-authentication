@@ -83,7 +83,10 @@ This repository is scanned with snyk and code scanning from github for vulnerabi
 - Rate limitation on endpoints.
 - CSRF protection.
 
-## :information_source: Changelog
+## :information_source: How to ?
+- Use emails for authentication instead of usernames: https://github.com/flaviuse/mern-authentication/issues/7
+
+## :scroll: Changelog
 
 ### 16/09/2020:
 - Added input sanitization in server side with mongo-sanitize.
