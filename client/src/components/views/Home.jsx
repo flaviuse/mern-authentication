@@ -1,16 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-class Home extends Component {
-  render() {
-    return (
-      <div className="container">
-        <p>Check the github repo :</p>
-        <a href="https://github.com/flaviuse/mern-authentification">
-          https://github.com/flaviuse/mern-authentification
-        </a>
-      </div>
-    );
-  }
-}
+import React from "react";
 
-export default connect()(Home);
+export default function Home() {
+  return (
+    <div className='container'>
+      <p>Check the github repo :</p>
+      <a href='https://github.com/flaviuse/mern-authentification'>
+        https://github.com/flaviuse/mern-authentification
+      </a>
+    </div>
+  );
+}

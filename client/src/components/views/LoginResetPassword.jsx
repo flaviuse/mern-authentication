@@ -1,56 +1,56 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import Joi from "joi-browser";
-import Form from "../shared/form.jsx";
+import React, { useState } from "react";
+import { Redirect, useParams } from "react-router-dom";
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { Error } from "./../shared";
 import { attemptResetPassword } from "../../store/thunks/auth";
-class LoginForgot extends Form {
-  state = {
-    data: { password: "" },
-    errors: {},
+
+export default function LoginResetPassword() {
+  const { isAuth } = useSelector((state) => state.user);
+  const { token } = useParams();
+  const [serverError, setServerError] = useState("");
+
+  const dispatch = useDispatch();
+
+  const initialValues = {
+    password: "",
   };
 
-  schema = {
-    password: Joi.string().min(5).max(255).required(),
-  };
+  const validationSchema = Yup.object({
+    password: Yup.string().min(5).max(255).required("Required"),
+  });
 
-  doSubmit = async () => {
-    const { data } = this.state;
-    const token = this.props.match.params.token;
-    const password = data.password;
-    await this.props.attemptResetPassword(password, token).catch((error) => {
+  const onSubmit = (values) => {
+    const password = values.password;
+    dispatch(attemptResetPassword(password, token)).catch((error) => {
       if (error.response && error.response.status === 400) {
-        const errors = { ...this.state.errors };
-        errors.password = error.response.data.message;
-        this.setState({ errors });
+        setServerError(error.response.data.message);
       }
     });
   };
 
-  render() {
-    if (this.props.isAuth) return <Redirect to='/home' />; // ne peut pas se relog si deja log
-    return (
-      <div className='container'>
-        <p>New password</p>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderInput("password", "Password", "password")}
-          {this.renderButton("RESET PASSWORD")}
-        </form>
-      </div>
-    );
-  }
+  return isAuth ? (
+    <Redirect to='/home' />
+  ) : (
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      {(formik) => {
+        return (
+          <div className='container'>
+            <Form className='form'>
+              <div className='field'>
+                <label htmlFor='password'>Password</label>
+                <Field id='password' name='password' type='password' placeholder='Password' />
+                <ErrorMessage name='password' component={Error} />
+              </div>
+              <button type='submit' disabled={!formik.dirty || !formik.isValid}>
+                Reset password
+              </button>
+              {serverError && <Error>{serverError}</Error>}
+            </Form>
+          </div>
+        );
+      }}
+    </Formik>
+  );
 }
-
-function mapStateToProps({ user }) {
-  return {
-    isAuth: user.isAuth,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    attemptResetPassword: (password, token) => dispatch(attemptResetPassword(password, token)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForgot);

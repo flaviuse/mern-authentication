@@ -5,9 +5,8 @@
   "dependencies": {
     "axios": "^0.20.0",
     "connected-react-router": "^6.8.0",
+    "formik": "^2.1.5",
     "history": "^4.10.1",
-    "joi-browser": "^13.4.0",
-    "joi-objectid": "^3.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
@@ -15,7 +14,8 @@
     "react-scripts": "^3.4.3",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "react-scripts start",

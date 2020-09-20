@@ -115,7 +115,7 @@ router.post("/login/reset/:token", (req, res) => {
     }
     if (!token)
       return res.status(400).send({
-        message: "This token is not valid. Your token my have expired.",
+        message: "This token is not valid. Your token may have expired.",
       });
 
     // If we found a token, find a matching user
@@ -195,7 +195,7 @@ router.post("/register", async (req, res) => {
   if (user)
     return res.status(400).send({ message: "Email already registered. Take an another email" });
 
-  // Create user Schema
+  // Create new user
   user = new User(req.body);
 
   // Hash password
@@ -230,8 +230,21 @@ router.post("/register", async (req, res) => {
             .then(() => {
               return res.status(200).send({ message: "A verification mail has been sent." });
             })
-            .catch((error) => {
-              return res.status(500).send({ message: `Impossible to send email to ${user.email}` });
+            .catch(() => {
+              User.findOneAndDelete({ email: savedUser.email, isVerified: false }, function (err) {
+                if (err) {
+                  return res
+                    .status(500)
+                    .send(
+                      "Impossible to delete the created user. Contact support or wait 12 hours to retry."
+                    );
+                }
+              });
+              return res
+                .status(500)
+                .send({
+                  message: `Impossible to send email to ${user.email}, try again. Our service may be down.`,
+                });
             });
         });
       }
@@ -312,7 +325,7 @@ router.get("/confirmation/:token", (req, res) => {
     }
     if (!token)
       return res.status(400).send({
-        message: "We were unable to find a valid token. Your token my have expired.",
+        message: "We were unable to find a valid token. Your token may have expired.",
       });
 
     // If we found a token, find a matching user

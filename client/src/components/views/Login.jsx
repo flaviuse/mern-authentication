@@ -1,62 +1,66 @@
-import Joi from "joi-browser";
-import React from "react";
-import { connect } from "react-redux";
+import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { attemptLogin } from "../../store/thunks/auth";
-import Form from "../shared/form.jsx";
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { attemptLogin } from "./../../store/thunks/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { Error } from "./../shared";
 
-class LoginForm extends Form {
-  state = {
-    data: { username: "", password: "" },
-    errors: {},
+export default function Login() {
+  const { isAuth } = useSelector((state) => state.user);
+  const [serverError, setServerError] = useState("");
+
+  const dispatch = useDispatch();
+
+  const initialValues = {
+    username: "",
+    password: "",
   };
 
-  schema = {
-    username: Joi.string().label("Username").required(),
-    password: Joi.string().label("Password").required(),
-  };
+  const validationSchema = Yup.object({
+    username: Yup.string().min(3).max(50).required("Required"),
+    password: Yup.string().min(5).max(255).required("Required"),
+  });
 
-  doSubmit = async () => {
-    const { data } = this.state;
-    await this.props.attemptLogin(data).catch((error) => {
+  const onSubmit = (values) => {
+    dispatch(attemptLogin(values)).catch((error) => {
       if (error.response && error.response.status === 400) {
-        const errors = { ...this.state.errors };
-        errors.username = error.response.data.message;
-        this.setState({ errors });
+        setServerError(error.response.data.message);
       }
     });
   };
 
-  render() {
-    if (this.props.isAuth) return <Redirect to='/home' />; // ne peut pas se relog si deja log
-
-    return (
-      <div className='container'>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderInput("username", "Username", "text")}
-          {this.renderInput("password", "Password", "password")}
-          <div>
-            <Link to='/login/forgot'>Forgot your password?</Link>
+  return isAuth ? (
+    <Redirect to='/home' />
+  ) : (
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      {(formik) => {
+        return (
+          <div className='container'>
+            <Form className='form'>
+              <div className='field'>
+                <label htmlFor='username'>Username</label>
+                <Field id='username' name='username' type='text' placeholder='Username' />
+                <ErrorMessage name='username' component={Error} />
+              </div>
+              <div className='field'>
+                <label htmlFor='password'>Password</label>
+                <Field id='password' name='password' type='password' placeholder='Password' />
+                <ErrorMessage name='password' component={Error} />
+              </div>
+              <div>
+                <Link to='/login/forgot'>Forgot your password?</Link>
+              </div>
+              <button type='submit' disabled={!formik.dirty || !formik.isValid}>
+                Login
+              </button>
+              {serverError && <Error>{serverError}</Error>}
+            </Form>
+            <b>Or</b>
+            <Link to='/register'>Sign Up</Link>
           </div>
-          {this.renderButton("Login")}
-        </form>
-        <h4>Or</h4>
-        <Link to='/register'>Sign Up</Link>
-      </div>
-    );
-  }
+        );
+      }}
+    </Formik>
+  );
 }
-
-function mapStateToProps({ user }) {
-  return {
-    isAuth: user.isAuth,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    attemptLogin: (user) => dispatch(attemptLogin(user)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

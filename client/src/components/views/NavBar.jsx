@@ -1,48 +1,35 @@
-import React from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const NavBar = ({ user, isAuth }) => {
+export default function NavBar() {
+  const { isAuth, user } = useSelector((state) => state.user);
+
   return (
-    <nav>
-      <NavLink className="inactive " activeClassName="active" to="/home">
+    <nav className='nav'>
+      <NavLink className='inactive ' activeClassName='active' to='/home'>
         Home
       </NavLink>
-      {!isAuth && (
+
+      {isAuth ? (
         <div>
-          <NavLink className="inactive" activeClassName="active" to="/login">
-            Login
-          </NavLink>
-          <NavLink
-            className="inactive "
-            activeClassName="active"
-            to="/register">
-            Register
-          </NavLink>
-        </div>
-      )}
-      {isAuth && (
-        <div>
-          <NavLink
-            className="inactive"
-            activeClassName=" active"
-            to="/my-profile">
+          <NavLink className='inactive' activeClassName='active' to='/my-profile'>
             {user.username}
           </NavLink>
-          <NavLink className="item" activeClassName="item active" to="/logout">
+          <NavLink className='inactive logout' activeClassName='active' to='/logout'>
             Logout
+          </NavLink>
+        </div>
+      ) : (
+        <div>
+          <NavLink className='inactive' activeClassName='active' to='/login'>
+            Login
+          </NavLink>
+          <NavLink className='inactive ' activeClassName='active' to='/register'>
+            Register
           </NavLink>
         </div>
       )}
     </nav>
   );
-};
-
-function mapStateToProps({ user }) {
-  return {
-    user: user.user,
-    isAuth: user.isAuth
-  };
 }
-
-export default withRouter(connect(mapStateToProps)(NavBar));

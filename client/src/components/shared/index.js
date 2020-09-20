@@ -1,5 +1,4 @@
-import Input from "./input";
-import Form from "./form";
+import Error from "./Error";
 import ProtectedRoute from "./protectedRoute";
 
-export { Input, Form, ProtectedRoute };
+export { Error, ProtectedRoute };
