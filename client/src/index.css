@@ -6,11 +6,7 @@ body {
   background-color: #ccc;
 }
 
-.clickable {
-  cursor: pointer;
-}
-
-nav {
+.nav {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -27,25 +23,33 @@ nav {
   color: black;
   padding: 10px;
   border: 1px solid black;
-  background-color: rgba(64, 224, 208, 0.3);
+  background-color: rgba(64, 224, 208, 0.657);
+}
+
+.logout {
+  color: red;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-height: min-content;
-  width: max-content;
-  margin: 10px auto;
+  width: 160px;
+  margin: 20px auto;
   padding: 20px;
   background-color: #fff;
-  border: 1px solid #d1d5da;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 2px 0px 35px -3px rgba(0, 69, 66, 0.16);
 }
 
+.field {
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+}
+
 .error {
-  color: white;
-  background-color: red;
+  color: red;
   width: min-content;
+  font-size: 10px;
+  width: 160px;
 }
