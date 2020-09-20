@@ -73,25 +73,33 @@ This repository is scanned with snyk and code scanning from github for vulnerabi
 
 ## :construction: To Do List
 
-- Rewrite frontend with Hooks and functionnal components.
-- Remove unwanted inheritance from classes.
-- Make css minimalist for better boilerplate.
-- Extract email templates into seperate folder.
-- Option for email verification ?
 - Google/Facebook Oauth.
-- Test coverage with cypress.
+- Test coverage.
 - Rate limitation on endpoints.
 - CSRF protection.
+- Internationalization.
+- Explore removing redux for react query.
 
 ## :information_source: How to ?
+
 - Use emails for authentication instead of usernames: https://github.com/flaviuse/mern-authentication/issues/7
+
+- I added a dependency but my docker container does not found it: https://medium.com/@semur.nabiev/how-to-make-docker-compose-volumes-ignore-the-node-modules-directory-99f9ec224561 (either install the dependency in the container with the cli or reset the volume).
 
 ## :scroll: Changelog
 
-### 16/09/2020:
+## 20/09/2020 :
+
+- Rewrite frontend with Hooks and functionnal components.
+- Remove unwanted inheritance from classes.
+- Make css minimalist for better boilerplate.
+
+### 16/09/2020 :
+
 - Added input sanitization in server side with mongo-sanitize.
 
-### 07/09/2020:
+### 07/09/2020 :
+
 - Updated all dependencies for server and client.
 - Added docker for development with hot reloading and production with nginx for the frontend. MongoDB in docker as well.
 - Fixed missing error catching,
@@ -99,6 +107,6 @@ This repository is scanned with snyk and code scanning from github for vulnerabi
 - Reworked get user logic for immutability.
 - Removed unused dependencies.
 
-### 28/04/2019:
+### 28/04/2019 :
 
 - Huge simplification of the project for better usability as a boilerplate (CSS styles, Google Captcha, Sentry usage...).
