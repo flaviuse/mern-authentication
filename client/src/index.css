@@ -49,7 +49,6 @@ body {
 
 .error {
   color: red;
-  width: min-content;
   font-size: 10px;
   width: 160px;
 }
