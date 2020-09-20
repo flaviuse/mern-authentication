@@ -1,4 +1,4 @@
-# :rocket: MERN authentication with email verification and docker (prod/dev).
+# :rocket: MERN authentication with email verification, hooks and docker (prod/dev).
 
 ![capture du 2018-12-16 13-57-42](https://user-images.githubusercontent.com/40322270/50053751-aa653080-013a-11e9-9a8d-35a55c9042f1.png)
 
@@ -60,6 +60,8 @@ MERN Stack with advanced authentication :
 - Express.
 
 - React/Redux based on Create React App.
+
+- React Hooks.
 
 - Nodejs.
 
