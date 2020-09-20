@@ -1,39 +1,30 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { attemptGetConfirmation } from '../../store/thunks/auth';
-class ConfirmPage extends Component {
-  onClick = async () => {
-    const token = this.props.match.params.token;
-    await this.props
-      .attemptGetConfirmation(token)
-      .catch(error => console.log(error));
-  };
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Redirect, useParams } from "react-router-dom";
+import { attemptGetConfirmation } from "../../store/thunks/auth";
+import { Error } from "./../shared";
 
-  render() {
-    if (this.props.isAuth) return <Redirect to="/my-profile" />;
-    else {
-      return (
-        <div className="container">
-          <p>Click here to confirm your email</p>
-          <button onClick={this.onClick}>Confirmation</button>
-        </div>
-      );
-    }
+export default function ConfirmPage() {
+  const { isAuth } = useSelector((state) => state.user);
+  const [serverError, setServerError] = useState("");
+  const dispatch = useDispatch();
+  const { token } = useParams();
+
+  function doSubmit() {
+    dispatch(attemptGetConfirmation(token)).catch((error) => {
+      if (error.response && error.response.status === 400) {
+        setServerError(error.response.data.message);
+      }
+    });
   }
+
+  return isAuth ? (
+    <Redirect to='/home' />
+  ) : (
+    <div className='container'>
+      <p>Click here to confirm your email</p>
+      <button onClick={doSubmit}>Confirmation</button>
+      {serverError && <Error>{serverError}</Error>}
+    </div>
+  );
 }
-
-function mapStateToProps({ user }) {
-  return {
-    isAuth: user.isAuth
-  };
-}
-
-const mapDispatchToProps = dispatch => ({
-  attemptGetConfirmation: token => dispatch(attemptGetConfirmation(token))
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfirmPage);

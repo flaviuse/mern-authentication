@@ -1,23 +1,19 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { useSelector } from "react-redux";
 
-const notFound = ({ user }) => {
+const Profile = () => {
+  const { username } = useSelector((state) => state.user.user);
+
   return (
-    <div className="container">
+    <div className='container'>
       <p>
-        Hey <i>{user.username}</i>! Check the github repositorie:
+        Hey <b>{username}</b> ! Check the github repositorie:
       </p>
-      <a href="https://github.com/flaviuse/mern-authentification">
+      <a href='https://github.com/flaviuse/mern-authentification'>
         https://github.com/flaviuse/mern-authentification
       </a>
     </div>
   );
 };
 
-function mapStateToProps({ user }) {
-  return {
-    user: user.user
-  };
-}
-
-export default connect(mapStateToProps)(notFound);
+export default Profile;

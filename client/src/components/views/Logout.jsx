@@ -1,17 +1,16 @@
-import { Component } from 'react';
-import { push } from 'connected-react-router';
-import { connect } from 'react-redux';
-import { attemptLogout } from '../../store/thunks/auth';
+import React, { useEffect } from "react";
+import { push } from "connected-react-router";
+import { useDispatch } from "react-redux";
+import { attemptLogout } from "../../store/thunks/auth";
 
-class Logout extends Component {
-  componentDidMount() {
-    this.props.dispatch(attemptLogout());
-    this.props.dispatch(push('/home'));
-  }
+export default function Logout() {
+  const dispatch = useDispatch();
 
-  render() {
-    return null;
-  }
+  useEffect(() => {
+    dispatch(attemptLogout());
+    dispatch(push("/home"));
+    // eslint-disable-next-line
+  }, []);
+
+  return <p>Logout in progress</p>;
 }
-
-export default connect()(Logout);

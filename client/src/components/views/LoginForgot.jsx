@@ -1,72 +1,67 @@
-import React from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import Joi from "joi-browser";
-import Form from "../shared/form.jsx";
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { Error } from "./../shared";
 import { attemptSendResetPasswordLink } from "../../store/thunks/auth";
-class LoginForgot extends Form {
-  state = {
-    data: { email: "" },
-    errors: {},
-    submited: false,
+
+export default function LoginForgot() {
+  const { isAuth } = useSelector((state) => state.user);
+  const [serverError, setServerError] = useState("");
+  const [isSubmited, setIsSubmited] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const initialValues = {
+    email: "",
   };
 
-  schema = {
-    email: Joi.string().email({ minDomainAtoms: 2 }).required().label("Email"),
-  };
+  const validationSchema = Yup.object({
+    email: Yup.string().min(5).max(255).email().required("Required"),
+  });
 
-  doSubmit = async () => {
-    const { data } = this.state;
-    await this.props
-      .attemptSendResetPasswordLink(data.email)
-      .then(() => this.setState({ submited: true }))
+  const onSubmit = (values) => {
+    const email = values.email;
+    dispatch(attemptSendResetPasswordLink(email))
+      .then(() => setIsSubmited(true))
       .catch((error) => {
         if (error.response && error.response.status === 400) {
-          const errors = { ...this.state.errors };
-          errors.email = error.response.data.message;
-          this.setState({ errors });
+          setServerError(error.response.data.message);
         }
       });
   };
 
-  render() {
-    if (this.props.isAuth) return <Redirect to='/home' />; // ne peut pas se relog si deja log
-
-    return (
-      <React.Fragment>
-        {!this.state.submited && (
+  return isAuth ? (
+    <Redirect to='/home' />
+  ) : isSubmited ? (
+    <div className='container'>
+      <p>
+        A reset link has been sent to your email. <b>You have 12 hours to activate your account.</b>
+        It can take up to 15 min to receive our email.
+      </p>
+    </div>
+  ) : (
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      {(formik) => {
+        return (
           <div className='container'>
             <p>We will send you a reset link on the following email :</p>
-            <form onSubmit={this.handleSubmit}>
-              {this.renderInput("email", "Email", "text")}
-              {this.renderButton("SEND RESET LINK")}
-            </form>
+            <Form className='form'>
+              <div className='field'>
+                <label htmlFor='email'>Email</label>
+                <Field id='email' name='email' type='email' placeholder='Email' />
+                <ErrorMessage name='email' component={Error} />
+              </div>
+
+              <button type='submit' disabled={!formik.dirty || !formik.isValid}>
+                Send reset link
+              </button>
+              {serverError && <Error>{serverError}</Error>}
+            </Form>
           </div>
-        )}
-        {this.state.submited && (
-          <div className='container'>
-            <p>A reset link has been sent.</p>
-            <p>
-              An reset link has been sent to :{this.state.data.email}. You have 12 hours to activate
-              your account. It can take up to 15 min to receive our email.
-            </p>
-          </div>
-        )}
-      </React.Fragment>
-    );
-  }
+        );
+      }}
+    </Formik>
+  );
 }
-
-function mapStateToProps({ user }) {
-  return {
-    isAuth: user.isAuth,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    attemptSendResetPasswordLink: (email) => dispatch(attemptSendResetPasswordLink(email)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForgot);
