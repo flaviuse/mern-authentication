@@ -47,11 +47,9 @@ export const attemptRegister = (newUser) => async (dispatch) => {
 };
 
 export const attemptGetConfirmation = (token) => async (dispatch) =>
-  await getConfirmation(token)
-    .then(() => {
-      dispatch(push("/login"));
-    })
-    .catch(dispatch(push("/register")));
+  await getConfirmation(token).then(() => {
+    dispatch(push("/login"));
+  });
 
 export const attemptResendConfirmation = (email) => async (dispatch) =>
   await resendConfirmation(email).catch(dispatch(push("/register")));
