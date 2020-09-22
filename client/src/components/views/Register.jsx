@@ -47,7 +47,7 @@ export default function Register() {
     dispatch(attemptResendConfirmation(email))
       .then(() => setRegisterStep("reset"))
       .catch((error) => {
-        if (error.response && error.response.status === 400) {
+        if (error.response) {
           setServerError(error.response.data.message);
         }
       });
@@ -55,7 +55,7 @@ export default function Register() {
 
   const onReset = () => {
     dispatch(attemptResetRegister(email)).catch((error) => {
-      if (error.response && error.response.status === 400) {
+      if (error.response) {
         setServerError(error.response.data.message);
       }
     });

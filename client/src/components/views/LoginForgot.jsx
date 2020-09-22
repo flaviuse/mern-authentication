@@ -26,7 +26,7 @@ export default function LoginForgot() {
     dispatch(attemptSendResetPasswordLink(email))
       .then(() => setIsSubmited(true))
       .catch((error) => {
-        if (error.response && error.response.status === 400) {
+        if (error.response) {
           setServerError(error.response.data.message);
         }
       });
