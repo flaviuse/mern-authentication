@@ -7,5 +7,5 @@ module.exports = router;
 // Get user informations
 router.get("/", (req, res) => {
   const user = (req.user && req.user.hidePassword()) || null;
-  res.send({ message: "User info successfully retreived", user });
+  res.status(200).send({ message: "User info successfully retreived", user });
 });

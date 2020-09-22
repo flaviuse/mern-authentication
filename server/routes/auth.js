@@ -5,10 +5,9 @@ const {
   validateEmail,
   validatePassword,
 } = require("../models/user");
-const sanitize = require("mongo-sanitize");
 const { Token } = require("../models/token");
+const sanitize = require("mongo-sanitize");
 const moment = require("moment");
-moment().format();
 const passport = require("passport");
 const express = require("express");
 const crypto = require("crypto");
@@ -16,10 +15,14 @@ const sgMail = require("@sendgrid/mail");
 
 const router = express.Router();
 
+moment().format();
+
 const host = process.env.HOST; // FRONTEND Host
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Login User inputs :username password
+//  Input : username/password via body
+//  HTTP Success : 200, message and user infos.
+//  HTTP Errors : 400, 401.
 router.post("/login", (req, res, next) => {
   const { error } = validateLoginInput(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
@@ -40,18 +43,21 @@ router.post("/login", (req, res, next) => {
     }
     if (!user.isVerified)
       return res.status(401).send({
-        message: "Your account has not been verified.",
+        message: "Your account has not been verified. Please activate your account.",
       });
 
     req.login(user, (err) => {
       if (err) {
-        res.status(401).send({ message: "Login failed", err });
+        res.status(401).send({ message: "Authentication failed", err });
       }
-      res.send({ message: "Login success", user: user.hidePassword() });
+      res.status(200).send({ message: "Login success", user: user.hidePassword() });
     });
   })(req, res, next);
 });
 
+//  Input : email via body.
+//  HTTP Success : 200 and message.
+//  HTTP Errors : 400, 404, 500, 503.
 router.post("/login/forgot", (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
@@ -60,9 +66,9 @@ router.post("/login/forgot", (req, res) => {
 
   User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: "An unexpected error occurred" });
     }
-    if (!user) return res.status(400).send({ message: "This email is not valid." });
+    if (!user) return res.status(404).send({ message: "No user found with this email address." });
 
     // Create a verification token
     var token = new Token({
@@ -75,12 +81,12 @@ router.post("/login/forgot", (req, res) => {
 
     user.save(function (err) {
       if (err) {
-        return res.status(500).send({ message: err.message });
+        return res.status(500).send({ message: "An unexpected error occurred" });
       }
       // Save the token
       token.save(function (err) {
         if (err) {
-          return res.status(500).send(err.message);
+          return res.status(500).send({ message: "An unexpected error occurred" });
         }
         // Send the mail
         const mail = {
@@ -91,19 +97,27 @@ router.post("/login/forgot", (req, res) => {
           html: `<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\n
         <a href="http://${host}/login/reset/${token.token}">http://${host}/login/reset/${token.token}</a> \n\n If you did not request this, please ignore this email and your password will remain unchanged.\n </p>`,
         };
+
         sgMail
           .send(mail)
           .then(() => {
-            return res.status(200).send({ message: "A verification mail has been sent." });
+            return res
+              .status(200)
+              .send({ message: `A validation email has been sent to ${user.email}` });
           })
-          .catch((error) => {
-            return res.status(500).send({ message: error });
+          .catch(() => {
+            return res.status(503).send({
+              message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
+            });
           });
       });
     });
   });
 });
 
+//  Input : reset token via params, new password via body.
+//  HTTP Success : 200 and message.
+//  HTTP Errors : 400, 404, 500, 503.
 router.post("/login/reset/:token", (req, res) => {
   // Validate password Input
   const { error } = validatePassword(req.body);
@@ -111,41 +125,45 @@ router.post("/login/reset/:token", (req, res) => {
   // Find a matching token
   Token.findOne({ token: req.params.token }, function (err, token) {
     if (err) {
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send("An unexpected error occurred");
     }
     if (!token)
-      return res.status(400).send({
+      return res.status(404).send({
         message: "This token is not valid. Your token may have expired.",
       });
 
     // If we found a token, find a matching user
     User.findById(token._userId, function (err, user) {
       if (err) {
-        return res.status(500).send({ message: err.message });
+        return res.status(500).send("An unexpected error occurred");
       }
+
       if (!user)
-        return res.status(400).send({ message: `We were unable to find a user for this token.` });
+        return res.status(404).send({ message: `We were unable to find a user for this token.` });
+
       if (user.passwordResetToken !== token.token)
         return res.status(400).send({
           message:
             "User token and your token didn't match. You may have a more recent token in your mail list.",
         });
+
       // Verify that the user token expires date has not been passed
       if (moment().utcOffset(0) > user.passwordResetExpires) {
         return res.status(400).send({
-          message: "Token has expired.",
+          message:
+            "You cannot reset your password. The reset token has expired. Please go through the reset form again.",
         });
       }
       // Update user
       user.password = req.body.password;
-      user.passwordResetToken = "nope";
+      user.passwordResetToken = "";
       user.passwordResetExpires = moment().utcOffset(0);
       //Hash new password
       user.hashPassword().then(() =>
         // Save updated user to the database
         user.save(function (err) {
           if (err) {
-            return res.status(500).send({ message: err.message });
+            return res.status(500).send({ message: "An unexpected error occurred" });
           }
           // Send mail confirming password change to the user
           const mail = {
@@ -155,29 +173,35 @@ router.post("/login/reset/:token", (req, res) => {
             text: "Some useless text",
             html: `<p>This is a confirmation that the password for your account ${user.email} has just been changed. </p>`,
           };
-          sgMail.send(mail).catch((error) => {
-            return res.status(500).send({ message: error });
+          sgMail.send(mail).catch(() => {
+            return res.status(503).send({
+              message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
+            });
           });
-          return res.status(200).send({ message: "Password has been reset. Please log in." });
+          return res.status(200).send({ message: "Password has been successfully changed." });
         })
       );
     });
   });
 });
 
-// Logout User inputs : null
+//  Input : void, identified by session cookie.
+//  HTTP Success : 200 and message.
+//  HTTP Errors : 400, 500, 503.
 router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      res.status(400).send({ message: "Logout failed", err });
+      res.status(500).send({ message: "Logout failed", err });
     }
     req.sessionID = null;
     req.logout();
-    res.send({ message: "Logged out successfully" });
+    res.status(200).send({ message: "Logout success" });
   });
 });
 
-// Register User inputs : Whole user Schema
+//  Input : username, email, password via body;
+//  HTTP Success : 200 and message.
+//  HTTP Errors : 400,500.
 router.post("/register", async (req, res) => {
   // Validate Register input
   const { error } = validateRegisterInput(req.body);
@@ -186,12 +210,20 @@ router.post("/register", async (req, res) => {
   req.body = sanitize(req.body);
 
   //Check for existing username
-  let user = await User.findOne({ username: req.body.username.toLowerCase() });
+  let user = await User.findOne({ username: req.body.username.toLowerCase() }, function (err) {
+    if (err) {
+      return res.status(500).send("An unexpected error occurred");
+    }
+  });
   if (user)
     return res.status(400).send({ message: "Username already taken. Take an another Username" });
 
   //Check for existing email
-  user = await User.findOne({ email: req.body.email.toLowerCase() });
+  user = await User.findOne({ email: req.body.email.toLowerCase() }, function (err) {
+    if (err) {
+      return res.status(500).send("An unexpected error occurred");
+    }
+  });
   if (user)
     return res.status(400).send({ message: "Email already registered. Take an another email" });
 
@@ -201,9 +233,9 @@ router.post("/register", async (req, res) => {
   // Hash password
   user.hashPassword().then(() => {
     // save user
-    user.save((err, savedUser) => {
-      if (err || !savedUser) {
-        return res.status(400).send({ message: "Create user failed, try again." });
+    user.save((err) => {
+      if (err) {
+        return res.status(500).send({ message: "Creation of user failed, try again." });
       } else {
         // create a token
         const token = new Token({
@@ -214,7 +246,7 @@ router.post("/register", async (req, res) => {
         // and store it for validation 12h expires
         token.save(function (err) {
           if (err) {
-            return res.status(500).send({ message: err.message });
+            return res.status(500).send("An unexpected error occurred");
           }
           // send verification email
           const message = {
@@ -240,11 +272,9 @@ router.post("/register", async (req, res) => {
                     );
                 }
               });
-              return res
-                .status(500)
-                .send({
-                  message: `Impossible to send email to ${user.email}, try again. Our service may be down.`,
-                });
+              return res.status(503).send({
+                message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
+              });
             });
         });
       }
@@ -252,6 +282,9 @@ router.post("/register", async (req, res) => {
   });
 });
 
+//  Input : email via body;
+//  HTTP Success : 200 and message.
+//  HTTP Errors : 400, 404, 500, 503.
 router.post("/resend", (req, res) => {
   // Check for validation errors
   const { error } = validateEmail(req.body);
@@ -261,10 +294,10 @@ router.post("/resend", (req, res) => {
 
   User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: "An unexpected error occurred" });
     }
     if (!user)
-      return res.status(400).send({ message: "We were unable to find a user with that email." });
+      return res.status(404).send({ message: "We were unable to find a user with that email." });
     if (user.isVerified)
       return res.status(400).send({
         message: "This account has already been verified. Please log in.",
@@ -279,7 +312,7 @@ router.post("/resend", (req, res) => {
     // Save the token
     token.save(function (err) {
       if (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send("An unexpected error occurred");
       }
       // Send the mail
       const mail = {
@@ -295,25 +328,35 @@ router.post("/resend", (req, res) => {
         .then(() => {
           return res.status(200).send({ message: "A verification mail has been sent." });
         })
-        .catch((error) => {
-          return res.status(500).send({ message: error });
+        .catch(() => {
+          return res.status(503).send({
+            message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
+          });
         });
     });
   });
 });
 
 // Delete user with the email if is unverified
+//  Input : email via body;
+//  HTTP Success : 200 and message.
+//  HTTP Errors : 400, 404, 500.
 router.post("/register/reset", (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
   req.body = sanitize(req.body);
 
-  User.findOneAndDelete({ email: req.body.email, isVerified: false }, function (err) {
+  User.findOneAndDelete({ email: req.body.email, isVerified: false }, function (err, user) {
     if (err) {
-      return res.status(500).send(err.message);
+      return res.status(500).send("An unexpected error occurred");
     }
-    return res.status(200).send({ message: "You can use the same username ;)" });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    return res.status(200).send({ message: "User reset success" });
   });
 });
 
@@ -321,29 +364,33 @@ router.get("/confirmation/:token", (req, res) => {
   // Find a matching token
   Token.findOne({ token: req.params.token }, function (err, token) {
     if (err) {
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send("An unexpected error occurred");
     }
     if (!token)
-      return res.status(400).send({
+      return res.status(404).send({
         message: "We were unable to find a valid token. Your token may have expired.",
       });
 
     // If we found a token, find a matching user
     User.findById(token._userId, function (err, user) {
       if (err) {
-        return res.status(500).send({ message: err.message });
+        return res.status(500).send({ message: "An unexpected error occurred" });
       }
+
       if (!user)
-        return res.status(400).send({ message: `We were unable to find a user for this token.` });
+        return res.status(404).send({ message: `We were unable to find a user for this token.` });
+
       if (user.isVerified)
-        return res.status(400).send({ message: "This user has already been verified." });
+        return res
+          .status(400)
+          .send({ message: "This user has already been verified. Please log in." });
 
       // Verify and save the user
       user.isVerified = true;
       user.expires = null;
       user.save(function (err) {
         if (err) {
-          return res.status(500).send({ message: err.message });
+          return res.status(500).send({ message: "An unexpected error occurred" });
         }
         return res.status(200).send({ message: "The account has been verified. Please log in." });
       });
