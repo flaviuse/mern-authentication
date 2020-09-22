@@ -24,7 +24,7 @@ export default function Login() {
 
   const onSubmit = (values) => {
     dispatch(attemptLogin(values)).catch((error) => {
-      if (error.response && error.response.status === 400) {
+      if(error.response) {
         setServerError(error.response.data.message);
       }
     });

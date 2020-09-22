@@ -12,7 +12,7 @@ export default function ConfirmPage() {
 
   function doSubmit() {
     dispatch(attemptGetConfirmation(token)).catch((error) => {
-      if (error.response && error.response.status === 400) {
+      if (error.response) {
         setServerError(error.response.data.message);
       }
     });

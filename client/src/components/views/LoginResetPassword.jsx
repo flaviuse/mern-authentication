@@ -24,7 +24,7 @@ export default function LoginResetPassword() {
   const onSubmit = (values) => {
     const password = values.password;
     dispatch(attemptResetPassword(password, token)).catch((error) => {
-      if (error.response && error.response.status === 400) {
+      if (error.response) {
         setServerError(error.response.data.message);
       }
     });
