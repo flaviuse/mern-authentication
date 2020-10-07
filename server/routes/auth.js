@@ -263,7 +263,7 @@ router.post("/register", async (req, res) => {
               return res.status(200).send({ message: "A verification mail has been sent." });
             })
             .catch(() => {
-              User.findOneAndDelete({ email: savedUser.email, isVerified: false }, function (err) {
+              User.findOneAndDelete({ email: user.email, isVerified: false }, function (err) {
                 if (err) {
                   return res
                     .status(500)
