@@ -34,6 +34,7 @@ services:
       - PORT=8081
       - HOST=localhost:3000
       - SENDGRID_API_KEY=<YOUR_KEY_HERE>
+      - SENDING_EMAIL=<OPTIONAL_YOUR_SENDING_EMAIL_HERE>
       - SESSION_KEY=<YOUR_KEY_HERE>
     ports:
       - "8081:8081"

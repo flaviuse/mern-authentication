@@ -20,6 +20,9 @@ moment().format();
 const host = process.env.HOST; // FRONTEND Host
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// Define email address that will send the emails to your users.
+const sendingEmail = process.env.SENDING_EMAIL || "no-reply@mern-auth-server.herokuapp.com";
+
 //  Input : username/password via body
 //  HTTP Success : 200, message and user infos.
 //  HTTP Errors : 400, 401.
@@ -91,7 +94,7 @@ router.post("/login/forgot", (req, res) => {
         // Send the mail
         const mail = {
           to: user.email,
-          from: `no-reply@mern-auth-server.herokuapp.com`,
+          from: `${sendingEmail}`,
           subject: "Reset password link",
           text: "Some useless text",
           html: `<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\n
@@ -168,7 +171,7 @@ router.post("/login/reset/:token", (req, res) => {
           // Send mail confirming password change to the user
           const mail = {
             to: user.email,
-            from: `no-reply@mern-auth-server.herokuapp.com`,
+            from: `${sendingEmail}`,
             subject: "Your password has been changed",
             text: "Some useless text",
             html: `<p>This is a confirmation that the password for your account ${user.email} has just been changed. </p>`,
@@ -251,7 +254,7 @@ router.post("/register", async (req, res) => {
           // send verification email
           const message = {
             to: user.email,
-            from: "no-reply@mern-auth-server.herokuapp.com",
+            from: `${sendingEmail}`,
             subject: "Email Verification",
             text: "Some uselss text",
             html: `<p>Please verify your account by clicking the link: 
@@ -263,7 +266,7 @@ router.post("/register", async (req, res) => {
               return res.status(200).send({ message: "A verification mail has been sent." });
             })
             .catch(() => {
-              User.findOneAndDelete({ email: savedUser.email, isVerified: false }, function (err) {
+              User.findOneAndDelete({ email: user.email, isVerified: false }, function (err) {
                 if (err) {
                   return res
                     .status(500)
@@ -317,7 +320,7 @@ router.post("/resend", (req, res) => {
       // Send the mail
       const mail = {
         to: user.email,
-        from: `no-reply@mern-auth-server.herokuapp.com`,
+        from: `${sendingEmail}`,
         subject: "Email Verification",
         text: "Some uselss text",
         html: `<p>Please verify your account by clicking the link: 
