@@ -27,7 +27,7 @@
     "helmet": "^4.1.1",
     "joi": "^17.2.1",
     "joi-objectid": "^3.0.1",
-    "moment": "^2.29.0",
+    "moment": "^2.29.1",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^5.10.7",
     "passport": "^0.4.1",
