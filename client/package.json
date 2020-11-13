@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": false,
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
     "connected-react-router": "^6.8.0",
     "formik": "^2.2.0",
     "history": "^4.10.1",
