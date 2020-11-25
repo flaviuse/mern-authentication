@@ -24,7 +24,7 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "express-session": "^1.17.1",
-    "helmet": "^4.1.1",
+    "helmet": "^4.2.0",
     "joi": "^17.3.0",
     "joi-objectid": "^3.0.1",
     "moment": "^2.29.1",
