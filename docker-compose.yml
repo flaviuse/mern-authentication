@@ -7,6 +7,7 @@ services:
     volumes:
       - /data/db # Create a volume for the DB.
   client:
+    container_name: client
     build:
       context: ./client
       dockerfile: Dockerfile
