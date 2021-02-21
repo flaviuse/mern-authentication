@@ -24,6 +24,8 @@ In both docker-compose.yml and docker-compose-prod.yml file you have to set the 
 
 - SESSION_KEY, it is the secret key that is used to compute the hash of sessions. It is important to use a strong key: <https://cloud.google.com/network-connectivity/docs/vpn/how-to/generating-pre-shared-key>.
 
+- SENDING_EMAIL, email address that sends emails in the app. Has to be set.
+
 ## Development
 
 in the root directory:
@@ -78,4 +80,3 @@ This repository is scanned with snyk and code scanning from github for vulnerabi
 - Use emails for authentication instead of usernames: <https://github.com/flaviuse/mern-authentication/issues/7>
 
 - I added a dependency but my docker container does not found it: <https://medium.com/@semur.nabiev/how-to-make-docker-compose-volumes-ignore-the-node-modules-directory-99f9ec224561> (either install the dependency in the container with the cli or reset the volume).
-

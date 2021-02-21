@@ -21,7 +21,7 @@ const host = process.env.HOST; // FRONTEND Host
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Define email address that will send the emails to your users.
-const sendingEmail = process.env.SENDING_EMAIL || "no-reply@mern-auth-server.herokuapp.com";
+const sendingEmail = process.env.SENDING_EMAIL;
 
 //  Input : username/password via body
 //  HTTP Success : 200, message and user infos.
