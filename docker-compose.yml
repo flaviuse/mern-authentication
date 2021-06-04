@@ -22,7 +22,7 @@ services:
     stdin_open: true # Hot reloading create react app: https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
     volumes: 
       - ./client:/app #Synchronise docker container with local change
-      - /app/node_modules #Avoid re-copying local node_modules. Cache in container.
+      - /app/node_modules #Avoid re-copying local node_modules. Cache in volume.
   server:
     build:
       context: ./server
@@ -42,4 +42,4 @@ services:
     restart: always
     volumes: 
       - ./server:/app #Synchronise docker container with local change
-      - /app/node_modules #Avoid re-copying local node_modules. Cache in container.
+      - /app/node_modules #Avoid re-copying local node_modules. Cache in volume.
