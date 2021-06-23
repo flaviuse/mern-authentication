@@ -24,7 +24,6 @@ export default function App() {
     dispatch(attemptGetUser())
       .then(() => setLoading(false))
       .catch(() => setLoading(false));
-    // eslint-disable-next-line
   }, []);
 
   return loading ? (

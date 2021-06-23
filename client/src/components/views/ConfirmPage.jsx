@@ -6,16 +6,18 @@ import { Error } from "./../shared";
 
 export default function ConfirmPage() {
   const { isAuth } = useSelector((state) => state.user);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState(null);
   const dispatch = useDispatch();
   const { token } = useParams();
 
   function doSubmit() {
-    dispatch(attemptGetConfirmation(token)).catch((error) => {
+    try {
+      dispatch(attemptGetConfirmation(token))
+    } catch (error) {
       if (error.response) {
         setServerError(error.response.data.message);
       }
-    });
+    }
   }
 
   return isAuth ? (

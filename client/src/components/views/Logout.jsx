@@ -9,7 +9,6 @@ export default function Logout() {
   useEffect(() => {
     dispatch(attemptLogout());
     dispatch(push("/home"));
-    // eslint-disable-next-line
   }, []);
 
   return <p>Logout in progress</p>;

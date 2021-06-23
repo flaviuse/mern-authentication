@@ -23,13 +23,14 @@ export default function LoginForgot() {
 
   const onSubmit = (values) => {
     const email = values.email;
-    dispatch(attemptSendResetPasswordLink(email))
-      .then(() => setIsSubmited(true))
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
+    try {
+     dispatch(attemptSendResetPasswordLink(email))
+     setIsSubmited(true)
+    } catch (error) {
+      if (error.response) {
+        setServerError(error.response.data.message);
+      }
+    }
   };
 
   return isAuth ? (

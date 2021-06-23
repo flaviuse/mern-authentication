@@ -31,34 +31,36 @@ export default function Register() {
   });
 
   const onSubmit = (values) => {
-    dispatch(attemptRegister(values))
-      .then(() => {
-        setEmail(values.email);
-        setRegisterStep("resend");
-      })
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
-  };
-
-  const onResendEmail = () => {
-    dispatch(attemptResendConfirmation(email))
-      .then(() => setRegisterStep("reset"))
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
-  };
-
-  const onReset = () => {
-    dispatch(attemptResetRegister(email)).catch((error) => {
+    try {
+      dispatch(attemptRegister(values))
+      setEmail(values.email);
+      setRegisterStep("resend");
+    } catch (error) {
       if (error.response) {
         setServerError(error.response.data.message);
       }
-    });
+    }
+  };
+
+  const onResendEmail = () => {
+    try {
+      dispatch(attemptResendConfirmation(email))
+      setRegisterStep("reset")
+    } catch (error) {
+      if (error.response) {
+        setServerError(error.response.data.message);
+      }
+    }
+  };
+
+  const onReset = () => {
+    try {
+      dispatch(attemptResetRegister(email))
+    } catch (error) {
+      if (error.response) {
+        setServerError(error.response.data.message);
+      }
+    }
   };
 
   function renderSwitch() {

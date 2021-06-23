@@ -23,11 +23,13 @@ export default function Login() {
   });
 
   const onSubmit = (values) => {
-    dispatch(attemptLogin(values)).catch((error) => {
+    try {
+      dispatch(attemptLogin(values))
+    } catch (error) {
       if(error.response) {
         setServerError(error.response.data.message);
       }
-    });
+    }
   };
 
   return isAuth ? (

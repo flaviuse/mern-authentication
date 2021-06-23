@@ -5,6 +5,6 @@ import user from "./user";
 
 export default (history) =>
   combineReducers({
-    router: connectRouter(history), // Connects react router to redux
+    router: connectRouter(history),
     user,
   });
