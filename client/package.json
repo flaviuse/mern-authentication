@@ -26,7 +26,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "ci": "rm -rf node_modules && yarn install --frozen-lockfile"
+    "ci": "yarn install --frozen-lockfile"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,5 +36,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "rimraf": "^3.0.2"
+  }
 }

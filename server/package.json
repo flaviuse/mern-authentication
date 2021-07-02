@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "ci": "rm -rf node_modules && yarn install --frozen-lockfile"
+    "ci": "yarn install --frozen-lockfile"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.4",

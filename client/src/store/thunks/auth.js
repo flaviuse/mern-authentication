@@ -13,13 +13,9 @@ import {
 } from "../../api/index";
 
 export const attemptLogin = (user) => async (dispatch) => {
-  try {
-   const {data} = await postLogin(user)
-   dispatch(login(data.user));
-   dispatch(push("/home"));
-  } catch (error) {
-    dispatch(push("/login"))
-  }
+    const {data} = await postLogin(user)
+    dispatch(login(data.user));
+    dispatch(push("/home"));
 };
 
 export const attemptSendResetPasswordLink = (email) => async (dispatch) => {
