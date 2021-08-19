@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { attemptLogin } from "./../../store/thunks/auth";
+import { attemptLogin } from "../store/thunks/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { Error } from "./../shared";
+import { Error } from "../components";
 
-export default function Login() {
+export default function LoginPage() {
   const { isAuth } = useSelector((state) => state.user);
   const [serverError, setServerError] = useState("");
 
@@ -23,9 +23,9 @@ export default function Login() {
   });
 
   const onSubmit = (values) => {
-    dispatch(attemptLogin(values)).catch(({response}) => {
+    dispatch(attemptLogin(values)).catch(({ response }) => {
       if (response.data.message) {
-        setServerError(response.data.message)
+        setServerError(response.data.message);
       }
     });
   };

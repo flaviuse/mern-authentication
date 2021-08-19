@@ -14,10 +14,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
-    environment:
-      - NODE_ENV=development
-      - REACT_APP_API_URL=http://localhost:8081
-      - CHOKIDAR_USEPOLLING=true # Hot reloading create react app : https://mherman.org/blog/dockerizing-a-react-app/ ; https://create-react-app.dev/docs/troubleshooting/#npm-start-doesn-t-detect-changes
+    env_file: 
+      - client.env
     restart: always
     stdin_open: true # Hot reloading create react app: https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
     volumes: 
@@ -29,14 +27,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mongo
-    environment:
-      - NODE_ENV=development
-      - MONGO_URI=mongodb://mongo:27017/DEV
-      - PORT=8081
-      - HOST=localhost:3000
-      - SENDGRID_API_KEY=<YOUR_KEY_HERE>
-      - SENDING_EMAIL=<OPTIONAL_YOUR_SENDING_EMAIL_HERE>
-      - SESSION_KEY=<YOUR_KEY_HERE>
+    env_file: 
+      - server.env
     ports:
       - "8081:8081"
     restart: always

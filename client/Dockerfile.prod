@@ -8,7 +8,7 @@ RUN yarn ci
 COPY . ./
 RUN yarn build
 
-# production environment
+# production environment, nginx serving static files from build directory
 FROM nginx:1.21.0-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 # new

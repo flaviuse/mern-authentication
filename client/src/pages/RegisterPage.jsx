@@ -3,14 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Error } from "./../shared";
+import { Error } from "../components";
 import {
   attemptRegister,
   attemptResendConfirmation,
   attemptResetRegister,
-} from "../../store/thunks/auth";
+} from "../store/thunks/auth";
 
-export default function Register() {
+export default function RegisterPage() {
   const { isAuth } = useSelector((state) => state.user);
   const [serverError, setServerError] = useState("");
   const [email, setEmail] = useState("");
@@ -32,7 +32,7 @@ export default function Register() {
 
   const onSubmit = (values) => {
     try {
-      dispatch(attemptRegister(values))
+      dispatch(attemptRegister(values));
       setEmail(values.email);
       setRegisterStep("resend");
     } catch (error) {
@@ -44,8 +44,8 @@ export default function Register() {
 
   const onResendEmail = () => {
     try {
-      dispatch(attemptResendConfirmation(email))
-      setRegisterStep("reset")
+      dispatch(attemptResendConfirmation(email));
+      setRegisterStep("reset");
     } catch (error) {
       if (error.response) {
         setServerError(error.response.data.message);
@@ -55,7 +55,7 @@ export default function Register() {
 
   const onReset = () => {
     try {
-      dispatch(attemptResetRegister(email))
+      dispatch(attemptResetRegister(email));
     } catch (error) {
       if (error.response) {
         setServerError(error.response.data.message);

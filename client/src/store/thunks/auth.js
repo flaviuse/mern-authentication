@@ -13,63 +13,63 @@ import {
 } from "../../api/index";
 
 export const attemptLogin = (user) => async (dispatch) => {
-    const {data} = await postLogin(user)
-    dispatch(login(data.user));
-    dispatch(push("/home"));
+  const { data } = await postLogin(user);
+  dispatch(login(data.user));
+  dispatch(push("/home"));
 };
 
 export const attemptSendResetPasswordLink = (email) => async (dispatch) => {
   try {
-    await sendResetPasswordLink(email)
+    await sendResetPasswordLink(email);
   } catch (error) {
-    dispatch(push("/login/forgot"))
+    dispatch(push("/login/forgot"));
   }
 };
 
 export const attemptResetPassword = (password, token) => async (dispatch) => {
   try {
-    await resetPassword(password, token)
+    await resetPassword(password, token);
     dispatch(push("/login"));
   } catch (error) {
-    dispatch(push(`/login/reset/${token}`))
+    dispatch(push(`/login/reset/${token}`));
   }
 };
 
 export const attemptLogout = () => async (dispatch) => {
   try {
-    await postLogout()
+    await postLogout();
     dispatch(logout());
     dispatch(push("/login"));
   } catch (error) {
-    dispatch(push("/login"))
+    dispatch(push("/login"));
   }
-}
+};
 
 export const attemptRegister = (newUser) => async (dispatch) => {
   try {
-    await postRegister(newUser)
+    await postRegister(newUser);
   } catch (e) {
-    dispatch(push("/register"))
+    dispatch(push("/register"));
   }
 };
 
 export const attemptGetConfirmation = (token) => async (dispatch) => {
-  await getConfirmation(token)
-  dispatch(push("/login"))
-}
+  await getConfirmation(token);
+  dispatch(push("/login"));
+};
 
 export const attemptResendConfirmation = (email) => async (dispatch) => {
   try {
-    await resendConfirmation(email)
+    await resendConfirmation(email);
   } catch (e) {
-    dispatch(push("/register"))
+    dispatch(push("/register"));
   }
-}
+};
 
 export const attemptResetRegister = (email) => async (dispatch) => {
   try {
-    await resetRegister(email)
+    await resetRegister(email);
   } catch (error) {
-    dispatch(push("/register"))
+    dispatch(push("/register"));
   }
 };
