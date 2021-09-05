@@ -4,7 +4,7 @@
 
 :video_game: Demo: <https://mern-auth-client.herokuapp.com/login>
 
-:warning: CSS styles, Google Captcha, Sentry usage and some other not essential dependencies like notifications are only in the demo. This repository aim to have a fast to use boilerplate.
+:warning: Demo code is outdated, had to replace with unstyled version for now. CSS styles, Google Captcha, Sentry usage and some other not essential dependencies like notifications are only in the demo. This repository aim to have a fast to use boilerplate.
 
 ## :star: The project if it helped you!
 
