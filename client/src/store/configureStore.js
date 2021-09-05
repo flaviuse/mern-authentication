@@ -3,11 +3,10 @@ import { createLogger } from "redux-logger";
 import { routerMiddleware } from "connected-react-router";
 
 import thunk from "redux-thunk";
-import CreateRootReducer from "./reducers/index";
+import buildRootReducer from "./reducers/index";
 
 export default function configureStore(history, initialState = {}) {
-  const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const middlewares = [routerMiddleware(history), thunk];
 
   if (process.env.NODE_ENV !== "production") {
@@ -16,7 +15,7 @@ export default function configureStore(history, initialState = {}) {
   }
 
   return createStore(
-    CreateRootReducer(history),
+    buildRootReducer(history),
     initialState,
     composeEnhancers(applyMiddleware(...middlewares))
   );

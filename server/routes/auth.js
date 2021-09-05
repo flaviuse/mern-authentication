@@ -12,6 +12,7 @@ const passport = require("passport");
 const express = require("express");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
+const winston = require("winston");
 
 const router = express.Router();
 
@@ -108,7 +109,8 @@ router.post("/login/forgot", (req, res) => {
               .status(200)
               .send({ message: `A validation email has been sent to ${user.email}` });
           })
-          .catch(() => {
+          .catch((error) => {
+            winston.error(error);
             return res.status(503).send({
               message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
             });
@@ -176,7 +178,8 @@ router.post("/login/reset/:token", (req, res) => {
             text: "Some useless text",
             html: `<p>This is a confirmation that the password for your account ${user.email} has just been changed. </p>`,
           };
-          sgMail.send(mail).catch(() => {
+          sgMail.send(mail).catch((error) => {
+            winston.error(error);
             return res.status(503).send({
               message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
             });
@@ -265,7 +268,8 @@ router.post("/register", async (req, res) => {
             .then(() => {
               return res.status(200).send({ message: "A verification mail has been sent." });
             })
-            .catch(() => {
+            .catch((error) => {
+              winston.error(error);
               User.findOneAndDelete({ email: user.email, isVerified: false }, function (err) {
                 if (err) {
                   return res
@@ -331,7 +335,8 @@ router.post("/resend", (req, res) => {
         .then(() => {
           return res.status(200).send({ message: "A verification mail has been sent." });
         })
-        .catch(() => {
+        .catch((error) => {
+          winston.error(error);
           return res.status(503).send({
             message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
           });

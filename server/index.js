@@ -2,7 +2,7 @@ const winston = require("winston");
 const passport = require("passport");
 const mongoose = require("mongoose");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 const bodyParser = require("body-parser");
 const express = require("express");
 
@@ -24,7 +24,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     // Store session on DB
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    store: MongoStore.create({ client: mongoose.connection.getClient() }),
   })
 );
 

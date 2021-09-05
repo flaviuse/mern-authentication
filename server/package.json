@@ -1,41 +1,37 @@
 {
-  "name": "Boilerplate",
+  "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Server for MERN auth",
+  "private": true,
+  "author": "Flavien Rebattet",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "ci": "yarn install --frozen-lockfile"
   },
-  "keywords": [],
-  "engines": {
-    "node": "^15.0.1"
-  },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@sendgrid/mail": "^7.4.2",
+    "@sendgrid/mail": "^7.4.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "compression": "^1.7.3",
-    "connect-mongo": "^3.2.0",
-    "cors": "^2.8.4",
+    "compression": "^1.7.4",
+    "connect-mongo": "^4.4.1",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "express-session": "^1.17.1",
-    "helmet": "^4.4.1",
-    "joi": "^17.3.0",
+    "express-session": "^1.17.2",
+    "helmet": "^4.6.0",
+    "joi": "^17.4.0",
     "joi-objectid": "^3.0.1",
     "moment": "^2.29.1",
     "mongo-sanitize": "^1.1.0",
-    "mongoose": "^5.11.14",
+    "mongoose": "^5.12.13",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "ramda": "^0.27.1",
-    "winston": "^3.3.3"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.4"
+    "winston": "^3.3.3",
+    "nodemon": "^2.0.7"
   }
 }

@@ -3,10 +3,10 @@ import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { Error } from "./../shared";
-import { attemptSendResetPasswordLink } from "../../store/thunks/auth";
+import { Error } from "../components";
+import { attemptSendResetPasswordLink } from "../store/thunks/auth";
 
-export default function LoginForgot() {
+export default function ResetPasswordRequestPage() {
   const { isAuth } = useSelector((state) => state.user);
   const [serverError, setServerError] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
@@ -24,7 +24,9 @@ export default function LoginForgot() {
   const onSubmit = (values) => {
     const email = values.email;
     dispatch(attemptSendResetPasswordLink(email))
-      .then(() => setIsSubmited(true))
+      .then(() => {
+        setIsSubmited(true);
+      })
       .catch((error) => {
         if (error.response) {
           setServerError(error.response.data.message);

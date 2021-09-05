@@ -12,8 +12,10 @@ module.exports = function () {
   process.on("unhandledRejection", (ex) => {
     throw ex;
   });
+
   // Local file
   winston.add(new winston.transports.File({ filename: "logfile.log" }));
+  winston.add(new winston.transports.Console({ colorize: true, prettyPrint: true }));
 
   // Log on the MongoDB database
   // winston.add(new winston.transports.MongoDB, {

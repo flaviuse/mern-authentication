@@ -1,12 +1,12 @@
-# Create image based on the official Node 6 image from the dockerhub
-FROM node:15.9.0-alpine3.13
+# Create image based on node alpine
+FROM node:14.16.0-alpine3.13
 # Change directory so that our commands run inside this new directory
 WORKDIR /app
 # Copy dependency definitions
 COPY package.json ./
 COPY yarn.lock ./
-# Install dependecies
-RUN yarn
+# Install dependecies 
+RUN yarn ci
 # Get all the code needed to run the app
 COPY . .
 # Expose the port the app runs in

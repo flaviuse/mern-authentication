@@ -50,10 +50,12 @@ userSchema.methods.hashPassword = function () {
     bcrypt.genSalt(10, (err1, salt) => {
       if (err1) {
         reject(err1);
+        return;
       }
       bcrypt.hash(this.password, salt, (err2, hash) => {
         if (err2) {
           reject(err2);
+          return;
         }
         this.password = hash;
         resolve(hash);

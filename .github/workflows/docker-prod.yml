@@ -1,12 +1,14 @@
 name: Docker Compose Prod
-on: 
+on:
   pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create server env file
+        run: touch server.prod.env
       - name: Build the stack
-        run: docker-compose -f docker-compose-prod.yml up -d
+        run: docker-compose -f docker-compose.prod.yml up -d
       - name: Test
         run: docker run --network container:client appropriate/curl -s --retry 10 --retry-connrefused http://localhost:3000/
