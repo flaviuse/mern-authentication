@@ -24,7 +24,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     // Store session on DB
-    store: MongoStore.create({ client: mongoose.connection.getClient() }),
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI || "mongodb://localhost:27017/test",
+    }),
   })
 );
 
