@@ -12,64 +12,48 @@ import {
   resetPassword,
 } from "../../api/index";
 
-export const attemptLogin = (user) => async (dispatch) => {
-  const { data } = await postLogin(user);
-  dispatch(login(data.user));
-  dispatch(push("/home"));
-};
+export const attemptLogin = (user) => (dispatch) =>
+  postLogin(user).then(({ data }) => {
+    dispatch(login(data.user));
+    dispatch(push("/home"));
+  });
 
-export const attemptSendResetPasswordLink = (email) => async (dispatch) => {
-  try {
-    await sendResetPasswordLink(email);
-  } catch (error) {
+export const attemptSendResetPasswordLink = (email) => (dispatch) =>
+  sendResetPasswordLink(email).then(() => {
     dispatch(push("/login/forgot"));
-  }
-};
+  });
 
-export const attemptResetPassword = (password, token) => async (dispatch) => {
-  try {
-    await resetPassword(password, token);
+export const attemptResetPassword = (password, token) => (dispatch) =>
+  resetPassword(password, token)
+    .then(() => {
+      dispatch(push("/login"));
+    })
+    .catch(() => {
+      dispatch(push(`/login/reset/${token}`));
+    });
+
+export const attemptLogout = () => (dispatch) =>
+  postLogout()
+    .then(() => {
+      dispatch(logout());
+    })
+    .finally(() => {
+      dispatch(push("/login"));
+    });
+
+export const attemptRegister = (newUser) => () => postRegister(newUser);
+
+export const attemptGetConfirmation = (token) => (dispatch) =>
+  getConfirmation(token).then(() => {
     dispatch(push("/login"));
-  } catch (error) {
-    dispatch(push(`/login/reset/${token}`));
-  }
-};
+  });
 
-export const attemptLogout = () => async (dispatch) => {
-  try {
-    await postLogout();
-    dispatch(logout());
-    dispatch(push("/login"));
-  } catch (error) {
-    dispatch(push("/login"));
-  }
-};
-
-export const attemptRegister = (newUser) => async (dispatch) => {
-  try {
-    await postRegister(newUser);
-  } catch (e) {
+export const attemptResendConfirmation = (email) => (dispatch) =>
+  resendConfirmation(email).catch(() => {
     dispatch(push("/register"));
-  }
-};
+  });
 
-export const attemptGetConfirmation = (token) => async (dispatch) => {
-  await getConfirmation(token);
-  dispatch(push("/login"));
-};
-
-export const attemptResendConfirmation = (email) => async (dispatch) => {
-  try {
-    await resendConfirmation(email);
-  } catch (e) {
+export const attemptResetRegister = (email) => (dispatch) =>
+  resetRegister(email).catch(() => {
     dispatch(push("/register"));
-  }
-};
-
-export const attemptResetRegister = (email) => async (dispatch) => {
-  try {
-    await resetRegister(email);
-  } catch (error) {
-    dispatch(push("/register"));
-  }
-};
+  });

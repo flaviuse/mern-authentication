@@ -20,7 +20,6 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("test");
     dispatch(attemptGetUser())
       .then(() => {
         setLoading(false);
