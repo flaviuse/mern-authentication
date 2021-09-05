@@ -23,14 +23,15 @@ export default function ResetPasswordRequestPage() {
 
   const onSubmit = (values) => {
     const email = values.email;
-    try {
-      dispatch(attemptSendResetPasswordLink(email));
-      setIsSubmited(true);
-    } catch (error) {
-      if (error.response) {
-        setServerError(error.response.data.message);
-      }
-    }
+    dispatch(attemptSendResetPasswordLink(email))
+      .then(() => {
+        setIsSubmited(true);
+      })
+      .catch((error) => {
+        if (error.response) {
+          setServerError(error.response.data.message);
+        }
+      });
   };
 
   return isAuth ? (

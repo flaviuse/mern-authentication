@@ -23,13 +23,11 @@ export default function ResetPasswordPage() {
 
   const onSubmit = (values) => {
     const password = values.password;
-    try {
-      dispatch(attemptResetPassword(password, token));
-    } catch (error) {
+    dispatch(attemptResetPassword(password, token)).catch((error) => {
       if (error.response) {
         setServerError(error.response.data.message);
       }
-    }
+    });
   };
 
   return isAuth ? (

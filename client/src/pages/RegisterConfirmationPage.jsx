@@ -11,13 +11,11 @@ export default function RegisterConfirmationPage() {
   const { token } = useParams();
 
   function doSubmit() {
-    try {
-      dispatch(attemptGetConfirmation(token));
-    } catch (error) {
+    dispatch(attemptGetConfirmation(token)).catch((error) => {
       if (error.response) {
         setServerError(error.response.data.message);
       }
-    }
+    });
   }
 
   return isAuth ? (
