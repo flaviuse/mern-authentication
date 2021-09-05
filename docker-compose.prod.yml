@@ -14,9 +14,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
-    environment:
-      - NODE_ENV=production
-      - REACT_APP_API_URL=http://localhost:8081
+    env_file: 
+      - client.prod.env
     restart: always
   server-prod:
     build:
@@ -24,14 +23,8 @@ services:
       dockerfile: Dockerfile.prod
     depends_on:
       - mongo-prod
-    environment:
-      - NODE_ENV=production
-      - MONGO_URI=mongodb://mongo-prod:27017/PROD
-      - PORT=8081
-      - HOST=localhost:3000
-      - SENDGRID_API_KEY=<YOUR_KEY_HERE>
-      - SENDING_EMAIL=<YOUR_SENDING_EMAIL_HERE>
-      - SESSION_KEY=<YOUR_KEY_HERE>
+    env_file: 
+      - server.prod.env
     ports:
       - "8081:8081"
     restart: always

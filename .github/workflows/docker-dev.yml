@@ -1,11 +1,13 @@
 name: Docker Compose dev
-on: 
+on:
   pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create server env file
+        run: touch server.env
       - name: Build the stack
         run: docker-compose up -d
       - name: Test
