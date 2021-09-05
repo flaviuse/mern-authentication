@@ -33,7 +33,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  width: 160px;
+  width: max-content;
   margin: 20px auto;
   padding: 20px;
   background-color: #fff;
