@@ -10,5 +10,8 @@ module.exports = function () {
     useFindAndModify: false,
     useUnifiedTopology: true,
   };
-  mongoose.connect(db, options).then(() => winston.info(`Connected to ${db}...`));
+  mongoose
+    .connect(db, options)
+    .then(() => winston.info(`Connected to ${db}...`))
+    .catch((error) => winston.error(error));
 };
