@@ -1,7 +1,8 @@
+import { Dispatch } from "redux";
 import { getUser } from "../../api/index";
-import { setUser, resetUser } from "./../actions/user";
+import { setUser, resetUser, UserAction } from "../actions/user";
 
-export const attemptGetUser = () => (dispatch) =>
+export const attemptGetUser = () => (dispatch: Dispatch<UserAction>) =>
   getUser()
     .then((data) => {
       if (data.user) {

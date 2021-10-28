@@ -1,9 +1,9 @@
-import React from "react";
+import { FC } from "react";
 
-export default function Error({ children }) {
+export const Error: FC = ({ children }) => {
   return (
     <div className='error'>
       <b>*{children}</b>
     </div>
   );
-}
+};

@@ -4,8 +4,24 @@ import { routerMiddleware } from "connected-react-router";
 
 import thunk from "redux-thunk";
 import buildRootReducer from "./reducers/index";
+import { History } from "history";
+import { UserState } from "./reducers/user";
 
-export default function configureStore(history, initialState = {}) {
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+  }
+}
+
+type AppState = { user: UserState };
+
+const initialState: AppState = {
+  user: {
+    isAuth: false,
+  },
+};
+
+export default function configureStore(history: History, state: AppState = initialState) {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const middlewares = [routerMiddleware(history), thunk];
 
@@ -16,7 +32,7 @@ export default function configureStore(history, initialState = {}) {
 
   return createStore(
     buildRootReducer(history),
-    initialState,
+    state,
     composeEnhancers(applyMiddleware(...middlewares))
   );
 }
