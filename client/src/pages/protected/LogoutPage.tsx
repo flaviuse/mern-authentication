@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { push } from "connected-react-router";
-import { useDispatch } from "react-redux";
 import { attemptLogout } from "../../store/thunks/auth";
+import { useAppDispatch } from "src/store/hooks";
 
 export default function LogoutPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(attemptLogout());

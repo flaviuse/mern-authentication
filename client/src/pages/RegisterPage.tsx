@@ -1,5 +1,4 @@
-import React, { Fragment, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Fragment, useState } from "react";
 import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -9,16 +8,20 @@ import {
   attemptResendConfirmation,
   attemptResetRegister,
 } from "../store/thunks/auth";
+import { User } from "src/store/actions/user";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
+
+type FormValues = User;
 
 export default function RegisterPage() {
-  const { isAuth } = useSelector((state) => state.user);
+  const { isAuth } = useAppSelector((state) => state.user);
   const [serverError, setServerError] = useState("");
   const [email, setEmail] = useState("");
   const [registerStep, setRegisterStep] = useState("register"); // Use an enum with TS;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const initialValues = {
+  const initialValues: FormValues = {
     email: "",
     username: "",
     password: "",
@@ -30,7 +33,7 @@ export default function RegisterPage() {
     password: Yup.string().min(5).max(255).required("Required"),
   });
 
-  const onSubmit = (values) => {
+  const onSubmit = (values: FormValues) => {
     dispatch(attemptRegister(values))
       .then(() => {
         setEmail(values.email);
@@ -127,7 +130,7 @@ export default function RegisterPage() {
           </div>
         );
       default:
-        break;
+        return null;
     }
   }
 

@@ -1,8 +1,8 @@
-import { LOGIN_USER, LOGOUT_USER, SET_USER, RESET_USER, UserAction } from "../actions/user";
+import { LOGIN_USER, LOGOUT_USER, SET_USER, RESET_USER, UserAction, User } from "../actions/user";
 
 export type UserState = {
   isAuth: boolean;
-  user?: string;
+  user?: User;
 };
 
 const initialState: UserState = {
@@ -10,11 +10,11 @@ const initialState: UserState = {
   user: undefined,
 };
 
-export default function user(state = initialState, action: UserAction): UserState {
+export default function user(state = initialState, action: UserAction<any>): UserState {
   switch (action.type) {
     case LOGIN_USER:
       return {
-        user: action.user,
+        user: action.payload,
         isAuth: true,
       };
     case LOGOUT_USER:
@@ -24,7 +24,7 @@ export default function user(state = initialState, action: UserAction): UserStat
       };
     case SET_USER:
       return {
-        user: action.user,
+        user: action.payload,
         isAuth: true,
       };
     case RESET_USER:

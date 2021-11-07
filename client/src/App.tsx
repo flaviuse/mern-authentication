@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { attemptGetUser } from "./store/thunks/user";
 
@@ -14,10 +13,11 @@ import {
   RegisterPage,
 } from "./pages";
 import { ProtectedRoute, NavBar } from "./components";
+import { useAppDispatch } from "./store/hooks";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(attemptGetUser())
@@ -41,8 +41,8 @@ export default function App() {
         <Route path='/login' exact component={LoginPage} />
         <Route path='/login/forgot' exact component={ResetPasswordRequestPage} />
         <Route path='/login/reset/:token' component={ResetPasswordPage} />
-        <ProtectedRoute path='/logout' exact component={LogoutPage} />
-        <ProtectedRoute path='/my-profile' exact component={ProfilePage} />
+        <ProtectedRoute path='/logout' component={LogoutPage} />
+        <ProtectedRoute path='/my-profile' component={ProfilePage} />
         <Redirect from='/' exact to='/home' />
         <Redirect to='/home' />
       </Switch>

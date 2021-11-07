@@ -1,5 +1,5 @@
 import { Route, Redirect } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "src/store/hooks";
 
 type ProtectedRouteProps = {
   path: string;
@@ -7,7 +7,7 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ path, component }: ProtectedRouteProps) {
-  const { isAuth } = useSelector((state) => state.user);
+  const { isAuth } = useAppSelector((state) => state.user);
 
   return isAuth ? <Route path={path} exact component={component} /> : <Redirect to='/login' />;
 }

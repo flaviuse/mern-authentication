@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "src/store/hooks";
 
 export default function NavBar() {
-  const { isAuth, user } = useSelector((state) => state.user);
+  const { isAuth, user } = useAppSelector((state) => state.user);
 
   return (
     <nav className='nav'>
@@ -13,7 +13,7 @@ export default function NavBar() {
       {isAuth ? (
         <div>
           <NavLink className='inactive' activeClassName='active' to='/my-profile'>
-            {user.username}
+            {user?.username}
           </NavLink>
           <NavLink className='inactive logout' activeClassName='active' to='/logout'>
             Logout

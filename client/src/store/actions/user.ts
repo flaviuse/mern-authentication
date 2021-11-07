@@ -6,6 +6,7 @@ export const RESET_USER = "RESET_USER";
 export type User = {
   username: string;
   email: string;
+  password: string;
 };
 
 export type Credentials = {
@@ -15,29 +16,29 @@ export type Credentials = {
 
 export type UserAction<T> = {
   type: string;
-  user?: T;
+  payload?: T;
 };
 
 export function login(credentials: Credentials): UserAction<Credentials> {
   return {
     type: LOGIN_USER,
-    credentials,
+    payload: credentials,
   };
 }
 
-export function logout(): UserAction {
+export function logout(): UserAction<never> {
   return {
     type: LOGOUT_USER,
   };
 }
 
-export function setUser(user: string): UserAction {
+export function setUser(user: User): UserAction<User> {
   return {
     type: SET_USER,
-    user,
+    payload: user,
   };
 }
 
-export function resetUser(): UserAction {
+export function resetUser(): UserAction<never> {
   return { type: RESET_USER };
 }

@@ -1,5 +1,7 @@
 import { push } from "connected-react-router";
-import { login, logout } from "../actions/user";
+import { login, logout, User } from "../actions/user";
+import { Dispatch } from "redux";
+import { Credentials } from "src/store/actions/user";
 
 import {
   postRegister,
@@ -12,18 +14,18 @@ import {
   resetPassword,
 } from "../../api/index";
 
-export const attemptLogin = (user) => (dispatch) =>
-  postLogin(user).then(({ data }) => {
+export const attemptLogin = (credentials: Credentials) => (dispatch: Dispatch) =>
+  postLogin(credentials).then(({ data }) => {
     dispatch(login(data.user));
     dispatch(push("/home"));
   });
 
-export const attemptSendResetPasswordLink = (email) => (dispatch) =>
+export const attemptSendResetPasswordLink = (email: string) => (dispatch: Dispatch) =>
   sendResetPasswordLink(email).then(() => {
     dispatch(push("/login/forgot"));
   });
 
-export const attemptResetPassword = (password, token) => (dispatch) =>
+export const attemptResetPassword = (password: string, token: string) => (dispatch: Dispatch) =>
   resetPassword(password, token)
     .then(() => {
       dispatch(push("/login"));
@@ -32,7 +34,7 @@ export const attemptResetPassword = (password, token) => (dispatch) =>
       dispatch(push(`/login/reset/${token}`));
     });
 
-export const attemptLogout = () => (dispatch) =>
+export const attemptLogout = () => (dispatch: Dispatch) =>
   postLogout()
     .then(() => {
       dispatch(logout());
@@ -41,19 +43,19 @@ export const attemptLogout = () => (dispatch) =>
       dispatch(push("/login"));
     });
 
-export const attemptRegister = (newUser) => () => postRegister(newUser);
+export const attemptRegister = (newUser: User) => () => postRegister(newUser);
 
-export const attemptGetConfirmation = (token) => (dispatch) =>
+export const attemptGetConfirmation = (token: string) => (dispatch: Dispatch) =>
   getConfirmation(token).then(() => {
     dispatch(push("/login"));
   });
 
-export const attemptResendConfirmation = (email) => (dispatch) =>
+export const attemptResendConfirmation = (email: string) => (dispatch: Dispatch) =>
   resendConfirmation(email).catch(() => {
     dispatch(push("/register"));
   });
 
-export const attemptResetRegister = (email) => (dispatch) =>
+export const attemptResetRegister = (email: string) => (dispatch: Dispatch) =>
   resetRegister(email).catch(() => {
     dispatch(push("/register"));
   });

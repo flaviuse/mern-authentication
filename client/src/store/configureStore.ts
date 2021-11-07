@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware, compose, Store } from "redux";
 import { createLogger } from "redux-logger";
 import { routerMiddleware } from "connected-react-router";
 
@@ -6,6 +6,7 @@ import thunk from "redux-thunk";
 import buildRootReducer from "./reducers/index";
 import { History } from "history";
 import { UserState } from "./reducers/user";
+import { UserAction } from "./actions/user";
 
 declare global {
   interface Window {
@@ -21,7 +22,10 @@ const initialState: AppState = {
   },
 };
 
-export default function configureStore(history: History, state: AppState = initialState) {
+export default function configureStore(
+  history: History,
+  state: AppState = initialState
+): Store<AppState, UserAction<any>> {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const middlewares = [routerMiddleware(history), thunk];
 

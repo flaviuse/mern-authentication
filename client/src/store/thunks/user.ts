@@ -1,12 +1,13 @@
 import { Dispatch } from "redux";
 import { getUser } from "../../api/index";
-import { setUser, resetUser, UserAction } from "../actions/user";
+import { setUser, resetUser } from "../actions/user";
 
-export const attemptGetUser = () => (dispatch: Dispatch<UserAction>) =>
+export const attemptGetUser = () => (dispatch: Dispatch) =>
   getUser()
-    .then((data) => {
-      if (data.user) {
-        dispatch(setUser(data.user));
+    .then((response) => {
+      console.log(response);
+      if (response.data.user) {
+        dispatch(setUser(response.data.user));
       } else {
         dispatch(resetUser());
       }

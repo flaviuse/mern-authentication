@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useDispatch, useSelector } from "react-redux";
 import { Error } from "../components";
 import { attemptSendResetPasswordLink } from "../store/thunks/auth";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
+
+type FormValues = {
+  email: string;
+};
 
 export default function ResetPasswordRequestPage() {
-  const { isAuth } = useSelector((state) => state.user);
+  const { isAuth } = useAppSelector((state) => state.user);
   const [serverError, setServerError] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const initialValues = {
+  const initialValues: FormValues = {
     email: "",
   };
 
@@ -21,7 +25,7 @@ export default function ResetPasswordRequestPage() {
     email: Yup.string().min(5).max(255).email().required("Required"),
   });
 
-  const onSubmit = (values) => {
+  const onSubmit = (values: FormValues) => {
     const email = values.email;
     dispatch(attemptSendResetPasswordLink(email))
       .then(() => {
