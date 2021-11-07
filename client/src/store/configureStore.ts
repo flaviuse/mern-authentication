@@ -19,6 +19,7 @@ type AppState = { user: UserState };
 const initialState: AppState = {
   user: {
     isAuth: false,
+    user: null,
   },
 };
 

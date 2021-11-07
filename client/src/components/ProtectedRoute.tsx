@@ -1,10 +1,10 @@
-import React from "react";
+import { ComponentType } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 
 type ProtectedRouteProps = {
   path: string;
-  component: React.ComponentType<any>;
+  component: ComponentType<any>;
 };
 
 export default function ProtectedRoute({ path, component }: ProtectedRouteProps) {
