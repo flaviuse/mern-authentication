@@ -2,12 +2,12 @@ import { LOGIN_USER, LOGOUT_USER, SET_USER, RESET_USER, UserAction, User } from 
 
 export type UserState = {
   isAuth: boolean;
-  user?: User;
+  user: User | null;
 };
 
 const initialState: UserState = {
   isAuth: false,
-  user: undefined,
+  user: null,
 };
 
 export default function user(state = initialState, action: UserAction<any>): UserState {
@@ -20,7 +20,7 @@ export default function user(state = initialState, action: UserAction<any>): Use
     case LOGOUT_USER:
       return {
         isAuth: false,
-        user: undefined,
+        user: null,
       };
     case SET_USER:
       return {

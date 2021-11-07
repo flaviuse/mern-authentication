@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { attemptGetUser } from "./store/thunks/user";
 
@@ -32,7 +32,7 @@ export default function App() {
   return loading ? (
     <p>Loading</p>
   ) : (
-    <React.Fragment>
+    <>
       <NavBar />
       <Switch>
         <Route path='/home' exact component={HomePage} />
@@ -46,6 +46,6 @@ export default function App() {
         <Redirect from='/' exact to='/home' />
         <Redirect to='/home' />
       </Switch>
-    </React.Fragment>
+    </>
   );
 }

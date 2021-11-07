@@ -5,7 +5,6 @@ import { setUser, resetUser } from "../actions/user";
 export const attemptGetUser = () => (dispatch: Dispatch) =>
   getUser()
     .then((response) => {
-      console.log(response);
       if (response.data.user) {
         dispatch(setUser(response.data.user));
       } else {
