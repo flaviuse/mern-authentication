@@ -1,10 +1,10 @@
-const passport = require("passport");
-const { User } = require("../../models/user");
-const LocalStrategy = require("passport-local").Strategy;
+import passport from "passport";
+import { User } from "../../models/user";
+import Local from "passport-local";
 
-module.exports = function() {
+export function initPassportJS() {
   passport.use(
-    new LocalStrategy((username, password, done) => {
+    new Local.Strategy((username, password, done) => {
       User.findOne({ username }, (err, user) => {
         if (err) {
           return done(err);
@@ -20,7 +20,5 @@ module.exports = function() {
     })
   );
   passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id, done) =>
-    User.findById(id).then(user => done(null, user))
-  );
-};
+  passport.deserializeUser((id, done) => User.findById(id).then((user) => done(null, user)));
+}

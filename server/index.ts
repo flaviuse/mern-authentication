@@ -1,26 +1,32 @@
-const winston = require("winston");
-const passport = require("passport");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
-const bodyParser = require("body-parser");
-const express = require("express");
+import winston from "winston";
+import passport from "passport";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import bodyParser from "body-parser";
+import express from "express";
+
+import { initProd } from "./startup/prod";
+import { extendJoiValidation } from "startup/validation";
+import { initDB } from "./startup/db";
+import { initCORS } from "startup/cors";
+import { initLogger } from "startup/logging";
+import { initPassportJS } from "startup/passport/passport-setup";
 
 const port = process.env.PORT || 3900;
 const app = express();
 
-require("./startup/passport/passport-setup")();
-require("./startup/logging")();
-require("./startup/validation")();
-require("./startup/cors")(app);
-require("./startup/db")();
-require("./startup/prod")(app);
+initPassportJS();
+initLogger();
+extendJoiValidation();
+initCORS(app);
+initDB();
+initProd(app);
 
 // Create session
 app.use(
   session({
     // Used to compute a hash
-    secret: process.env.SESSION_KEY,
+    secret: process.env.SESSION_KEY!,
     resave: false,
     saveUninitialized: false,
     // Store session on DB
