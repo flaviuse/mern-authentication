@@ -11,7 +11,7 @@ const joiObjectIdExtension: Extension = {
   },
   coerce(value: string, helpers: CustomHelpers) {
     if (Types.ObjectId.isValid(value) && OBJECT_ID_REGEX.test(value)) {
-      return { value: Types.ObjectId(value) };
+      return { value: new Types.ObjectId(value) };
     }
 
     if (!value) {

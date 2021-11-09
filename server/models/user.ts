@@ -1,12 +1,22 @@
-const Joi = require("joi");
-const bcrypt = require("bcryptjs");
-const moment = require("moment");
-moment().format();
+import Joi from "joi";
+import { model, Schema } from "mongoose";
+import { omit } from "ramda";
+import bcrypt from "bcrypt";
 
-const mongoose = require("mongoose");
-const R = require("ramda");
+type User = {
+  __v: string;
+  _id: string;
+  username: string;
+  email: string;
+  password: string;
+  passwordResetToken: string;
+  passwordResetExpires: Date;
+  isVerified: boolean;
+  isAdmin: boolean;
+  expires: Date;
+};
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema<User>({
   username: {
     type: String,
     required: true,
@@ -27,7 +37,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 1024,
   },
   passwordResetToken: { type: String, default: "" },
-  passwordResetExpires: { type: Date, default: moment().utcOffset(0) },
+  passwordResetExpires: { type: Date, default: new Date() },
   isVerified: {
     type: Boolean,
     required: true,
@@ -38,7 +48,7 @@ const userSchema = new mongoose.Schema({
     default: false,
     required: true,
   },
-  expires: { type: Date, default: moment().utcOffset(0), expires: 43200 },
+  expires: { type: Date, default: new Date(), expires: 43200 },
 });
 
 userSchema.methods.validPassword = function (password) {
@@ -65,12 +75,12 @@ userSchema.methods.hashPassword = function () {
 };
 
 userSchema.methods.hidePassword = function () {
-  return R.omit(["password", "__v", "_id"], this.toObject({ virtuals: true }));
+  return omit(["password", "__v", "_id"], this.toObject({ virtuals: true }));
 };
 
-const User = mongoose.model("User", userSchema);
+export const UserModel = model("User", userSchema);
 
-function validateUser(user) {
+export function validateUser(user: Pick<User, "username" | "email" | "password" | "isAdmin">) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
     email: Joi.string().min(5).max(255).required().email(),
@@ -81,7 +91,7 @@ function validateUser(user) {
   return schema.validate(user);
 }
 
-function validateLoginInput(input) {
+export function validateLoginInput(input: Pick<User, "username" | "password">) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
     password: Joi.string().min(5).max(255).required(),
@@ -90,7 +100,7 @@ function validateLoginInput(input) {
   return schema.validate(input);
 }
 
-function validateRegisterInput(input) {
+export function validateRegisterInput(input: Pick<User, "username" | "email" | "password">) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
     password: Joi.string().min(5).max(255).required(),
@@ -100,7 +110,7 @@ function validateRegisterInput(input) {
   return schema.validate(input);
 }
 
-function validateEmail(input) {
+export function validateEmail(input: Pick<User, "email">) {
   const schema = Joi.object({
     email: Joi.string().min(5).max(255).required().email(),
   });
@@ -108,16 +118,9 @@ function validateEmail(input) {
   return schema.validate(input);
 }
 
-function validatePassword(input) {
+export function validatePassword(input: Pick<User, "password">) {
   const schema = Joi.object({
     password: Joi.string().min(5).max(255).required(),
   });
   return schema.validate(input);
 }
-
-exports.User = User;
-exports.validateUser = validateUser;
-exports.validateRegisterInput = validateRegisterInput;
-exports.validateEmail = validateEmail;
-exports.validateLoginInput = validateLoginInput;
-exports.validatePassword = validatePassword;

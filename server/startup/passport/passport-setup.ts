@@ -1,11 +1,12 @@
 import passport from "passport";
 import { User } from "../../models/user";
 import Local from "passport-local";
+import { Error } from "mongoose";
 
 export function initPassportJS() {
   passport.use(
     new Local.Strategy((username, password, done) => {
-      User.findOne({ username }, (err, user) => {
+      User.findOne({ username }, (err: Error, user: User) => {
         if (err) {
           return done(err);
         }
@@ -19,6 +20,6 @@ export function initPassportJS() {
       });
     })
   );
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id, done) => User.findById(id).then((user) => done(null, user)));
+  passport.serializeUser((user: User, done) => done(null, user.id));
+  passport.deserializeUser((id, done) => User.findById(id).then((user: User) => done(null, user)));
 }
