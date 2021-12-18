@@ -1,11 +1,13 @@
+import { IUserInstance, User } from "../models/user.model";
+
 import {
-  UserModel,
   validateLoginInput,
   validateRegisterInput,
   validateEmail,
   validatePassword,
-} from "../models/user";
-import { TokenModel } from "../models/token";
+} from "../validations/user.validation";
+
+import { Token } from "../models/token.model";
 import sanitize from "mongo-sanitize";
 import moment from "moment";
 import passport from "passport";
@@ -68,14 +70,14 @@ router.post("/login/forgot", (req, res) => {
 
   req.body = sanitize(req.body);
 
-  UserModel.findOne({ email: req.body.email }, function (err, user) {
+  User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
       return res.status(500).send({ message: "An unexpected error occurred" });
     }
     if (!user) return res.status(404).send({ message: "No user found with this email address." });
 
     // Create a verification token
-    var token = new TokenModel({
+    var token = new Token({
       _userId: user._id,
       token: crypto.randomBytes(16).toString("hex"),
     });
@@ -128,7 +130,7 @@ router.post("/login/reset/:token", (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
   // Find a matching token
-  TokenModel.findOne({ token: req.params.token }, function (err, token) {
+  Token.findOne({ token: req.params.token }, function (err, token) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -138,7 +140,7 @@ router.post("/login/reset/:token", (req, res) => {
       });
 
     // If we found a token, find a matching user
-    UserModel.findById(token._userId, function (err, user) {
+    User.findById(token._userId, function (err, user: IUserInstance) {
       if (err) {
         return res.status(500).send("An unexpected error occurred");
       }
@@ -149,7 +151,7 @@ router.post("/login/reset/:token", (req, res) => {
       if (user.passwordResetToken !== token.token)
         return res.status(400).send({
           message:
-            "UserModel token and your token didn't match. You may have a more recent token in your mail list.",
+            "User token and your token didn't match. You may have a more recent token in your mail list.",
         });
 
       // Verify that the user token expires date has not been passed
@@ -216,7 +218,7 @@ router.post("/register", async (req, res) => {
   req.body = sanitize(req.body);
 
   //Check for existing username
-  let user = await UserModel.findOne({ username: req.body.username.toLowerCase() }, function (err) {
+  let user = await User.findOne({ username: req.body.username.toLowerCase() }, function (err) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -225,7 +227,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).send({ message: "Username already taken. Take an another Username" });
 
   //Check for existing email
-  user = await UserModel.findOne({ email: req.body.email.toLowerCase() }, function (err) {
+  user = await User.findOne({ email: req.body.email.toLowerCase() }, function (err) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -234,7 +236,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).send({ message: "Email already registered. Take an another email" });
 
   // Create new user
-  user = new UserModel(req.body);
+  user = new User(req.body);
 
   // Hash password
   user.hashPassword().then(() => {
@@ -244,7 +246,7 @@ router.post("/register", async (req, res) => {
         return res.status(500).send({ message: "Creation of user failed, try again." });
       } else {
         // create a token
-        const token = new TokenModel({
+        const token = new Token({
           _userId: user._id,
           token: crypto.randomBytes(16).toString("hex"),
         });
@@ -270,7 +272,7 @@ router.post("/register", async (req, res) => {
             })
             .catch((error) => {
               winston.error(error);
-              UserModel.findOneAndDelete({ email: user.email, isVerified: false }, function (err) {
+              User.findOneAndDelete({ email: user.email, isVerified: false }, function (err) {
                 if (err) {
                   return res
                     .status(500)
@@ -299,7 +301,7 @@ router.post("/resend", (req, res) => {
 
   req.body = sanitize(req.body);
 
-  UserModel.findOne({ email: req.body.email }, function (err, user) {
+  User.findOne({ email: req.body.email }, function (err, user) {
     if (err) {
       return res.status(500).send({ message: "An unexpected error occurred" });
     }
@@ -311,7 +313,7 @@ router.post("/resend", (req, res) => {
       });
 
     // Create a verification token, save it, and send email
-    var token = new TokenModel({
+    var token = new Token({
       _userId: user._id,
       token: crypto.randomBytes(16).toString("hex"),
     });
@@ -355,7 +357,7 @@ router.post("/register/reset", (req, res) => {
 
   req.body = sanitize(req.body);
 
-  UserModel.findOneAndDelete({ email: req.body.email, isVerified: false }, function (err, user) {
+  User.findOneAndDelete({ email: req.body.email, isVerified: false }, function (err, user) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -370,7 +372,7 @@ router.post("/register/reset", (req, res) => {
 
 router.get("/confirmation/:token", (req, res) => {
   // Find a matching token
-  TokenModel.findOne({ token: req.params.token }, function (err, token) {
+  Token.findOne({ token: req.params.token }, function (err, token) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -380,7 +382,7 @@ router.get("/confirmation/:token", (req, res) => {
       });
 
     // If we found a token, find a matching user
-    UserModel.findById(token._userId, function (err, user) {
+    User.findById(token._userId, function (err, user) {
       if (err) {
         return res.status(500).send({ message: "An unexpected error occurred" });
       }
@@ -406,4 +408,4 @@ router.get("/confirmation/:token", (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

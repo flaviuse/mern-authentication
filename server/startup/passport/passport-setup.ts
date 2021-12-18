@@ -1,5 +1,5 @@
 import passport from "passport";
-import { User } from "../../models/user";
+import { User } from "../../models/user.model";
 import Local from "passport-local";
 import { Error } from "mongoose";
 

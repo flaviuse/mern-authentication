@@ -1,5 +1,5 @@
-import user from "./user";
-import auth from "./auth";
+import user from "./user.route";
+import auth from "./auth.route";
 import { Express } from "express";
 import error from "../middleware/error";
 
