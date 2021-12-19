@@ -1,7 +1,6 @@
-import { IUserInstance, User } from "../models/user.model";
+import { UserDocument, User } from "../models/user.model";
 
 import {
-  validateLoginInput,
   validateRegisterInput,
   validateEmail,
   validatePassword,
@@ -10,11 +9,12 @@ import {
 import { Token } from "../models/token.model";
 import sanitize from "mongo-sanitize";
 import moment from "moment";
-import passport from "passport";
 import crypto from "crypto";
 import express from "express";
 import winston from "winston";
 import sgMail from "@sendgrid/mail";
+
+import * as authControllers from "../controllers/auth.controllers";
 
 const router = express.Router();
 
@@ -29,37 +29,7 @@ const sendingEmail = process.env.SENDING_EMAIL;
 //  Input : username/password via body
 //  HTTP Success : 200, message and user infos.
 //  HTTP Errors : 400, 401.
-router.post("/login", (req, res, next) => {
-  const { error } = validateLoginInput(req.body);
-  if (error) return res.status(400).send({ message: error.details[0].message });
-
-  req.body = sanitize(req.body);
-
-  req.body.username = req.body.username.toLowerCase();
-
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (info && info.message === "Missing credentials") {
-      return res.status(400).send({ message: "Missing credentials" });
-    }
-    if (!user) {
-      return res.status(400).send({ message: "Invalid email or password." });
-    }
-    if (!user.isVerified)
-      return res.status(401).send({
-        message: "Your account has not been verified. Please activate your account.",
-      });
-
-    req.login(user, (err) => {
-      if (err) {
-        res.status(401).send({ message: "Authentication failed", err });
-      }
-      res.status(200).send({ message: "Login success", user: user.hidePassword() });
-    });
-  })(req, res, next);
-});
+router.post("/login", authControllers.postLogin);
 
 //  Input : email via body.
 //  HTTP Success : 200 and message.
@@ -140,7 +110,7 @@ router.post("/login/reset/:token", (req, res) => {
       });
 
     // If we found a token, find a matching user
-    User.findById(token._userId, function (err, user: IUserInstance) {
+    User.findById(token._userId, function (err, user: UserDocument) {
       if (err) {
         return res.status(500).send("An unexpected error occurred");
       }

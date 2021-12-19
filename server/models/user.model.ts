@@ -1,8 +1,8 @@
-import { Model, model, Schema, Document } from "mongoose";
+import { model, Schema, Document } from "mongoose";
 import { omit } from "ramda";
 import bcrypt from "bcrypt";
 
-export interface IUserDocument extends Document {
+export interface UserDocument extends Document {
   username: string;
   email: string;
   password: string;
@@ -11,17 +11,13 @@ export interface IUserDocument extends Document {
   isVerified: boolean;
   isAdmin: boolean;
   expires: Date;
-}
 
-export interface IUserInstance extends IUserDocument {
   comparePassword(password: string): boolean;
   hidePassword(): void;
   hashPassword(): Promise<string>;
 }
 
-export interface IUserModel extends Model<IUserInstance> {}
-
-const userSchema = new Schema<IUserDocument, IUserModel, IUserInstance>({
+const userSchema = new Schema<UserDocument>({
   username: {
     type: String,
     required: true,
@@ -56,7 +52,7 @@ const userSchema = new Schema<IUserDocument, IUserModel, IUserInstance>({
   expires: { type: Date, default: new Date(), expires: 43200 },
 });
 
-userSchema.methods.validPassword = function (password: string) {
+userSchema.methods.comparePassword = function (password: string) {
   return bcrypt.compareSync(password, this.password);
 };
 
@@ -83,6 +79,6 @@ userSchema.methods.hidePassword = function () {
   return omit(["password", "__v", "_id"], this.toObject({ virtuals: true }));
 };
 
-export const User: IUserModel = model<IUserInstance, IUserModel>("User", userSchema);
+export const User = model<UserDocument>("User", userSchema);
 
 export default User;

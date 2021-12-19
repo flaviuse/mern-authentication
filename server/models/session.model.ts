@@ -1,22 +1,17 @@
-import { Schema, model, Document, Model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
-interface ISessionDocument extends Document {
+interface SessionDocument extends Document {
   session: string;
   session_id: string;
   expire: Date;
 }
 
-interface ISessionInstance extends ISessionDocument {}
-
-interface ISessionModel extends Model<ISessionInstance> {}
-
-const sessionSchema = new Schema<ISessionDocument, ISessionModel, ISessionInstance>({
+const sessionSchema = new Schema<SessionDocument>({
   session: String,
   session_id: String,
   expire: { type: Date, required: true, default: new Date(), expires: "14d" },
 });
 
-export const SessionModel: ISessionModel = model<ISessionInstance, ISessionModel>(
-  "Session",
-  sessionSchema
-);
+export const SessionModel = model<SessionDocument>("Session", sessionSchema);
+
+export default SessionModel;

@@ -2,7 +2,7 @@ import { CustomHelpers, extend, Extension } from "joi";
 import { Types } from "mongoose";
 const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
-// Allow Object ID validation with joi
+// Add Object ID validation with joi
 const joiObjectIdExtension: Extension = {
   type: "objectId",
   messages: {

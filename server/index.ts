@@ -10,7 +10,8 @@ import { extendJoiValidation } from "startup/validation";
 import { initDB } from "./startup/db";
 import { initCORS } from "startup/cors";
 import { initLogger } from "startup/logging";
-import { initPassportJS } from "startup/passport/passport-setup";
+import { initPassportJS } from "startup/passport";
+import { initRoutes } from "./routes/index";
 
 const port = process.env.PORT || 3900;
 const app = express();
@@ -43,6 +44,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-require("./routes/index")(app);
+initRoutes(app);
 
 app.listen(port, () => winston.info(`Listening on port ${port}...`));

@@ -1,10 +1,10 @@
-import user from "./user.route";
-import auth from "./auth.route";
+import userRoutes from "./user.routes";
+import authRoutes from "./auth.routes";
 import { Express } from "express";
-import error from "../middleware/error";
+import errorHandler from "../middlewares/errorHandler";
 
 export function initRoutes(app: Express) {
-  app.use("/api/user", user);
-  app.use("/api/auth", auth);
-  app.use(error);
+  app.use("/api/user", userRoutes);
+  app.use("/api/auth", authRoutes);
+  app.use(errorHandler);
 }

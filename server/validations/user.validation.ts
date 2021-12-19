@@ -1,8 +1,8 @@
 import Joi from "joi";
-import { IUserDocument } from "models/user.model";
+import { UserDocument } from "models/user.model";
 
 export function validateUser(
-  user: Pick<IUserDocument, "username" | "email" | "password" | "isAdmin">
+  user: Pick<UserDocument, "username" | "email" | "password" | "isAdmin">
 ) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
@@ -14,7 +14,7 @@ export function validateUser(
   return schema.validate(user);
 }
 
-export function validateLoginInput(input: Pick<IUserDocument, "username" | "password">) {
+export function validateLoginInput(input: Pick<UserDocument, "username" | "password">) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
     password: Joi.string().min(5).max(255).required(),
@@ -24,7 +24,7 @@ export function validateLoginInput(input: Pick<IUserDocument, "username" | "pass
 }
 
 export function validateRegisterInput(
-  input: Pick<IUserDocument, "username" | "email" | "password">
+  input: Pick<UserDocument, "username" | "email" | "password">
 ) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(50).required(),
@@ -35,7 +35,7 @@ export function validateRegisterInput(
   return schema.validate(input);
 }
 
-export function validateEmail(input: Pick<IUserDocument, "email">) {
+export function validateEmail(input: Pick<UserDocument, "email">) {
   const schema = Joi.object({
     email: Joi.string().min(5).max(255).required().email(),
   });
@@ -43,7 +43,7 @@ export function validateEmail(input: Pick<IUserDocument, "email">) {
   return schema.validate(input);
 }
 
-export function validatePassword(input: Pick<IUserDocument, "password">) {
+export function validatePassword(input: Pick<UserDocument, "password">) {
   const schema = Joi.object({
     password: Joi.string().min(5).max(255).required(),
   });
