@@ -1,6 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
-interface SessionDocument extends Document {
+export interface SessionDocument extends Document {
   session: string;
   session_id: string;
   expire: Date;

@@ -1,4 +1,5 @@
 import { UserDocument, User } from "../models/user.model";
+import { TokenDocument } from "../models/token.model";
 
 import {
   validateRegisterInput,
@@ -15,6 +16,7 @@ import winston from "winston";
 import sgMail from "@sendgrid/mail";
 
 import * as authControllers from "../controllers/auth.controllers";
+import { Error } from "mongoose";
 
 const router = express.Router();
 
@@ -40,7 +42,7 @@ router.post("/login/forgot", (req, res) => {
 
   req.body = sanitize(req.body);
 
-  User.findOne({ email: req.body.email }, function (err, user) {
+  User.findOne({ email: req.body.email }, function (err: Error, user: UserDocument) {
     if (err) {
       return res.status(500).send({ message: "An unexpected error occurred" });
     }
@@ -100,7 +102,7 @@ router.post("/login/reset/:token", (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
   // Find a matching token
-  Token.findOne({ token: req.params.token }, function (err, token) {
+  Token.findOne({ token: req.params.token }, function (err: Error, token: TokenDocument) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -110,7 +112,7 @@ router.post("/login/reset/:token", (req, res) => {
       });
 
     // If we found a token, find a matching user
-    User.findById(token._userId, function (err, user: UserDocument) {
+    User.findById(token._userId, function (err: Error, user: UserDocument) {
       if (err) {
         return res.status(500).send("An unexpected error occurred");
       }
@@ -171,7 +173,7 @@ router.post("/logout", (req, res) => {
     if (err) {
       res.status(500).send({ message: "Logout failed", err });
     }
-    req.sessionID = null;
+    req.sessionID = "";
     req.logout();
     res.status(200).send({ message: "Logout success" });
   });
@@ -188,16 +190,19 @@ router.post("/register", async (req, res) => {
   req.body = sanitize(req.body);
 
   //Check for existing username
-  let user = await User.findOne({ username: req.body.username.toLowerCase() }, function (err) {
-    if (err) {
-      return res.status(500).send("An unexpected error occurred");
+  let user = await User.findOne(
+    { username: req.body.username.toLowerCase() },
+    function (err: Error) {
+      if (err) {
+        return res.status(500).send("An unexpected error occurred");
+      }
     }
-  });
+  );
   if (user)
     return res.status(400).send({ message: "Username already taken. Take an another Username" });
 
   //Check for existing email
-  user = await User.findOne({ email: req.body.email.toLowerCase() }, function (err) {
+  user = await User.findOne({ email: req.body.email.toLowerCase() }, function (err: Error) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -271,7 +276,7 @@ router.post("/resend", (req, res) => {
 
   req.body = sanitize(req.body);
 
-  User.findOne({ email: req.body.email }, function (err, user) {
+  User.findOne({ email: req.body.email }, function (err: Error, user: UserDocument) {
     if (err) {
       return res.status(500).send({ message: "An unexpected error occurred" });
     }
@@ -327,22 +332,25 @@ router.post("/register/reset", (req, res) => {
 
   req.body = sanitize(req.body);
 
-  User.findOneAndDelete({ email: req.body.email, isVerified: false }, function (err, user) {
-    if (err) {
-      return res.status(500).send("An unexpected error occurred");
-    }
+  User.findOneAndDelete(
+    { email: req.body.email, isVerified: false },
+    function (err: Error, user: UserDocument) {
+      if (err) {
+        return res.status(500).send("An unexpected error occurred");
+      }
 
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
 
-    return res.status(200).send({ message: "User reset success" });
-  });
+      return res.status(200).send({ message: "User reset success" });
+    }
+  );
 });
 
 router.get("/confirmation/:token", (req, res) => {
   // Find a matching token
-  Token.findOne({ token: req.params.token }, function (err, token) {
+  Token.findOne({ token: req.params.token }, function (err: Error, token: TokenDocument) {
     if (err) {
       return res.status(500).send("An unexpected error occurred");
     }
@@ -352,7 +360,7 @@ router.get("/confirmation/:token", (req, res) => {
       });
 
     // If we found a token, find a matching user
-    User.findById(token._userId, function (err, user) {
+    User.findById(token._userId, function (err: Error, user: UserDocument) {
       if (err) {
         return res.status(500).send({ message: "An unexpected error occurred" });
       }

@@ -2,7 +2,7 @@ import { model, Schema, Document } from "mongoose";
 
 const ObjectId = Schema.Types.ObjectId;
 
-interface TokenDocument extends Document {
+export interface TokenDocument extends Document {
   _userId: typeof Schema.Types.ObjectId;
   token: string;
   createdAt: Date;
