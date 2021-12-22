@@ -7,9 +7,9 @@ COPY package.json ./
 COPY yarn.lock ./
 # Install dependecies
 RUN yarn ci
-RUN yarn build
 # Get all the code needed to run the app
 COPY . .
+
 # Expose the port the app runs in
 EXPOSE 8081
 # Serve the app
