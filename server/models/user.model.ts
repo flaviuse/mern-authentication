@@ -1,6 +1,7 @@
 import { model, Schema, Document } from "mongoose";
 import { omit } from "ramda";
 import bcrypt from "bcrypt";
+import dayjs from "dayjs";
 
 export interface UserDocument extends Document {
   username: string;
@@ -10,7 +11,7 @@ export interface UserDocument extends Document {
   passwordResetExpires: Date;
   isVerified: boolean;
   isAdmin: boolean;
-  expires: Date;
+  expires?: Date;
 
   comparePassword(password: string): boolean;
   hidePassword(): void;
@@ -38,7 +39,7 @@ const userSchema = new Schema<UserDocument>({
     maxlength: 1024,
   },
   passwordResetToken: { type: String, default: "" },
-  passwordResetExpires: { type: Date, default: new Date() },
+  passwordResetExpires: { type: Date, default: dayjs().toDate() },
   isVerified: {
     type: Boolean,
     required: true,
@@ -49,7 +50,7 @@ const userSchema = new Schema<UserDocument>({
     default: false,
     required: true,
   },
-  expires: { type: Date, default: new Date(), expires: 43200 },
+  expires: { type: Date, default: dayjs().toDate(), expires: 43200 },
 });
 
 userSchema.methods.comparePassword = function (password: string) {

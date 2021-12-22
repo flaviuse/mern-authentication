@@ -11,13 +11,13 @@ const resetPassword = (password: string, token: string) =>
 
 const postLogout = () => http.post<void>("/auth/logout");
 
-const postRegister = (user: User) => http.post<void>("/auth/register", user);
+const postUser = (user: User) => http.post<void>("/user/register", user);
 
 const getConfirmation = (token: string) => http.get<void>(`/auth/confirmation/${token}`);
 
 const resendConfirmation = (email: string) => http.post<void>("/auth/resend", { email });
 
-const resetRegister = (email: string) => http.post<void>("/auth/register/reset", { email });
+const resetRegister = (email: string) => http.post<void>("/user/register/cancel", { email });
 
 const getUser = () => http.get<{ user: User }>("/user");
 
@@ -26,7 +26,7 @@ export {
   sendResetPasswordLink,
   resetPassword,
   postLogout,
-  postRegister,
+  postUser,
   getConfirmation,
   resendConfirmation,
   getUser,

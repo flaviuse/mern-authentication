@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { Credentials } from "src/store/actions/user";
 
 import {
-  postRegister,
+  postUser,
   postLogin,
   postLogout,
   getConfirmation,
@@ -43,7 +43,7 @@ export const attemptLogout = () => (dispatch: Dispatch) =>
       dispatch(push("/login"));
     });
 
-export const attemptRegister = (newUser: User) => () => postRegister(newUser);
+export const attemptRegister = (newUser: User) => () => postUser(newUser);
 
 export const attemptGetConfirmation = (token: string) => (dispatch: Dispatch) =>
   getConfirmation(token).then(() => {
