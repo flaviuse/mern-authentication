@@ -15,7 +15,7 @@ const postUser = (user: User) => http.post<void>("/user/register", user);
 
 const getConfirmation = (token: string) => http.get<void>(`/auth/confirmation/${token}`);
 
-const resendConfirmation = (email: string) => http.post<void>("/auth/resend", { email });
+const resendConfirmation = (email: string) => http.post<void>("/auth/send-confirmation", { email });
 
 const resetRegister = (email: string) => http.post<void>("/user/register/cancel", { email });
 

@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import express from "express";
 
 import { initProd } from "./startup/prod";
-import { extendJoiValidation } from "./startup/validation";
 import { initDB } from "./startup/db";
 import { initCORS } from "./startup/cors";
 import { initLogger } from "./startup/logging";
@@ -18,7 +17,6 @@ const app = express();
 
 initPassportJS();
 initLogger();
-extendJoiValidation();
 initCORS(app);
 initDB();
 initProd(app);

@@ -1,13 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import sanitize from "mongo-sanitize";
 import passport from "passport";
-import { validateEmail, validateLoginInput, validatePassword } from "validations/user.validation";
+import {
+  validateEmail,
+  validateLoginInput,
+  validatePassword,
+} from "../validations/user.validation";
 import crypto from "crypto";
 
 import sgMail from "@sendgrid/mail";
 import dayjs from "dayjs";
-import Token, { TokenDocument } from "models/token.model";
-import User, { UserDocument } from "models/user.model";
+import Token, { TokenDocument } from "../models/token.model";
+import User, { UserDocument } from "../models/user.model";
 import winston from "winston";
 
 const host = process.env.HOST; // FRONTEND Host

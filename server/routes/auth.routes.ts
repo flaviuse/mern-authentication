@@ -27,7 +27,7 @@ router.post("/logout", authControllers.postLogout);
 //  Input : email via body;
 //  HTTP Success : 200 and message.
 //  HTTP Errors : 400, 404, 500, 503.
-router.post("/verify", authControllers.postVerify);
+router.post("/send-confirmation", authControllers.postVerify);
 
 router.get("/confirmation/:token", authControllers.getConfirmation);
 

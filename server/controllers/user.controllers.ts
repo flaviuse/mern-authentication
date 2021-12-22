@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import Token from "models/token.model";
-import User, { UserDocument } from "models/user.model";
+import Token from "../models/token.model";
+import User, { UserDocument } from "../models/user.model";
 import sanitize from "mongo-sanitize";
-import { validateEmail, validateRegisterInput } from "validations/user.validation";
+import { validateEmail, validateRegisterInput } from "../validations/user.validation";
 import winston from "winston";
 import crypto from "crypto";
 import sgMail from "@sendgrid/mail";
@@ -27,26 +27,23 @@ export const postUser = async (req: Request, res: Response) => {
   let sanitizedInput = sanitize<{ username: string; password: string; email: string }>(req.body);
 
   //Check for existing username
-  let user = await User.findOne(
-    { username: sanitizedInput.username.toLowerCase() },
-    function (err: Error) {
-      if (err) {
-        return res.status(500).send("An unexpected error occurred");
-      }
-    }
-  );
-  if (user)
-    return res.status(400).send({ message: "Username already taken. Take an another Username" });
+  let user: UserDocument | null;
+  try {
+    user = await User.findOne({ username: sanitizedInput.username.toLowerCase() });
+    if (user)
+      return res.status(400).send({ message: "Username already taken. Take an another Username" });
+  } catch (error) {
+    return res.status(500).send("An unexpected error occurred");
+  }
 
   //Check for existing email
-  user = await User.findOne({ email: sanitizedInput.email.toLowerCase() }, function (err: Error) {
-    if (err) {
-      return res.status(500).send("An unexpected error occurred");
-    }
-  });
-
-  if (user)
-    return res.status(400).send({ message: "Email already registered. Take an another email" });
+  try {
+    user = await User.findOne({ email: sanitizedInput.email.toLowerCase() });
+    if (user)
+      return res.status(400).send({ message: "Email already registered. Take an another email" });
+  } catch (error) {
+    return res.status(500).send("An unexpected error occurred");
+  }
 
   // Create new user
   const newUser = new User(sanitizedInput);

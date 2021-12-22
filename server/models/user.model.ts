@@ -1,6 +1,6 @@
 import { model, Schema, Document } from "mongoose";
 import { omit } from "ramda";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
 
 export interface UserDocument extends Document {
