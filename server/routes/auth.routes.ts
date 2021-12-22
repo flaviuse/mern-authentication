@@ -1,14 +1,6 @@
-import { UserDocument, User } from "../models/user.model";
-import { TokenDocument } from "../models/token.model";
-
-import { validateEmail } from "../validations/user.validation";
-
-import { Token } from "../models/token.model";
-import sanitize from "mongo-sanitize";
 import express from "express";
 
 import * as authControllers from "../controllers/auth.controllers";
-import { Error } from "mongoose";
 
 const router = express.Router();
 
