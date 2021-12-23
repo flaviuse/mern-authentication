@@ -1,0 +1,23 @@
+const host = process.env.HOST;
+const sendingEmail = process.env.SENDING_EMAIL;
+import sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
+export const createResetPasswordEmail = (
+  receiverEmail: string,
+  resetTokenValue: string
+): sgMail.MailDataRequired => {
+  const email: sgMail.MailDataRequired = {
+    to: receiverEmail,
+    from: `${sendingEmail}`,
+    subject: "Reset password link",
+    text: "Some useless text",
+    html: `<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\n
+  <a href="http://${host}/login/reset/${resetTokenValue}">http://${host}/login/reset/${resetTokenValue}</a> \n\n If you did not request this, please ignore this email and your password will remain unchanged.\n </p>`,
+  };
+
+  return email;
+};
+
+export const sendEmail = async (email: sgMail.MailDataRequired) => sgMail.send(email);

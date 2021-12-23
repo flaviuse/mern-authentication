@@ -7,12 +7,16 @@ import {
   validatePassword,
 } from "../validations/user.validation";
 import crypto from "crypto";
-
+import winston from "winston";
 import sgMail from "@sendgrid/mail";
 import dayjs from "dayjs";
+
 import Token, { TokenDocument } from "../models/token.model";
 import User, { UserDocument } from "../models/user.model";
-import winston from "winston";
+import * as UserService from "./../services/user.service";
+import * as TokenService from "./../services/token.service";
+import * as LoggerService from "./../services/logger.service";
+import { createResetPasswordEmail, sendEmail } from "./../services/email.service";
 
 const host = process.env.HOST; // FRONTEND Host
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -22,13 +26,14 @@ const sendingEmail = process.env.SENDING_EMAIL;
 
 export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   const { error } = validateLoginInput(req.body);
+
   if (error) return res.status(400).send({ message: error.details[0].message });
 
   let sanitizedInput = sanitize<{ username: string; password: string }>(req.body);
 
   sanitizedInput.username = req.body.username.toLowerCase();
 
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", (err: Error, user: UserDocument, info) => {
     if (err) {
       return next(err);
     }
@@ -43,71 +48,53 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
         message: "Your account has not been verified. Please activate your account.",
       });
 
-    req.login(user, (err) => {
+    req.login(user, (err: Error) => {
       if (err) {
         res.status(401).send({ message: "Authentication failed", err });
       }
-      res.status(200).send({ message: "Login success", user: user.hidePassword() });
+      res.status(200).send({ message: "Login success", user: UserService.getClientUser(user) });
     });
   })(req, res, next);
 };
 
-export const postLoginForgot = (req: Request, res: Response) => {
+export const postLoginForgot = async (req: Request, res: Response) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
   const sanitizedInput = sanitize<{ email: string }>(req.body);
 
-  User.findOne({ email: sanitizedInput.email }, function (err: Error, user: UserDocument) {
-    if (err) {
-      return res.status(500).send({ message: "An unexpected error occurred" });
-    }
+  try {
+    const user = await UserService.queryUserByEmail(sanitizedInput.email);
     if (!user) return res.status(404).send({ message: "No user found with this email address." });
 
-    // Create a verification token
-    var token = new Token({
-      _userId: user._id,
-      token: crypto.randomBytes(16).toString("hex"),
-    });
+    const resetToken = TokenService.createToken();
+    const tokenExpiryDate = dayjs().add(12, "hours").toDate();
 
-    user.passwordResetToken = token.token;
-    user.passwordResetExpires = dayjs().add(12, "hours").toDate();
+    TokenService.setUserId(resetToken, user.id);
+    UserService.setResetPasswordToken(user, resetToken.token, tokenExpiryDate);
 
-    user.save(function (err) {
-      if (err) {
-        return res.status(500).send({ message: "An unexpected error occurred" });
-      }
-      // Save the token
-      token.save(function (err) {
-        if (err) {
-          return res.status(500).send({ message: "An unexpected error occurred" });
-        }
-        // Send the mail
-        const mail = {
-          to: user.email,
-          from: `${sendingEmail}`,
-          subject: "Reset password link",
-          text: "Some useless text",
-          html: `<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n Please click on the following link, or paste this into your browser to complete the process:\n\n
-        <a href="http://${host}/login/reset/${token.token}">http://${host}/login/reset/${token.token}</a> \n\n If you did not request this, please ignore this email and your password will remain unchanged.\n </p>`,
-        };
+    await user.save(); // TODO in service
+    await resetToken.save(); // TODO in service
 
-        sgMail
-          .send(mail)
-          .then(() => {
-            return res
-              .status(200)
-              .send({ message: `A validation email has been sent to ${user.email}` });
-          })
-          .catch((error) => {
-            winston.error(error);
-            return res.status(503).send({
-              message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
-            });
-          });
+    try {
+      const email = createResetPasswordEmail(user.email, resetToken.token);
+      await sendEmail(email);
+
+      return res
+        .status(200)
+        .send({ message: `A reset passowrd email has been sent to ${user.email}` });
+    } catch (error) {
+      LoggerService.log.error(error);
+
+      return res.status(503).send({
+        message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
       });
-    });
-  });
+    }
+  } catch (error) {
+    LoggerService.log.error(error);
+
+    return res.status(500).send({ message: "An unexpected error occurred" });
+  }
 };
 
 export const postLoginReset = (req: Request, res: Response) => {
