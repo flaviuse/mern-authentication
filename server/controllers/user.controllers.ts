@@ -28,6 +28,7 @@ export const postUser = async (req: Request, res: Response) => {
 
   //Check for existing username
   let user: UserDocument | null;
+
   try {
     user = await User.findOne({ username: sanitizedInput.username.toLowerCase() });
     if (user)

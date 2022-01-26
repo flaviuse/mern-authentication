@@ -6,9 +6,7 @@ import {
   validateLoginInput,
   validatePassword,
 } from "../validations/user.validation";
-import crypto from "crypto";
-import winston from "winston";
-import sgMail from "@sendgrid/mail";
+
 import dayjs from "dayjs";
 
 import Token, { TokenDocument } from "../models/token.model";
@@ -16,13 +14,7 @@ import User, { UserDocument } from "../models/user.model";
 import * as UserService from "./../services/user.service";
 import * as TokenService from "./../services/token.service";
 import * as LoggerService from "./../services/logger.service";
-import { createResetPasswordEmail, sendEmail } from "./../services/email.service";
-
-const host = process.env.HOST; // FRONTEND Host
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-
-// Define email address that will send the emails to your users.
-const sendingEmail = process.env.SENDING_EMAIL;
+import * as EmailService from "./../services/email.service";
 
 export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   const { error } = validateLoginInput(req.body);
@@ -52,7 +44,7 @@ export const postLogin = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         res.status(401).send({ message: "Authentication failed", err });
       }
-      res.status(200).send({ message: "Login success", user: UserService.getClientUser(user) });
+      res.status(200).send({ message: "Login success", user: UserService.getUser(user) });
     });
   })(req, res, next);
 };
@@ -64,7 +56,7 @@ export const postLoginForgot = async (req: Request, res: Response) => {
   const sanitizedInput = sanitize<{ email: string }>(req.body);
 
   try {
-    const user = await UserService.queryUserByEmail(sanitizedInput.email);
+    const user = await UserService.findUserBy("email", sanitizedInput.email);
     if (!user) return res.status(404).send({ message: "No user found with this email address." });
 
     const resetToken = TokenService.createToken();
@@ -73,12 +65,12 @@ export const postLoginForgot = async (req: Request, res: Response) => {
     TokenService.setUserId(resetToken, user.id);
     UserService.setResetPasswordToken(user, resetToken.token, tokenExpiryDate);
 
-    await user.save(); // TODO in service
-    await resetToken.save(); // TODO in service
+    await UserService.saveUser(user);
+    await TokenService.saveToken(resetToken);
 
     try {
-      const email = createResetPasswordEmail(user.email, resetToken.token);
-      await sendEmail(email);
+      const email = EmailService.createResetPasswordEmail(user.email, resetToken.token);
+      await EmailService.sendEmail(email);
 
       return res
         .status(200)
@@ -97,72 +89,57 @@ export const postLoginForgot = async (req: Request, res: Response) => {
   }
 };
 
-export const postLoginReset = (req: Request, res: Response) => {
-  // Validate password Input
+export const postLoginReset = async (req: Request, res: Response) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
-  // Find a matching token
-  Token.findOne({ token: req.params.token }, function (err: Error, token: TokenDocument) {
-    if (err) {
-      return res.status(500).send("An unexpected error occurred");
-    }
-    if (!token)
+  const sanitizedInput = sanitize<{ password: string }>(req.body);
+
+  try {
+    const token = await TokenService.findTokenBy("token", req.params["token"]);
+    if (!token) {
       return res.status(404).send({
         message: "This token is not valid. Your token may have expired.",
       });
+    }
+    const user = await UserService.findUserById(token._userId);
 
-    // If we found a token, find a matching user
-    User.findById(token._userId, function (err: Error, user: UserDocument) {
-      if (err) {
-        return res.status(500).send("An unexpected error occurred");
-      }
+    if (!user) {
+      return res.status(404).send({ message: `We were unable to find a user for this token.` });
+    }
 
-      if (!user)
-        return res.status(404).send({ message: `We were unable to find a user for this token.` });
+    if (user.passwordResetToken !== token.token)
+      return res.status(400).send({
+        message:
+          "User token and your token didn't match. You may have a more recent token in your mail list.",
+      });
 
-      if (user.passwordResetToken !== token.token)
-        return res.status(400).send({
-          message:
-            "User token and your token didn't match. You may have a more recent token in your mail list.",
-        });
+    // Verify that the user token expires date has not been passed
+    if (dayjs().toDate() > user.passwordResetExpires) {
+      return res.status(400).send({
+        message:
+          "You cannot reset your password. The reset token has expired. Please go through the reset form again.",
+      });
+    }
+    // Update user
+    await UserService.setUserPassword(user, sanitizedInput.password);
+    await UserService.saveUser(user);
 
-      // Verify that the user token expires date has not been passed
-      if (dayjs().toDate() > user.passwordResetExpires) {
-        return res.status(400).send({
-          message:
-            "You cannot reset your password. The reset token has expired. Please go through the reset form again.",
-        });
-      }
-      // Update user
-      user.password = req.body.password;
-      user.passwordResetToken = "";
-      user.passwordResetExpires = dayjs().toDate();
-      //Hash new password
-      user.hashPassword().then(() =>
-        // Save updated user to the database
-        user.save(function (err) {
-          if (err) {
-            return res.status(500).send({ message: "An unexpected error occurred" });
-          }
-          // Send mail confirming password change to the user
-          const mail = {
-            to: user.email,
-            from: `${sendingEmail}`,
-            subject: "Your password has been changed",
-            text: "Some useless text",
-            html: `<p>This is a confirmation that the password for your account ${user.email} has just been changed. </p>`,
-          };
-          sgMail.send(mail).catch((error) => {
-            winston.error(error);
-            return res.status(503).send({
-              message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
-            });
-          });
-          return res.status(200).send({ message: "Password has been successfully changed." });
-        })
-      );
-    });
-  });
+    try {
+      const email = EmailService.createResetConfirmationEmail(user.email);
+      await EmailService.sendEmail(email);
+      return res.status(200).send({ message: "Password has been successfully changed." });
+    } catch (error) {
+      LoggerService.log.error(error);
+
+      return res.status(503).send({
+        message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
+      });
+    }
+  } catch (error) {
+    LoggerService.log.error(error);
+
+    return res.status(500).send("An unexpected error occurred");
+  }
 };
 
 export const postLogout = (req: Request, res: Response) => {
@@ -176,57 +153,44 @@ export const postLogout = (req: Request, res: Response) => {
   });
 };
 
-export const postVerify = (req: Request, res: Response) => {
-  // Check for validation errors
+export const postVerify = async (req: Request, res: Response) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
-  req.body = sanitize(req.body);
+  const sanitizedInput = sanitize<{ email: string }>(req.body);
 
-  User.findOne({ email: req.body.email }, function (err: Error, user: UserDocument) {
-    if (err) {
-      return res.status(500).send({ message: "An unexpected error occurred" });
+  try {
+    const user = await UserService.findUserBy("email", sanitizedInput.email);
+    if (!user) {
+      return res.status(404).send({ message: "No user found with this email address." });
     }
-    if (!user)
-      return res.status(404).send({ message: "We were unable to find a user with that email." });
-    if (user.isVerified)
+    if (user.isVerified) {
       return res.status(400).send({
         message: "This account has already been verified. Please log in.",
       });
+    }
 
-    // Create a verification token, save it, and send email
-    var token = new Token({
-      _userId: user._id,
-      token: crypto.randomBytes(16).toString("hex"),
-    });
+    const verificationToken = TokenService.createToken();
+    TokenService.setUserId(verificationToken, user.id);
 
-    // Save the token
-    token.save(function (err) {
-      if (err) {
-        return res.status(500).send("An unexpected error occurred");
-      }
-      // Send the mail
-      const mail = {
-        to: user.email,
-        from: `${sendingEmail}`,
-        subject: "Email Verification",
-        text: "Some uselss text",
-        html: `<p>Please verify your account by clicking the link: 
-        <a href="http://${host}/account/confirm/${token.token}">http://${host}/account/confirm/${token.token}</a> </p>`,
-      };
-      sgMail
-        .send(mail)
-        .then(() => {
-          return res.status(200).send({ message: "A verification mail has been sent." });
-        })
-        .catch((error) => {
-          winston.error(error);
-          return res.status(503).send({
-            message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
-          });
-        });
-    });
-  });
+    await TokenService.saveToken(verificationToken);
+    try {
+      const email = EmailService.createVerificationEmail(user.email, verificationToken.token);
+      await EmailService.sendEmail(email);
+
+      return res.status(200).send({ message: `A verification email has been sent.` });
+    } catch (error) {
+      LoggerService.log.error(error);
+
+      return res.status(503).send({
+        message: `Impossible to send an email to ${user.email}, try again. Our service may be down.`,
+      });
+    }
+  } catch (error) {
+    LoggerService.log.error(error);
+
+    return res.status(500).send("An unexpected error occurred");
+  }
 };
 
 export const getConfirmation = (req: Request, res: Response) => {

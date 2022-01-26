@@ -20,4 +20,32 @@ export const createResetPasswordEmail = (
   return email;
 };
 
+export const createResetConfirmationEmail = (receiverEmail: string): sgMail.MailDataRequired => {
+  const email: sgMail.MailDataRequired = {
+    to: receiverEmail,
+    from: `${sendingEmail}`,
+    subject: "Your password has been changed",
+    text: "Some useless text",
+    html: `<p>This is a confirmation that the password for your account ${receiverEmail} has just been changed. </p>`,
+  };
+
+  return email;
+};
+
+export const createVerificationEmail = (
+  receiverEmail: string,
+  verificationTokenValue: string
+): sgMail.MailDataRequired => {
+  const email = {
+    to: receiverEmail,
+    from: `${sendingEmail}`,
+    subject: "Email Verification",
+    text: "Some uselss text",
+    html: `<p>Please verify your account by clicking the link: 
+  <a href="http://${host}/account/confirm/${verificationTokenValue}">http://${host}/account/confirm/${verificationTokenValue}</a> </p>`,
+  };
+
+  return email;
+};
+
 export const sendEmail = async (email: sgMail.MailDataRequired) => sgMail.send(email);
