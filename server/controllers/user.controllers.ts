@@ -6,6 +6,8 @@ import { validateEmail, validateRegisterInput } from "../validations/user.valida
 import winston from "winston";
 import crypto from "crypto";
 import sgMail from "@sendgrid/mail";
+import * as UserService from "../services/user.service";
+import * as LoggerService from "../services/logger.service";
 
 const host = process.env.HOST; // FRONTEND Host
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -30,24 +32,27 @@ export const postUser = async (req: Request, res: Response) => {
   let user: UserDocument | null;
 
   try {
-    user = await User.findOne({ username: sanitizedInput.username.toLowerCase() });
-    if (user)
-      return res.status(400).send({ message: "Username already taken. Take an another Username" });
-  } catch (error) {
-    return res.status(500).send("An unexpected error occurred");
-  }
+    user = await UserService.findUserBy("username", sanitizedInput.username.toLowerCase());
 
-  //Check for existing email
-  try {
-    user = await User.findOne({ email: sanitizedInput.email.toLowerCase() });
-    if (user)
+    if (user) {
+      return res.status(400).send({ message: "Username already taken. Take an another Username" });
+    }
+
+    user = await UserService.findUserBy("email", sanitizedInput.email.toLowerCase());
+
+    if (user) {
       return res.status(400).send({ message: "Email already registered. Take an another email" });
+    }
+
+    const newUser = new User(sanitizedInput);
+    await UserService.setUserPassword(newUser, newUser.password);
   } catch (error) {
+    LoggerService.log.error(error);
+
     return res.status(500).send("An unexpected error occurred");
   }
 
   // Create new user
-  const newUser = new User(sanitizedInput);
 
   // Hash password
   newUser!.hashPassword().then(() => {

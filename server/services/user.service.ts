@@ -26,3 +26,8 @@ export const setUserPassword = async (user: UserDocument, password: string) => {
   user.passwordResetExpires = dayjs().toDate();
   await user.hashPassword();
 };
+
+export const setUserVerified = async (user: UserDocument) => {
+  user.isVerified = true;
+  user.expires = undefined;
+};

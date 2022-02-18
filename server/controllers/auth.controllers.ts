@@ -96,11 +96,13 @@ export const postLoginReset = async (req: Request, res: Response) => {
 
   try {
     const token = await TokenService.findTokenBy("token", req.params["token"]);
+
     if (!token) {
       return res.status(404).send({
         message: "This token is not valid. Your token may have expired.",
       });
     }
+
     const user = await UserService.findUserById(token._userId);
 
     if (!user) {
@@ -193,41 +195,35 @@ export const postVerify = async (req: Request, res: Response) => {
   }
 };
 
-export const getConfirmation = (req: Request, res: Response) => {
-  // Find a matching token
-  Token.findOne({ token: req.params.token }, function (err: Error, token: TokenDocument) {
-    if (err) {
-      return res.status(500).send("An unexpected error occurred");
-    }
-    if (!token)
+export const getConfirmation = async (req: Request, res: Response) => {
+  try {
+    const token = await TokenService.findTokenBy("token", req.params.token);
+
+    if (!token) {
       return res.status(404).send({
         message: "We were unable to find a valid token. Your token may have expired.",
       });
+    }
 
-    // If we found a token, find a matching user
-    User.findById(token._userId, function (err: Error, user: UserDocument) {
-      if (err) {
-        return res.status(500).send({ message: "An unexpected error occurred" });
-      }
+    const user = await UserService.findUserById(token._userId);
 
-      if (!user)
-        return res.status(404).send({ message: `We were unable to find a user for this token.` });
+    if (!user) {
+      return res.status(404).send({ message: `We were unable to find a user for this token.` });
+    }
 
-      if (user.isVerified)
-        return res
-          .status(400)
-          .send({ message: "This user has already been verified. Please log in." });
+    if (user.isVerified) {
+      return res
+        .status(400)
+        .send({ message: "This user has already been verified. Please log in." });
+    }
 
-      // Verify and save the user
-      user.isVerified = true;
-      user.expires = undefined;
+    UserService.setUserVerified(user);
+    await UserService.saveUser(user);
 
-      user.save(function (err) {
-        if (err) {
-          return res.status(500).send({ message: "An unexpected error occurred" });
-        }
-        return res.status(200).send({ message: "The account has been verified. Please log in." });
-      });
-    });
-  });
+    return res.status(200).send({ message: "The account has been verified. Please log in." });
+  } catch (error) {
+    LoggerService.log.error(error);
+
+    return res.status(500).send("An unexpected error occurred");
+  }
 };
