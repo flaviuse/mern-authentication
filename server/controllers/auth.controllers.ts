@@ -9,8 +9,7 @@ import {
 
 import dayjs from "dayjs";
 
-import Token, { TokenDocument } from "../models/token.model";
-import User, { UserDocument } from "../models/user.model";
+import { UserDocument } from "../models/user.model";
 import * as UserService from "./../services/user.service";
 import * as TokenService from "./../services/token.service";
 import * as LoggerService from "./../services/logger.service";

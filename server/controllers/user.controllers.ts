@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 
-import User, { UserDocument } from "../models/user.model";
 import sanitize from "mongo-sanitize";
 import { validateEmail, validateRegisterInput } from "../validations/user.validation";
 
@@ -24,11 +23,8 @@ export const postUser = async (req: Request, res: Response) => {
 
   let sanitizedInput = sanitize<{ username: string; password: string; email: string }>(req.body);
 
-  //Check for existing username
-  let user: UserDocument | null;
-
   try {
-    user = await UserService.findUserBy("username", sanitizedInput.username.toLowerCase());
+    let user = await UserService.findUserBy("username", sanitizedInput.username.toLowerCase());
 
     if (user) {
       return res.status(400).send({ message: "Username already taken. Take an another Username" });
