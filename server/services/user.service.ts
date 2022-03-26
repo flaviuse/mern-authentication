@@ -3,7 +3,15 @@ import { User, UserDocument } from "./../models/user.model";
 import dayjs from "dayjs";
 
 export const getUser = (user: UserDocument) => user.hidePassword();
-
+export const createUser = ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}) => new User({ username, email, password });
 export const setResetPasswordToken = (
   user: UserDocument,
   resetTokenValue: string,
@@ -24,10 +32,14 @@ export const setUserPassword = async (user: UserDocument, password: string) => {
   user.password = password;
   user.passwordResetToken = "";
   user.passwordResetExpires = dayjs().toDate();
-  await user.hashPassword();
+  return await user.hashPassword();
 };
 
 export const setUserVerified = async (user: UserDocument) => {
   user.isVerified = true;
   user.expires = undefined;
 };
+
+export const deleteUserById = async (user: UserDocument) => await User.findByIdAndDelete(user._id);
+export const deleteUnverifiedUserByEmail = async (email: string) =>
+  await User.findOneAndDelete({ email, isVerified: false });
