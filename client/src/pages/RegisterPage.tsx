@@ -59,11 +59,15 @@ export default function RegisterPage() {
   };
 
   const onReset = () => {
-    dispatch(attemptResetRegister(email)).catch((error) => {
-      if (error.response) {
-        setServerError(error.response.data.message);
-      }
-    });
+    dispatch(attemptResetRegister(email))
+      .then(() => {
+        setRegisterStep("register");
+      })
+      .catch((error) => {
+        if (error.response) {
+          setServerError(error.response.data.message);
+        }
+      });
   };
 
   function renderSwitch() {
