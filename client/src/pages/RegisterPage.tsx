@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -10,18 +10,24 @@ import {
 } from "../store/thunks/auth";
 import { User } from "src/store/actions/user";
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
+import { AxiosError } from "axios";
 
-type FormValues = User;
+type RegisterFormValues = User;
+
+enum RegisterFormStep {
+  Register,
+  Resend,
+  Reset,
+}
 
 export default function RegisterPage() {
-  const { isAuth } = useAppSelector((state) => state.user);
-  const [serverError, setServerError] = useState("");
-  const [email, setEmail] = useState("");
-  const [registerStep, setRegisterStep] = useState("register"); // Use an enum with TS;
-
   const dispatch = useAppDispatch();
+  const { isAuth } = useAppSelector((state) => state.user);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [registerStep, setRegisterStep] = useState<RegisterFormStep>(RegisterFormStep.Register);
 
-  const initialValues: FormValues = {
+  const initialValues: RegisterFormValues = {
     email: "",
     username: "",
     password: "",
@@ -33,51 +39,49 @@ export default function RegisterPage() {
     password: Yup.string().min(5).max(255).required("Required"),
   });
 
-  const onSubmit = (values: FormValues) => {
+  const handleServerError = (error: AxiosError) => {
+    if (error.response) {
+      setServerError(error.response.data.message);
+    }
+  };
+
+  const handleSubmit = (values: RegisterFormValues) => {
     dispatch(attemptRegister(values))
       .then(() => {
         setEmail(values.email);
-        setRegisterStep("resend");
+        setRegisterStep(RegisterFormStep.Resend);
       })
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
+      .catch(handleServerError);
   };
 
-  const onResendEmail = () => {
+  const handleResendEmail = () => {
+    if (!email) return;
+
     dispatch(attemptResendConfirmation(email))
       .then(() => {
-        setRegisterStep("reset");
+        setRegisterStep(RegisterFormStep.Reset);
       })
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
+      .catch(handleServerError);
   };
 
-  const onReset = () => {
+  const handleResetRegister = () => {
+    if (!email) return;
+
     dispatch(attemptResetRegister(email))
       .then(() => {
-        setRegisterStep("register");
+        setRegisterStep(RegisterFormStep.Register);
       })
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
+      .catch(handleServerError);
   };
 
   function renderSwitch() {
     switch (registerStep) {
-      case "register":
+      case RegisterFormStep.Register:
         return (
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={onSubmit}>
+            onSubmit={handleSubmit}>
             {(formik) => {
               return (
                 <div className='container'>
@@ -107,7 +111,7 @@ export default function RegisterPage() {
             }}
           </Formik>
         );
-      case "resend":
+      case RegisterFormStep.Resend:
         return (
           <div className='container'>
             <p>A verification email has been sent.</p>
@@ -116,27 +120,27 @@ export default function RegisterPage() {
               You have 12 hours to activate your account. It can take up to 15 min to receive our
               email.
             </p>
-            <button onClick={onResendEmail}>
+            <button onClick={handleResendEmail}>
               Did not receive the email? Click here to send again.
             </button>
             {serverError && <Error>{serverError}</Error>}
           </div>
         );
 
-      case "reset":
+      case RegisterFormStep.Reset:
         return (
           <div className='container'>
             <p>Still not received an email? </p>
             <p>Try to register again. You may have given the wrong email. </p>
             <p>If you want to be able to use the same username, reset the registration :</p>
-            <button onClick={onReset}>Click here to reset the registration</button>
+            <button onClick={handleResetRegister}>Click here to reset the registration</button>
             {serverError && <Error>{serverError}</Error>}
           </div>
         );
       default:
-        return null;
+        return <Redirect to='/home' />;
     }
   }
 
-  return isAuth ? <Redirect to='/home' /> : <Fragment>{renderSwitch()}</Fragment>;
+  return isAuth ? <Redirect to='/home' /> : <>{renderSwitch()}</>;
 }
