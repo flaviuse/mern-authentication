@@ -9,8 +9,8 @@ import {
   attemptResetRegister,
 } from "../store/thunks/auth";
 import { User } from "src/store/actions/user";
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
-import { AxiosError } from "axios";
+import { useAppDispatch } from "src/store/hooks";
+import { useServerError } from "src/hooks/useServerError";
 
 type RegisterFormValues = User;
 
@@ -22,8 +22,7 @@ enum RegisterFormStep {
 
 export default function RegisterPage() {
   const dispatch = useAppDispatch();
-  const { isAuth } = useAppSelector((state) => state.user);
-  const [serverError, setServerError] = useState<string | null>(null);
+  const { serverError, handleServerError } = useServerError();
   const [email, setEmail] = useState<string | null>(null);
   const [registerStep, setRegisterStep] = useState<RegisterFormStep>(RegisterFormStep.Register);
 
@@ -38,12 +37,6 @@ export default function RegisterPage() {
     username: Yup.string().min(3).max(50).required("Required"),
     password: Yup.string().min(5).max(255).required("Required"),
   });
-
-  const handleServerError = (error: AxiosError) => {
-    if (error.response) {
-      setServerError(error.response.data.message);
-    }
-  };
 
   const handleSubmit = (values: RegisterFormValues) => {
     dispatch(attemptRegister(values))
@@ -142,5 +135,5 @@ export default function RegisterPage() {
     }
   }
 
-  return isAuth ? <Redirect to='/home' /> : <>{renderSwitch()}</>;
+  return <>{renderSwitch()}</>;
 }

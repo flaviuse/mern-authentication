@@ -1,23 +1,21 @@
-import { useState } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Error } from "../components";
 import { attemptResetPassword } from "../store/thunks/auth";
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
+import { useServerError } from "src/hooks/useServerError";
 
-type FormValues = {
+type ResetPasswordFormValues = {
   password: string;
 };
 
 export default function ResetPasswordPage() {
-  const { isAuth } = useAppSelector((state) => state.user);
-  const { token } = useParams<{ token: string }>();
-  const [serverError, setServerError] = useState("");
-
   const dispatch = useAppDispatch();
+  const { token } = useParams<{ token: string }>();
+  const { serverError, handleServerError } = useServerError();
 
-  const initialValues: FormValues = {
+  const initialValues: ResetPasswordFormValues = {
     password: "",
   };
 
@@ -25,18 +23,12 @@ export default function ResetPasswordPage() {
     password: Yup.string().min(5).max(255).required("Required"),
   });
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: ResetPasswordFormValues) => {
     const password = values.password;
-    dispatch(attemptResetPassword(password, token)).catch((error) => {
-      if (error.response) {
-        setServerError(error.response.data.message);
-      }
-    });
+    dispatch(attemptResetPassword(password, token)).catch(handleServerError);
   };
 
-  return isAuth ? (
-    <Redirect to='/home' />
-  ) : (
+  return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
       {(formik) => {
         return (

@@ -1,21 +1,20 @@
-import { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { attemptLogin } from "../store/thunks/auth";
 import { Error } from "../components";
 import { Credentials } from "src/store/actions/user";
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
+import { useServerError } from "src/hooks/useServerError";
 
-type FormValues = Credentials;
+type LoginFormValues = Credentials;
 
 export default function LoginPage() {
-  const { isAuth } = useAppSelector((state) => state.user);
-  const [serverError, setServerError] = useState("");
+  const { serverError, handleServerError } = useServerError();
 
   const dispatch = useAppDispatch();
 
-  const initialValues: FormValues = {
+  const initialValues: LoginFormValues = {
     username: "",
     password: "",
   };
@@ -25,18 +24,15 @@ export default function LoginPage() {
     password: Yup.string().min(5).max(255).required("Required"),
   });
 
-  const onSubmit = (values: FormValues) => {
-    dispatch(attemptLogin(values)).catch(({ response }) => {
-      if (response.data.message) {
-        setServerError(response.data.message);
-      }
-    });
+  const handleSubmit = (values: LoginFormValues) => {
+    dispatch(attemptLogin(values)).catch(handleServerError);
   };
 
-  return isAuth ? (
-    <Redirect to='/home' />
-  ) : (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}>
       {(formik) => {
         return (
           <div className='container'>

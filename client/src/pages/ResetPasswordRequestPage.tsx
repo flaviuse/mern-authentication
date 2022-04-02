@@ -1,21 +1,19 @@
 import { useState } from "react";
-import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Error } from "../components";
 import { attemptSendResetPasswordLink } from "../store/thunks/auth";
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
+import { useServerError } from "src/hooks/useServerError";
 
 type FormValues = {
   email: string;
 };
 
 export default function ResetPasswordRequestPage() {
-  const { isAuth } = useAppSelector((state) => state.user);
-  const [serverError, setServerError] = useState("");
-  const [isSubmited, setIsSubmited] = useState(false);
-
   const dispatch = useAppDispatch();
+  const { serverError, handleServerError } = useServerError();
+  const [isSubmited, setIsSubmited] = useState(false);
 
   const initialValues: FormValues = {
     email: "",
@@ -31,16 +29,10 @@ export default function ResetPasswordRequestPage() {
       .then(() => {
         setIsSubmited(true);
       })
-      .catch((error) => {
-        if (error.response) {
-          setServerError(error.response.data.message);
-        }
-      });
+      .catch(handleServerError);
   };
 
-  return isAuth ? (
-    <Redirect to='/home' />
-  ) : isSubmited ? (
+  return isSubmited ? (
     <div className='container'>
       <p>
         A reset link has been sent to your email. <b>You have 12 hours to activate your account.</b>
