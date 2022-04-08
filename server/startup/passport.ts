@@ -1,5 +1,5 @@
 import passport from "passport";
-import { UserDocument, User } from "../models/user.model";
+import { UserDocument, User } from "@models/user.model";
 import Local from "passport-local";
 import { NativeError } from "mongoose";
 

@@ -17,7 +17,17 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@services/*": ["./services/*"],
+      "@models/*": ["./models/*"],
+      "@controllers/*": ["./controllers/*"],
+      "@middlewares/*": ["./middlewares/*"],
+      "@utils/*": ["./utils/*"],
+      "@routes/*": ["./routes/*"],
+      "@validations/*": ["./validations/*"],
+      "@startup/*": ["./startup/*"]
+    }
   },
   "exclude": ["node_modules", "build"]
 }

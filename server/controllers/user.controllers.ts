@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
 import sanitize from "mongo-sanitize";
-import { validateEmail, validateRegisterInput } from "../validations/user.validation";
+import { validateEmail, validateRegisterInput } from "@validations/user.validation";
 
-import * as UserService from "../services/user.service";
-import * as TokenService from "../services/token.service";
-import * as LoggerService from "../services/logger.service";
-import * as EmailService from "../services/email.service";
+import UserService from "@services/user.service";
+import TokenService from "@services/token.service";
+import LoggerService from "@services/logger.service";
+import EmailService from "@services/email.service";
 
 // Define email address that will send the emails to your users.
 
@@ -82,4 +82,10 @@ export const postUserCancel = (req: Request, res: Response) => {
   } catch (error) {
     return res.status(500).send("An unexpected error occurred");
   }
+};
+
+export default {
+  getUser,
+  postUser,
+  postUserCancel,
 };

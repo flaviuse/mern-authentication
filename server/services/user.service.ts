@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { User, UserDocument } from "./../models/user.model";
+import { User, UserDocument } from "@models/user.model";
 import dayjs from "dayjs";
 
 export const getUser = (user: UserDocument) => user.hidePassword();
@@ -43,3 +43,16 @@ export const setUserVerified = async (user: UserDocument) => {
 export const deleteUserById = async (user: UserDocument) => await User.findByIdAndDelete(user._id);
 export const deleteUnverifiedUserByEmail = async (email: string) =>
   await User.findOneAndDelete({ email, isVerified: false });
+
+export default {
+  getUser,
+  createUser,
+  setResetPasswordToken,
+  findUserBy,
+  findUserById,
+  saveUser,
+  setUserPassword,
+  setUserVerified,
+  deleteUserById,
+  deleteUnverifiedUserByEmail,
+};

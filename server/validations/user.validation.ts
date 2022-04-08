@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { UserDocument } from "models/user.model";
+import { UserDocument } from "@models/user.model";
 
 export function validateUser(
   user: Pick<UserDocument, "username" | "email" | "password" | "isAdmin">

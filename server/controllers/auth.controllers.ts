@@ -1,19 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import sanitize from "mongo-sanitize";
 import passport from "passport";
-import {
-  validateEmail,
-  validateLoginInput,
-  validatePassword,
-} from "../validations/user.validation";
+import { validateEmail, validateLoginInput, validatePassword } from "@validations/user.validation";
 
 import dayjs from "dayjs";
 
-import { UserDocument } from "../models/user.model";
-import * as UserService from "./../services/user.service";
-import * as TokenService from "./../services/token.service";
-import * as LoggerService from "./../services/logger.service";
-import * as EmailService from "./../services/email.service";
+import { UserDocument } from "@models/user.model";
+import UserService from "@services/user.service";
+import TokenService from "@services/token.service";
+import LoggerService from "@services/logger.service";
+import EmailService from "@services/email.service";
 
 export const postLogin = (req: Request, res: Response, next: NextFunction) => {
   const { error } = validateLoginInput(req.body);
@@ -225,4 +221,13 @@ export const getConfirmation = async (req: Request, res: Response) => {
 
     return res.status(500).send("An unexpected error occurred");
   }
+};
+
+export default {
+  postLogin,
+  postLoginReset,
+  postLogout,
+  postVerify,
+  getConfirmation,
+  postLoginForgot,
 };

@@ -1,6 +1,5 @@
-import { Token } from "../models/token.model";
+import { Token, TokenDocument } from "@models/token.model";
 import crypto from "crypto";
-import { TokenDocument } from "./../models/token.model";
 import { Schema } from "mongoose";
 
 export const createToken = (): TokenDocument =>
@@ -16,3 +15,10 @@ export const setUserId = (token: TokenDocument, userId: typeof Schema.Types.Obje
 };
 
 export const saveToken = (token: TokenDocument) => token.save();
+
+export default {
+  createToken,
+  findTokenBy,
+  setUserId,
+  saveToken,
+};

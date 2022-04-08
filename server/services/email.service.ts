@@ -1,6 +1,6 @@
+import sgMail from "@sendgrid/mail";
 const host = process.env.HOST;
 const sendingEmail = process.env.SENDING_EMAIL;
-import sgMail from "@sendgrid/mail";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
@@ -49,3 +49,10 @@ export const createVerificationEmail = (
 };
 
 export const sendEmail = async (email: sgMail.MailDataRequired) => sgMail.send(email);
+
+export default {
+  createResetPasswordEmail,
+  createResetConfirmationEmail,
+  createVerificationEmail,
+  sendEmail,
+};
