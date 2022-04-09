@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe("Mern authentication", () => {
   test("should load homepage", async ({ page }) => {
-    await expect(page.locator('data-test-id="homepage-anchor"')).toBeVisible();
+    const anchor = page.locator('[data-test-id="homepage-anchor"]');
+    await expect(anchor).toBeVisible();
   });
 });
