@@ -82,16 +82,19 @@ export default function RegisterPage() {
                     <div className='field'>
                       <label htmlFor='email'>Email</label>
                       <Field id='email' name='email' type='email' placeholder='Email' />
+                      {/* @ts-ignore */}
                       <ErrorMessage name='email' component={Error} />
                     </div>
                     <div className='field'>
                       <label htmlFor='username'>Username</label>
                       <Field id='username' name='username' type='text' placeholder='Username' />
+                      {/* @ts-ignore */}
                       <ErrorMessage name='username' component={Error} />
                     </div>
                     <div className='field'>
                       <label htmlFor='password'>Password</label>
                       <Field id='password' name='password' type='password' placeholder='Password' />
+                      {/* @ts-ignore */}
                       <ErrorMessage name='password' component={Error} />
                     </div>
                     <button type='submit' disabled={!formik.dirty || !formik.isValid}>

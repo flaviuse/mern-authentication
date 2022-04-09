@@ -49,6 +49,7 @@ export default function ResetPasswordRequestPage() {
               <div className='field'>
                 <label htmlFor='email'>Email</label>
                 <Field id='email' name='email' type='email' placeholder='Email' />
+                {/* @ts-ignore */}
                 <ErrorMessage name='email' component={Error} />
               </div>
 

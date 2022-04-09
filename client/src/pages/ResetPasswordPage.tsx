@@ -37,6 +37,7 @@ export default function ResetPasswordPage() {
               <div className='field'>
                 <label htmlFor='password'>Password</label>
                 <Field id='password' name='password' type='password' placeholder='Password' />
+                {/* @ts-ignore */}
                 <ErrorMessage name='password' component={Error} />
               </div>
               <button type='submit' disabled={!formik.dirty || !formik.isValid}>

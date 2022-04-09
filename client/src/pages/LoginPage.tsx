@@ -40,11 +40,13 @@ export default function LoginPage() {
               <div className='field'>
                 <label htmlFor='username'>Username</label>
                 <Field id='username' name='username' type='text' placeholder='Username' />
+                {/* @ts-ignore */}
                 <ErrorMessage name='username' component={Error} />
               </div>
               <div className='field'>
                 <label htmlFor='password'>Password</label>
                 <Field id='password' name='password' type='password' placeholder='Password' />
+                {/* @ts-ignore */}
                 <ErrorMessage name='password' component={Error} />
               </div>
               <div>

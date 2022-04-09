@@ -9,6 +9,7 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
+    {/* @ts-ignore outdated lib types*/}
     <ConnectedRouter history={history}>
       <App />
     </ConnectedRouter>
