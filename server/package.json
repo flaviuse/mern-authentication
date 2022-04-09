@@ -7,9 +7,9 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc-alias --project tsconfig.json",
     "dev": "nodemon index.ts",
-    "start": "tsc && node build/index.js",
+    "start": "yarn build && node build/index.js",
     "ci": "yarn install --frozen-lockfile"
   },
   "dependencies": {
@@ -34,6 +34,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "ramda": "^0.27.1",
+    "tsc-alias": "^1.6.6",
     "winston": "^3.3.3"
   },
   "devDependencies": {
@@ -48,7 +49,6 @@
     "@types/ramda": "^0.27.61",
     "@types/winston": "^2.4.4",
     "nodemon": "^2.0.14",
-    "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
   }
 }
