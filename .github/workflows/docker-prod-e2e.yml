@@ -1,0 +1,25 @@
+name: Docker Compose Prod
+on:
+  pull_request:
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create server env file
+        run: touch server.prod.env
+      - name: Build the stack
+        run: docker-compose -f docker-compose.prod.yml up -d
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install dependencies
+        working-directory: ./e2e
+        run: yarn && yarn test:ci
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

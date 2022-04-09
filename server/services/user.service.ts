@@ -3,6 +3,7 @@ import { User, UserDocument } from "@models/user.model";
 import dayjs from "dayjs";
 
 export const getUser = (user: UserDocument) => user.hidePassword();
+
 export const createUser = ({
   username,
   email,
@@ -41,6 +42,7 @@ export const setUserVerified = async (user: UserDocument) => {
 };
 
 export const deleteUserById = async (user: UserDocument) => await User.findByIdAndDelete(user._id);
+
 export const deleteUnverifiedUserByEmail = async (email: string) =>
   await User.findOneAndDelete({ email, isVerified: false });
 
