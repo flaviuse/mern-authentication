@@ -5,12 +5,13 @@ import MongoStore from "connect-mongo";
 import bodyParser from "body-parser";
 import express from "express";
 
-import { initProd } from "./startup/prod";
-import { initDB } from "./startup/db";
-import { initCORS } from "./startup/cors";
-import { initLogger } from "./startup/logging";
-import { initPassportJS } from "./startup/passport";
-import { initRoutes } from "./routes/index";
+import { initProd } from "@startup/prod";
+import { initDB } from "@startup/db";
+import { initCORS } from "@startup/cors";
+import { initLogger } from "@startup/logging";
+import { initPassportJS } from "@startup/passport";
+import { initRoutes } from "@routes/index";
+import { initRateLimit } from "@startup/rate-limit";
 
 const port = process.env.PORT || 3900;
 const app = express();
@@ -20,6 +21,7 @@ initLogger();
 initCORS(app);
 initDB();
 initProd(app);
+initRateLimit(app);
 
 // Create session
 app.use(

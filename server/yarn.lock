@@ -770,6 +770,11 @@ express-async-errors@^3.1.1:
   resolved "https://registry.yarnpkg.com/express-async-errors/-/express-async-errors-3.1.1.tgz#6053236d61d21ddef4892d6bd1d736889fc9da41"
   integrity sha512-h6aK1da4tpqWSbyCa3FxB/V6Ehd4EEB15zyQq9qe75OZBp0krinNKuH4rAY+S/U/2I36vdLAUFSjQJ+TFmODng==
 
+express-rate-limit@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/express-rate-limit/-/express-rate-limit-6.3.0.tgz#253387ce4d36c9c2cc77c7c676068deb36cc0821"
+  integrity sha512-932Io1VGKjM3ppi7xW9sb1J5nVkEJSUiOtHw2oE+JyHks1e+AXuOBSXbJKM0mcXwEnW1TibJibQ455Ow1YFjfg==
+
 express-session@^1.17.2:
   version "1.17.2"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.17.2.tgz#397020374f9bf7997f891b85ea338767b30d0efd"
