@@ -14,7 +14,7 @@ import {
 } from "./pages";
 import { ProtectedRoute, NavBar } from "./components";
 import { useAppDispatch } from "./store/hooks";
-import { RedirectAuth } from "./components/RedirectAuth";
+import { AuthRoute } from "./components/AuthRoute";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -37,13 +37,11 @@ export default function App() {
       <NavBar />
       <Switch>
         <Route path='/home' exact component={HomePage} />
-        <RedirectAuth>
-          <Route path='/account/confirm/:token' exact component={ConfirmPage} />
-          <Route path='/register' exact component={RegisterPage} />
-          <Route path='/login' exact component={LoginPage} />
-          <Route path='/login/forgot' exact component={ResetPasswordRequestPage} />
-          <Route path='/login/reset/:token' component={ResetPasswordPage} />
-        </RedirectAuth>
+        <AuthRoute path='/account/confirm/:token' exact component={ConfirmPage} />
+        <AuthRoute path='/register' exact component={RegisterPage} />
+        <AuthRoute path='/login' exact component={LoginPage} />
+        <AuthRoute path='/login/forgot' exact component={ResetPasswordRequestPage} />
+        <AuthRoute path='/login/reset/:token' component={ResetPasswordPage} />
         <ProtectedRoute path='/logout' component={LogoutPage} />
         <ProtectedRoute path='/my-profile' component={ProfilePage} />
         <Redirect from='/' exact to='/home' />

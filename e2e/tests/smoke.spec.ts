@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:3000/home");
+  await page.goto("http://localhost:3000");
 });
 
 test.describe("Mern authentication", () => {
