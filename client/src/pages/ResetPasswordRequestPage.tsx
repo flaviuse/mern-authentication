@@ -1,12 +1,13 @@
 import { useState } from "react";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Error } from "../components";
 import { attemptSendResetPasswordLink } from "../store/thunks/auth";
 import { useAppDispatch } from "src/store/hooks";
 import { useServerError } from "src/hooks/useServerError";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
-type FormValues = {
+type ResetPasswordRequestFormValues = {
   email: string;
 };
 
@@ -15,7 +16,7 @@ export default function ResetPasswordRequestPage() {
   const { serverError, handleServerError } = useServerError();
   const [isSubmited, setIsSubmited] = useState(false);
 
-  const initialValues: FormValues = {
+  const initialValues: ResetPasswordRequestFormValues = {
     email: "",
   };
 
@@ -23,7 +24,16 @@ export default function ResetPasswordRequestPage() {
     email: Yup.string().min(5).max(255).email().required("Required"),
   });
 
-  const onSubmit = (values: FormValues) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetPasswordRequestFormValues>({
+    defaultValues: initialValues,
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (values: ResetPasswordRequestFormValues) => {
     const email = values.email;
     dispatch(attemptSendResetPasswordLink(email))
       .then(() => {
@@ -40,27 +50,18 @@ export default function ResetPasswordRequestPage() {
       </p>
     </div>
   ) : (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      {(formik) => {
-        return (
-          <div className='container'>
-            <p>We will send you a reset link on the following email :</p>
-            <Form className='form'>
-              <div className='field'>
-                <label htmlFor='email'>Email</label>
-                <Field id='email' name='email' type='email' placeholder='Email' />
-                {/* @ts-ignore */}
-                <ErrorMessage name='email' component={Error} />
-              </div>
+    <div className='container'>
+      <p>We will send you a reset link on the following email :</p>
+      <form className='form' onSubmit={handleSubmit(onSubmit)}>
+        <div className='field'>
+          <label htmlFor='email'>Email</label>
+          <input {...register("email")} id='email' type='email' placeholder='Email' />
+          {errors.email && <Error>{errors.email.message}</Error>}
+        </div>
 
-              <button type='submit' disabled={!formik.dirty || !formik.isValid}>
-                Send reset link
-              </button>
-              {serverError && <Error>{serverError}</Error>}
-            </Form>
-          </div>
-        );
-      }}
-    </Formik>
+        <button type='submit'>Send reset link</button>
+        {serverError && <Error>{serverError}</Error>}
+      </form>
+    </div>
   );
 }

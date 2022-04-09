@@ -17,6 +17,7 @@ export default function RegisterConfirmationPage() {
   return (
     <div className='container'>
       <p>Click here to confirm your email</p>
+
       <button onClick={handleSubmit}>Confirmation</button>
       {serverError && <Error>{serverError}</Error>}
     </div>

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Error } from "../components";
 import {
   attemptRegister,
@@ -11,6 +10,8 @@ import {
 import { User } from "src/store/actions/user";
 import { useAppDispatch } from "src/store/hooks";
 import { useServerError } from "src/hooks/useServerError";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 
 type RegisterFormValues = User;
 
@@ -38,7 +39,16 @@ export default function RegisterPage() {
     password: Yup.string().min(5).max(255).required("Required"),
   });
 
-  const handleSubmit = (values: RegisterFormValues) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormValues>({
+    defaultValues: initialValues,
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (values: RegisterFormValues) => {
     dispatch(attemptRegister(values))
       .then(() => {
         setEmail(values.email);
@@ -71,42 +81,35 @@ export default function RegisterPage() {
     switch (registerStep) {
       case RegisterFormStep.Register:
         return (
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}>
-            {(formik) => {
-              return (
-                <div className='container'>
-                  <Form className='form'>
-                    <div className='field'>
-                      <label htmlFor='email'>Email</label>
-                      <Field id='email' name='email' type='email' placeholder='Email' />
-                      {/* @ts-ignore */}
-                      <ErrorMessage name='email' component={Error} />
-                    </div>
-                    <div className='field'>
-                      <label htmlFor='username'>Username</label>
-                      <Field id='username' name='username' type='text' placeholder='Username' />
-                      {/* @ts-ignore */}
-                      <ErrorMessage name='username' component={Error} />
-                    </div>
-                    <div className='field'>
-                      <label htmlFor='password'>Password</label>
-                      <Field id='password' name='password' type='password' placeholder='Password' />
-                      {/* @ts-ignore */}
-                      <ErrorMessage name='password' component={Error} />
-                    </div>
-                    <button type='submit' disabled={!formik.dirty || !formik.isValid}>
-                      Signup
-                    </button>
-                    {serverError && <Error>{serverError}</Error>}
-                  </Form>
-                </div>
-              );
-            }}
-          </Formik>
+          <div className='container'>
+            <form className='form' onSubmit={handleSubmit(onSubmit)}>
+              <div className='field'>
+                <label htmlFor='email'>Email</label>
+                <input {...register("email")} id='email' type='email' placeholder='Email' />
+                {errors.email && <Error>{errors.email.message}</Error>}
+              </div>
+              <div className='field'>
+                <label htmlFor='username'>Username</label>
+                <input {...register("username")} id='username' type='text' placeholder='Username' />
+                {errors.username && <Error>{errors.username.message}</Error>}
+              </div>
+              <div className='field'>
+                <label htmlFor='password'>Password</label>
+                <input
+                  {...register("password")}
+                  id='password'
+                  type='password'
+                  placeholder='Password'
+                />
+                {errors.password && <Error>{errors.password.message}</Error>}
+              </div>
+
+              <button type='submit'>Signup</button>
+              {serverError && <Error>{serverError}</Error>}
+            </form>
+          </div>
         );
+
       case RegisterFormStep.Resend:
         return (
           <div className='container'>
@@ -116,6 +119,7 @@ export default function RegisterPage() {
               You have 12 hours to activate your account. It can take up to 15 min to receive our
               email.
             </p>
+
             <button onClick={handleResendEmail}>
               Did not receive the email? Click here to send again.
             </button>
@@ -129,6 +133,7 @@ export default function RegisterPage() {
             <p>Still not received an email? </p>
             <p>Try to register again. You may have given the wrong email. </p>
             <p>If you want to be able to use the same username, reset the registration :</p>
+
             <button onClick={handleResetRegister}>Click here to reset the registration</button>
             {serverError && <Error>{serverError}</Error>}
           </div>

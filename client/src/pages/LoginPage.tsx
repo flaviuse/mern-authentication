@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { attemptLogin } from "../store/thunks/auth";
 import { Error } from "../components";
 import { Credentials } from "src/store/actions/user";
@@ -24,44 +25,41 @@ export default function LoginPage() {
     password: Yup.string().min(5).max(255).required("Required"),
   });
 
-  const handleSubmit = (values: LoginFormValues) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    defaultValues: initialValues,
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (values: LoginFormValues) => {
     dispatch(attemptLogin(values)).catch(handleServerError);
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}>
-      {(formik) => {
-        return (
-          <div className='container'>
-            <Form className='form'>
-              <div className='field'>
-                <label htmlFor='username'>Username</label>
-                <Field id='username' name='username' type='text' placeholder='Username' />
-                {/* @ts-ignore */}
-                <ErrorMessage name='username' component={Error} />
-              </div>
-              <div className='field'>
-                <label htmlFor='password'>Password</label>
-                <Field id='password' name='password' type='password' placeholder='Password' />
-                {/* @ts-ignore */}
-                <ErrorMessage name='password' component={Error} />
-              </div>
-              <div>
-                <Link to='/login/forgot'>Forgot your password?</Link>
-              </div>
-              <button type='submit' disabled={!formik.dirty || !formik.isValid}>
-                Login
-              </button>
-              {serverError && <Error>{serverError}</Error>}
-            </Form>
-            <b>Or</b>
-            <Link to='/register'>Sign Up</Link>
-          </div>
-        );
-      }}
-    </Formik>
+    <div className='container'>
+      <form className='form' onSubmit={handleSubmit(onSubmit)}>
+        <div className='field'>
+          <label htmlFor='username'>Username</label>
+          <input {...register("username")} id='username' type='text' placeholder='Username' />
+          {errors.username && <Error>{errors.username.message}</Error>}
+        </div>
+        <div className='field'>
+          <label htmlFor='password'>Password</label>
+          <input {...register("password")} id='password' type='password' placeholder='Password' />
+          {errors.password && <Error>{errors.password.message}</Error>}
+        </div>
+        <div>
+          <Link to='/login/forgot'>Forgot your password?</Link>
+        </div>
+
+        <button type='submit'>Login</button>
+        {serverError && <Error>{serverError}</Error>}
+      </form>
+      <b>Or</b>
+      <Link to='/register'>Sign Up</Link>
+    </div>
   );
 }
