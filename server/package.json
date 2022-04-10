@@ -14,7 +14,7 @@
   "dependencies": {
     "@sendgrid/mail": "^7.4.6",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.2",
     "compression": "^1.7.4",
     "connect-mongo": "^4.4.1",
     "cors": "^2.8.5",
