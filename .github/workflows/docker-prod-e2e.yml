@@ -14,9 +14,18 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14.x"
-      - name: Install dependencies
+      - name: Install e2e dependencies
         working-directory: ./e2e
-        run: npx playwright install && npx playwright install-deps && yarn && yarn test:ci
+        run: yarn install
+      - name: Install playwright
+        working-directory: ./e2e
+        run: npx playwright install
+      - name: Install playwright dependencies
+        working-directory: ./e2e
+        run: npx playwright install-deps
+      - name: Run Tests
+        working-directory: ./e2e
+        run: yarn test:ci
       - uses: actions/upload-artifact@v2
         if: always()
         with:
