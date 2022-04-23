@@ -3,27 +3,26 @@ services:
   mongo-prod:
     image: mongo:latest
     ports:
-      - "20717:20717" 
+      - "20717:20717"
     volumes:
       - /data/db # Create a volume for the DB.
   client-prod:
     container_name: client
     build:
       context: ./client
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     restart: always
-    env_file: 
+    env_file:
       - client.prod.env
-    restart: always
   server-prod:
     build:
       context: ./server
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     depends_on:
       - mongo-prod
-    env_file: 
+    env_file:
       - server.prod.env
     ports:
       - "8081:8081"

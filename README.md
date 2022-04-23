@@ -18,7 +18,7 @@ Docker allows to deloy the app in docker containers in one line in the CLI.
 
 ## Environment variables
 
-You have to set the following environment variables in `server.env` file (rename server.example.env to server.env):
+You have to set the following environment variables in `server.dev.env` file (rename server.example.env to server.dev.env):
 
 - SENDGRID_API_KEY, the backend uses Send Grid to send emails, you can register and get a free key on their website: <https://sendgrid.com/>. :warning: You cannot use the app without a key. Validation links are sent in http not https, you can modified that in server/routes/auth.js if you want to go https in deployment.
 
@@ -35,6 +35,8 @@ in the root directory:
 It supports hot reloading for both the frontend and backend.
 
 ## Production
+
+Set `server.prod.env` and `client.prod.env` files.
 
 in the root directory:
 
@@ -66,6 +68,8 @@ MERN Stack with advanced authentication :
 - React Hooks.
 
 - Nodejs.
+
+- Typescript.
 
 - Passport-js local.
 

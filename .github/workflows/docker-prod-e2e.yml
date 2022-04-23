@@ -1,0 +1,34 @@
+name: Run e2e Docker compose PROD
+on:
+  pull_request:
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create server env file
+        run: touch server.prod.env
+      - name: Build the stack
+        run: docker-compose -f docker-compose.prod.yml up -d
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install e2e dependencies
+        working-directory: ./e2e
+        run: yarn install
+      - name: Install playwright
+        working-directory: ./e2e
+        run: npx playwright install
+      - name: Install playwright dependencies
+        working-directory: ./e2e
+        run: npx playwright install-deps
+      - name: Run Tests
+        working-directory: ./e2e
+        run: yarn test:ci
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: playwright-report
+          path: ./e2e/playwright-report/
+          retention-days: 30

@@ -1,3 +1,5 @@
 node_modules/
 logfile.log
 uncaughtExceptions.log
+build
+yarn-error.log
