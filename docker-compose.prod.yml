@@ -10,7 +10,7 @@ services:
     container_name: client
     build:
       context: ./client
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     restart: always
@@ -19,7 +19,7 @@ services:
   server-prod:
     build:
       context: ./server
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     depends_on:
       - mongo-prod
     env_file:

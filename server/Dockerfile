@@ -5,12 +5,11 @@ WORKDIR /app
 # Copy dependency definitions
 COPY package.json ./
 COPY yarn.lock ./
-# Install dependecies
+# Install dependecies 
 RUN yarn ci
 # Get all the code needed to run the app
 COPY . .
-
 # Expose the port the app runs in
 EXPOSE 8081
 # Serve the app
-CMD ["yarn", "dev"]
+CMD ["yarn", "start"]
