@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy client
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          healthcheck: ${{secrets.HEROKU_APP_URL}}
+          healthcheck: ${{secrets.HEROKU_APP_HEALTHCHECK_URL}}
           delay: 30
           rollbackonhealthcheckfailed: true
           appdir: "client"

@@ -6,6 +6,7 @@ import ResetPasswordRequestPage from "./ResetPasswordRequestPage";
 import ResetPasswordPage from "./ResetPasswordPage";
 import LogoutPage from "./protected/LogoutPage";
 import RegisterPage from "./RegisterPage";
+import HealthPage from "./HealthPage";
 
 export {
   ConfirmPage,
@@ -16,4 +17,5 @@ export {
   ResetPasswordPage,
   LogoutPage,
   RegisterPage,
+  HealthPage,
 };
