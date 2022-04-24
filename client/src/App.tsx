@@ -11,6 +11,7 @@ import {
   ResetPasswordPage,
   LogoutPage,
   RegisterPage,
+  HealthPage,
 } from "./pages";
 import { ProtectedRoute, NavBar } from "./components";
 import { useAppDispatch } from "./store/hooks";
@@ -36,6 +37,7 @@ export default function App() {
     <>
       <NavBar />
       <Switch>
+        <Route path='/healthcheck' exact component={HealthPage} />
         <Route path='/home' exact component={HomePage} />
         <AuthRoute path='/account/confirm/:token' exact component={ConfirmPage} />
         <AuthRoute path='/register' exact component={RegisterPage} />
