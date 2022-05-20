@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc-alias --project tsconfig.json",
-    "dev": "nodemon index.ts",
+    "dev": "ts-node-dev --respawn -r tsconfig-paths/register index.ts",
     "start": "yarn build && node build/index.js",
     "ci": "yarn install --frozen-lockfile"
   },
@@ -49,7 +49,8 @@
     "@types/passport-local": "^1.0.34",
     "@types/ramda": "^0.27.61",
     "@types/winston": "^2.4.4",
-    "nodemon": "^2.0.14",
+    "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.4.4"
   }
 }
