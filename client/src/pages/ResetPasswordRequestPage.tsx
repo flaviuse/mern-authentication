@@ -45,7 +45,7 @@ export default function ResetPasswordRequestPage() {
   return isSubmited ? (
     <div className='container'>
       <p>
-        A reset link has been sent to your email. <b>You have 12 hours to activate your account.</b>
+        A reset link has been sent to your email. <b>You have 12 hours to reset your password.</b>
         It can take up to 15 min to receive our email.
       </p>
     </div>
