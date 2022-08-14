@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -12,7 +12,7 @@ type LoginFormValues = Credentials;
 
 export default function LoginPage() {
   const { serverError, handleServerError } = useServerError();
-
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const initialValues: LoginFormValues = {
@@ -35,7 +35,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = (values: LoginFormValues) => {
-    dispatch(attemptLogin(values)).catch(handleServerError);
+    dispatch(attemptLogin(values, navigate)).catch(handleServerError);
   };
 
   return (

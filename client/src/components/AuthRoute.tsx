@@ -1,8 +1,12 @@
-import { Redirect, Route, RouteProps } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 
-export const AuthRoute = ({ component, path }: RouteProps) => {
+interface AutheRouteProps {
+  children: JSX.Element;
+}
+
+export const AuthRoute = ({ children }: AutheRouteProps): JSX.Element => {
   const { isAuth } = useAppSelector((state) => state.user);
 
-  return !isAuth ? <Route path={path} exact component={component} /> : <Redirect to='/home' />;
+  return !isAuth ? children : <Navigate to='/home' replace />;
 };

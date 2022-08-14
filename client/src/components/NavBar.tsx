@@ -1,30 +1,35 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, NavLinkProps } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 
 export default function NavBar() {
   const { isAuth, user } = useAppSelector((state) => state.user);
 
+  const navLinkClass: NavLinkProps["className"] = ({ isActive }) =>
+    isActive ? "active" : "inactive";
+
   return (
     <nav className='nav'>
-      <NavLink className='inactive ' activeClassName='active' to='/home'>
+      <NavLink className={navLinkClass} to='/home'>
         Home
       </NavLink>
 
       {isAuth ? (
         <div>
-          <NavLink className='inactive' activeClassName='active' to='/my-profile'>
+          <NavLink className={navLinkClass} to='/my-profile'>
             {user?.username}
           </NavLink>
-          <NavLink className='inactive logout' activeClassName='active' to='/logout'>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active logout" : "inactive")}
+            to='/logout'>
             Logout
           </NavLink>
         </div>
       ) : (
         <div>
-          <NavLink className='inactive' activeClassName='active' to='/login'>
+          <NavLink className={navLinkClass} to='/login'>
             Login
           </NavLink>
-          <NavLink className='inactive ' activeClassName='active' to='/register'>
+          <NavLink className={navLinkClass} to='/register'>
             Register
           </NavLink>
         </div>

@@ -1,6 +1,8 @@
-import { FC } from "react";
+interface ErrorProps {
+  children?: JSX.Element | string;
+}
 
-export const Error: FC = ({ children }) => {
+export const Error = ({ children }: ErrorProps): JSX.Element => {
   return (
     <div className='error'>
       <b>*{children}</b>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Error } from "../components";
 import {
@@ -23,6 +23,8 @@ enum RegisterFormStep {
 
 export default function RegisterPage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const { serverError, handleServerError } = useServerError();
   const [email, setEmail] = useState<string | null>(null);
   const [registerStep, setRegisterStep] = useState<RegisterFormStep>(RegisterFormStep.Register);
@@ -60,7 +62,7 @@ export default function RegisterPage() {
   const handleResendEmail = () => {
     if (!email) return;
 
-    dispatch(attemptResendConfirmation(email))
+    dispatch(attemptResendConfirmation(email, navigate))
       .then(() => {
         setRegisterStep(RegisterFormStep.Reset);
       })
@@ -70,7 +72,7 @@ export default function RegisterPage() {
   const handleResetRegister = () => {
     if (!email) return;
 
-    dispatch(attemptResetRegister(email))
+    dispatch(attemptResetRegister(email, navigate))
       .then(() => {
         setRegisterStep(RegisterFormStep.Register);
       })
@@ -139,7 +141,7 @@ export default function RegisterPage() {
           </div>
         );
       default:
-        return <Redirect to='/home' />;
+        return <Navigate to='/home' replace />;
     }
   }
 
