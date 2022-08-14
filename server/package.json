@@ -31,7 +31,7 @@
     "moment": "^2.29.1",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^6.5.2",
-    "passport": "^0.6.0",
+    "passport": "0.4.1",
     "passport-local": "^1.0.0",
     "ramda": "^0.28.0",
     "winston": "^3.8.1"
