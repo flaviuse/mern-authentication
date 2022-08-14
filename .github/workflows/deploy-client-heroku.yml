@@ -17,7 +17,7 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           healthcheck: ${{secrets.HEROKU_APP_HEALTHCHECK_URL}}
-          delay: 30
+          delay: 60
           rollbackonhealthcheckfailed: true
           appdir: "client"
           usedocker: true
