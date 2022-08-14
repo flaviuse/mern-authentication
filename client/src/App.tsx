@@ -32,7 +32,7 @@ export default function App() {
   }, [dispatch]);
 
   return loading ? (
-    <p>Loading</p>
+    <p>Loading, API cold start</p>
   ) : (
     <>
       <NavBar />
