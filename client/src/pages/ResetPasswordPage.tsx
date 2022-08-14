@@ -1,8 +1,7 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { Error } from "../components";
 import { attemptResetPassword } from "../store/thunks/auth";
-import { useAppDispatch } from "src/store/hooks";
 import { useServerError } from "src/hooks/useServerError";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -12,7 +11,8 @@ type ResetPasswordFormValues = {
 };
 
 export default function ResetPasswordPage() {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const { token } = useParams<{ token: string }>();
   const { serverError, handleServerError } = useServerError();
 
@@ -33,9 +33,13 @@ export default function ResetPasswordPage() {
     resolver: yupResolver(validationSchema),
   });
 
+  if (!token) {
+    return <Navigate to='/home' replace />;
+  }
+
   const onSubmit = (values: ResetPasswordFormValues) => {
     const password = values.password;
-    dispatch(attemptResetPassword(password, token)).catch(handleServerError);
+    attemptResetPassword(password, token, navigate).catch(handleServerError);
   };
 
   return (

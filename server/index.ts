@@ -30,6 +30,7 @@ app.use(
     secret: process.env.SESSION_KEY!,
     resave: false,
     saveUninitialized: false,
+    // cookie: { secure: true } when using HTTPS
     // Store session on DB
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI || "mongodb://localhost:27017/test",

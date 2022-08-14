@@ -1,8 +1,12 @@
-import { Route, Redirect, RouteProps } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 
-export default function ProtectedRoute({ path, component }: RouteProps) {
+interface ProtectedRouteProps {
+  children: JSX.Element;
+}
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps): JSX.Element {
   const { isAuth } = useAppSelector((state) => state.user);
 
-  return isAuth ? <Route path={path} exact component={component} /> : <Redirect to='/login' />;
+  return isAuth ? children : <Navigate to='/login' replace />;
 }

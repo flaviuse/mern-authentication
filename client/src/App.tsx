@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Route, Navigate, Routes } from "react-router-dom";
 import { attemptGetUser } from "./store/thunks/user";
 
 import {
@@ -36,19 +36,68 @@ export default function App() {
   ) : (
     <>
       <NavBar />
-      <Switch>
-        <Route path='/healthcheck' exact component={HealthPage} />
-        <Route path='/home' exact component={HomePage} />
-        <AuthRoute path='/account/confirm/:token' exact component={ConfirmPage} />
-        <AuthRoute path='/register' exact component={RegisterPage} />
-        <AuthRoute path='/login' exact component={LoginPage} />
-        <AuthRoute path='/login/forgot' exact component={ResetPasswordRequestPage} />
-        <AuthRoute path='/login/reset/:token' component={ResetPasswordPage} />
-        <ProtectedRoute path='/logout' component={LogoutPage} />
-        <ProtectedRoute path='/my-profile' component={ProfilePage} />
-        <Redirect from='/' exact to='/home' />
-        <Redirect to='/home' />
-      </Switch>
+      <Routes>
+        <Route path='/healthcheck' element={<HealthPage />} />
+        <Route path='/home' element={<HomePage />} />
+        <Route
+          path='/account/confirm/:token'
+          element={
+            <AuthRoute>
+              <ConfirmPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/register'
+          element={
+            <AuthRoute>
+              <RegisterPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/login'
+          element={
+            <AuthRoute>
+              <LoginPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/login/forgot'
+          element={
+            <AuthRoute>
+              <ResetPasswordRequestPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/login/reset/:token'
+          element={
+            <AuthRoute>
+              <ResetPasswordPage />
+            </AuthRoute>
+          }
+        />
+        <Route
+          path='/logout'
+          element={
+            <ProtectedRoute>
+              <LogoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/my-profile'
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path='/' element={<Navigate to='/home' replace />} />
+        <Route element={<Navigate to='/home' replace />} />
+      </Routes>
     </>
   );
 }

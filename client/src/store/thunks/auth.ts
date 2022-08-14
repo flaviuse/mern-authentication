@@ -1,4 +1,3 @@
-import { push } from "connected-react-router";
 import { login, logout, User } from "../actions/user";
 import { Dispatch } from "redux";
 import { Credentials } from "src/store/actions/user";
@@ -13,49 +12,54 @@ import {
   sendResetPasswordLink,
   resetPassword,
 } from "../../api/index";
+import { NavigateFunction } from "react-router";
 
-export const attemptLogin = (credentials: Credentials) => (dispatch: Dispatch) =>
-  postLogin(credentials).then(({ data }) => {
-    dispatch(login(data.user));
-    dispatch(push("/home"));
-  });
-
-export const attemptSendResetPasswordLink = (email: string) => (dispatch: Dispatch) =>
-  sendResetPasswordLink(email).then(() => {
-    dispatch(push("/login/forgot"));
-  });
-
-export const attemptResetPassword = (password: string, token: string) => (dispatch: Dispatch) =>
-  resetPassword(password, token)
-    .then(() => {
-      dispatch(push("/login"));
-    })
-    .catch(() => {
-      dispatch(push(`/login/reset/${token}`));
+export const attemptLogin =
+  (credentials: Credentials, navigate: NavigateFunction) => (dispatch: Dispatch) =>
+    postLogin(credentials).then(({ data }) => {
+      dispatch(login(data.user));
+      navigate("/home", { replace: true });
     });
 
-export const attemptLogout = () => (dispatch: Dispatch) =>
+export const attemptSendResetPasswordLink = (email: string, navigate: NavigateFunction) =>
+  sendResetPasswordLink(email).then(() => {
+    navigate("/login/forgot", { replace: true });
+  });
+
+export const attemptResetPassword = (password: string, token: string, navigate: NavigateFunction) =>
+  resetPassword(password, token)
+    .then(() => {
+      navigate("/login", { replace: true });
+    })
+    .catch(() => {
+      navigate(`/login/reset/${token}`, { replace: true });
+    });
+
+export const attemptLogout = (navigate: NavigateFunction) => (dispatch: Dispatch) =>
   postLogout()
     .then(() => {
       dispatch(logout());
     })
     .finally(() => {
-      dispatch(push("/login"));
+      navigate("/login", { replace: true });
     });
 
 export const attemptRegister = (newUser: User) => () => postUser(newUser);
 
-export const attemptGetConfirmation = (token: string) => (dispatch: Dispatch) =>
-  getConfirmation(token).then(() => {
-    dispatch(push("/login"));
-  });
+export const attemptGetConfirmation =
+  (token: string, navigate: NavigateFunction) => (dispatch: Dispatch) =>
+    getConfirmation(token).then(() => {
+      navigate("/login", { replace: true });
+    });
 
-export const attemptResendConfirmation = (email: string) => (dispatch: Dispatch) =>
-  resendConfirmation(email).catch(() => {
-    dispatch(push("/register"));
-  });
+export const attemptResendConfirmation =
+  (email: string, navigate: NavigateFunction) => (dispatch: Dispatch) =>
+    resendConfirmation(email).catch(() => {
+      navigate("/register", { replace: true });
+    });
 
-export const attemptResetRegister = (email: string) => (dispatch: Dispatch) =>
-  resetRegister(email).catch(() => {
-    dispatch(push("/register"));
-  });
+export const attemptResetRegister =
+  (email: string, navigate: NavigateFunction) => (dispatch: Dispatch) =>
+    resetRegister(email).catch(() => {
+      navigate("/register", { replace: true });
+    });

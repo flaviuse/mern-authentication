@@ -2,17 +2,17 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { Error } from "../components";
 import { attemptSendResetPasswordLink } from "../store/thunks/auth";
-import { useAppDispatch } from "src/store/hooks";
 import { useServerError } from "src/hooks/useServerError";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 type ResetPasswordRequestFormValues = {
   email: string;
 };
 
 export default function ResetPasswordRequestPage() {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { serverError, handleServerError } = useServerError();
   const [isSubmited, setIsSubmited] = useState(false);
 
@@ -35,7 +35,7 @@ export default function ResetPasswordRequestPage() {
 
   const onSubmit = (values: ResetPasswordRequestFormValues) => {
     const email = values.email;
-    dispatch(attemptSendResetPasswordLink(email))
+    attemptSendResetPasswordLink(email, navigate)
       .then(() => {
         setIsSubmited(true);
       })
