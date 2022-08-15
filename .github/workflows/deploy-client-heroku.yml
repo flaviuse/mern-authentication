@@ -11,6 +11,8 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: master
       - name: Login to Heroku Container registry
         working-directory: ./client
         env:
