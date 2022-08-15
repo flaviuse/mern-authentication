@@ -9,7 +9,9 @@ COPY yarn.lock ./
 RUN yarn ci
 # Get all the code needed to run the app
 COPY . .
+# Build app
+RUN yarn build
 # Expose the port the app runs in
 EXPOSE 8081
 # Serve the app
-CMD ["yarn", "start"]
+CMD ["yarn", "start:prod"]
