@@ -13,15 +13,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: Login to Heroku Container registry
         working-directory: ./client
-        env: 
+        env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login 
+        run: heroku container:login
       - name: Build and push
-        workdir
+        working-directory: ./client
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:push --app ${{ secrets.HEROKU_APP_NAME }} --arg NODE_ENV_ARG="production",REACT_APP_API_URL_ARG=${REACT_APP_API_URL} web 
+        run: heroku container:push --app ${{ secrets.HEROKU_APP_NAME }} --arg NODE_ENV_ARG="production",REACT_APP_API_URL_ARG=${REACT_APP_API_URL} web
       - name: Release
+        working-directory: ./client
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web 
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
