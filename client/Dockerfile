@@ -6,12 +6,13 @@ ARG REACT_APP_API_URL_ARG
 ENV NODE_ENV=$NODE_ENV_ARG
 ENV REACT_APP_API_URL=$REACT_APP_API_URL_ARG
 
-WORKDIR /app
-
 COPY package.json ./
 COPY yarn.lock ./
 RUN yarn install
-COPY . ./
+
+WORKDIR /app
+
+COPY . .
 RUN yarn build
 
 # production environment, nginx serving static files from build directory
