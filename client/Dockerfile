@@ -7,7 +7,6 @@ ENV NODE_ENV=$NODE_ENV_ARG
 ENV REACT_APP_API_URL=$REACT_APP_API_URL_ARG
 
 WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json ./
 COPY yarn.lock ./
