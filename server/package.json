@@ -10,6 +10,7 @@
     "build": "tsc-alias --project tsconfig.json",
     "dev": "ts-node-dev --respawn -r tsconfig-paths/register index.ts",
     "start": "yarn build && node build/index.js",
+    "start:prod": "node build/index.js",
     "ci": "yarn install --frozen-lockfile"
   },
   "dependencies": {
