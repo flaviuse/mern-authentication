@@ -21,6 +21,9 @@ jobs:
           rollbackonhealthcheckfailed: true
           appdir: "client"
           usedocker: true
+          docker_build_args: |
+            NODE_ENV_ARG
+            REACT_APP_API_URL_ARG
         env:
-          REACT_APP_API_URL: ${{secrets.HEROKU_API_URL}}
-          NODE_ENV: "production"
+          REACT_APP_API_URL_ARG: ${{secrets.HEROKU_API_URL}}
+          NODE_ENV_ARG: "production"
