@@ -30,7 +30,7 @@ You have to set the following environment variables in `server.dev.env` file (re
 
 in the root directory:
 
-`docker-compose up --build`
+`docker compose up --build`
 
 It supports hot reloading for both the frontend and backend.
 
@@ -38,9 +38,11 @@ It supports hot reloading for both the frontend and backend.
 
 Set `server.prod.env` and `client.prod.env` files.
 
+Note: `server.prod.env` is used at runtime and can be defined in docker-compose directly, `client.prod.env` is used at docker image build time, to do so we define env for the docker-compose parser through `--env-file` then pass the envs to docker build through arguments.
+
 in the root directory:
 
-`docker-compose -f docker-compose.prod.yml up --build`
+`docker compose -f docker-compose.prod.yml --env-file client.prod.env up --build`
 
 Frontend app uses an Nginx server to deliver static files.
 

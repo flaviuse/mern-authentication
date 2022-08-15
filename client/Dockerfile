@@ -1,7 +1,14 @@
 # build environment
 FROM node:16.16-alpine3.16 as build
+
+ARG NODE_ENV_ARG
+ARG REACT_APP_API_URL_ARG
+ENV NODE_ENV=$NODE_ENV_ARG
+ENV REACT_APP_API_URL=$REACT_APP_API_URL_ARG
+
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+
 COPY package.json ./
 COPY yarn.lock ./
 RUN yarn ci
