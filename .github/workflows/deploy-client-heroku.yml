@@ -11,20 +11,17 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          healthcheck: ${{secrets.HEROKU_APP_HEALTHCHECK_URL}}
-          delay: 60
-          rollbackonhealthcheckfailed: true
-          appdir: "./client"
-          usedocker: true
-          docker_build_args: |
-            NODE_ENV_ARG
-            REACT_APP_API_URL_ARG
-          branch: master
+      - name: Login to Heroku Container registry
+        working-directory: ./client
+        env: 
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login 
+      - name: Build and push
+        workdir
         env:
-          REACT_APP_API_URL_ARG: ${{secrets.HEROKU_API_URL}}
-          NODE_ENV_ARG: "production"
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:push --app ${{ secrets.HEROKU_APP_NAME }} --arg NODE_ENV_ARG="production",REACT_APP_API_URL_ARG=${REACT_APP_API_URL} web 
+      - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web 
