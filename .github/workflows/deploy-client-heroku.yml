@@ -19,11 +19,12 @@ jobs:
           healthcheck: ${{secrets.HEROKU_APP_HEALTHCHECK_URL}}
           delay: 60
           rollbackonhealthcheckfailed: true
-          appdir: "client"
+          appdir: "./client"
           usedocker: true
           docker_build_args: |
             NODE_ENV_ARG
             REACT_APP_API_URL_ARG
+          branch: master
         env:
           REACT_APP_API_URL_ARG: ${{secrets.HEROKU_API_URL}}
           NODE_ENV_ARG: "production"

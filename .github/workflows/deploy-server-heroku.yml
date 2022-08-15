@@ -19,8 +19,9 @@ jobs:
           healthcheck: ${{secrets.HEROKU_API_HEALTHCHECK_URL}}
           delay: 180
           rollbackonhealthcheckfailed: true
-          appdir: "server"
+          appdir: "./server"
           usedocker: true
+          branch: master
         env:
           NODE_ENV: "production"
           MONGO_URI: ${{secrets.MONGO_URI}}
