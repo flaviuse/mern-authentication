@@ -17,10 +17,13 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           healthcheck: ${{secrets.HEROKU_APP_HEALTHCHECK_URL}}
-          delay: 30
+          delay: 60
           rollbackonhealthcheckfailed: true
           appdir: "client"
           usedocker: true
+          docker_build_args: |
+            NODE_ENV_ARG
+            REACT_APP_API_URL_ARG
         env:
-          REACT_APP_API_URL: ${{secrets.HEROKU_API_URL}}
-          NODE_ENV: "production"
+          REACT_APP_API_URL_ARG: ${{secrets.HEROKU_API_URL}}
+          NODE_ENV_ARG: "production"

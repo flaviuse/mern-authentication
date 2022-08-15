@@ -11,11 +11,12 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args: # We need to use arguments to pass env variables defined in client.prod.env passed as --env-file argument in docker compose command to be used during the docker image build.
+        NODE_ENV_ARG: ${NODE_ENV}
+        REACT_APP_API_URL_ARG: ${REACT_APP_API_URL}
     ports:
       - "3000:3000"
     restart: always
-    env_file:
-      - client.prod.env
   server-prod:
     build:
       context: ./server
@@ -23,7 +24,7 @@ services:
     depends_on:
       - mongo-prod
     env_file:
-      - server.prod.env
+      - server.prod.env # Thise are runtime env variables that do not require to be used during docker image build.
     ports:
       - "8081:8081"
     restart: always
