@@ -11,6 +11,8 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          cd client
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
@@ -19,7 +21,6 @@ jobs:
           healthcheck: ${{secrets.HEROKU_APP_HEALTHCHECK_URL}}
           delay: 60
           rollbackonhealthcheckfailed: true
-          appdir: "client"
           usedocker: true
           docker_build_args: |
             NODE_ENV_ARG
