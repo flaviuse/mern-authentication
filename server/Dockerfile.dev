@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
 # Install dependecies
-RUN yarn ci
+RUN yarn install --immutable
 # Get all the code needed to run the app
 COPY . .
 
