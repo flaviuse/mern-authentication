@@ -27,7 +27,7 @@
     "express-rate-limit": "^6.5.1",
     "express-session": "^1.17.3",
     "helmet": "^5.1.1",
-    "joi": "^17.6.0",
+    "joi": "^17.6.3",
     "joi-objectid": "^4.0.2",
     "moment": "^2.29.1",
     "mongo-sanitize": "^1.1.0",
