@@ -31,7 +31,7 @@
     "joi-objectid": "^4.0.2",
     "moment": "^2.29.1",
     "mongo-sanitize": "^1.1.0",
-    "mongoose": "^6.5.2",
+    "mongoose": "^6.12.0",
     "passport": "0.4.1",
     "passport-local": "^1.0.0",
     "ramda": "^0.28.0",
