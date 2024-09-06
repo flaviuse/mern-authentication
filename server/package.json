@@ -14,7 +14,7 @@
     "ci": "yarn install --frozen-lockfile"
   },
   "dependencies": {
-    "@sendgrid/mail": "^7.7.0",
+    "@sendgrid/mail": "^8.1.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
@@ -31,7 +31,7 @@
     "joi-objectid": "^4.0.2",
     "moment": "^2.29.1",
     "mongo-sanitize": "^1.1.0",
-    "mongoose": "^6.5.2",
+    "mongoose": "^8.0.0",
     "passport": "0.4.1",
     "passport-local": "^1.0.0",
     "ramda": "^0.28.0",
