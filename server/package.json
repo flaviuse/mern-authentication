@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "build": "tsc-alias --project tsconfig.json",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "ts-node-dev --respawn -r tsconfig-paths/register index.ts",
     "start": "yarn build && node build/index.js",
     "start:prod": "node build/index.js",
@@ -44,7 +44,7 @@
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.5",
     "@types/mongo-sanitize": "^1.0.1",
-    "@types/node": "16.11.48",
+    "@types/node": "22.10.1",
     "@types/passport": "^1.0.10",
     "@types/passport-local": "^1.0.34",
     "@types/ramda": "^0.28.15",

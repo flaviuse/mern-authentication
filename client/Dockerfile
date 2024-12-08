@@ -1,5 +1,5 @@
 # build environment
-FROM node:16.16-alpine3.16 as build
+FROM node:lts as build
 
 ARG NODE_ENV_ARG
 ARG REACT_APP_API_URL_ARG
