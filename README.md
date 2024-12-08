@@ -2,9 +2,7 @@
 
 ![capture du 2018-12-16 13-57-42](https://user-images.githubusercontent.com/40322270/50053751-aa653080-013a-11e9-9a8d-35a55c9042f1.png)
 
-:video_game: Demo: <https://mern-auth-client.herokuapp.com/login>
-
-:warning: Demo code is outdated, had to replace with unstyled version for now. CSS styles, Google Captcha, Sentry usage and some other not essential dependencies like notifications are only in the demo. This repository aim to have a fast to use boilerplate.
+:warning: This repository aim to have a fast to use boilerplate. That's why the screenshot does not reflect anymore the version of the repo.
 
 ## :star: The project if it helped you!
 
@@ -47,9 +45,6 @@ in the root directory:
 Frontend app uses an Nginx server to deliver static files.
 
 You may want to use the flag `--remove-orphans`
-
-To deploy on Heroku refer to their documentation:
-<https://devcenter.heroku.com/categories/deploying-with-docker>
 
 ## :computer: Boilerplate
 
