@@ -1,32 +1,52 @@
-name: Run e2e Docker compose PROD
+name: Run e2e Docker Compose PROD
+
 on:
   pull_request:
+
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Create server env file
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create server environment file
         run: touch server.prod.env
-      - name: Build the stack
-        run: docker-compose -f docker-compose.prod.yml up -d
-      - uses: actions/setup-node@v2
+
+      - name: Build the Docker stack
+        run: docker compose -f docker-compose.prod.yml up -d
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "14.x"
+          node-version-file: '.nvmrc'
+
       - name: Install e2e dependencies
         working-directory: ./e2e
         run: yarn install
-      - name: Install playwright
+
+      - name: Install additional system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2 libicu-dev libffi-dev libx264-dev
+
+      - name: Install Playwright
         working-directory: ./e2e
         run: npx playwright install
-      - name: Install playwright dependencies
+
+      - name: Install Playwright dependencies
         working-directory: ./e2e
         run: npx playwright install-deps
-      - name: Run Tests
+
+      - name: Run e2e Tests
         working-directory: ./e2e
         run: yarn test:ci
-      - uses: actions/upload-artifact@v2
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report

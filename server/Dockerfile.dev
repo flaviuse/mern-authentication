@@ -1,5 +1,5 @@
 # Create image based on node alpine
-FROM node:16.16-alpine3.16
+FROM node:lts
 # Change directory so that our commands run inside this new directory
 WORKDIR /app
 # Copy dependency definitions
