@@ -69,7 +69,7 @@ export const postLoginForgot = async (req: Request, res: Response) => {
 
       return res
         .status(200)
-        .send({ message: `A reset passowrd email has been sent to ${user.email}` });
+        .send({ message: `A reset password email has been sent to ${user.email}` });
     } catch (error) {
       LoggerService.log.error(error);
 
