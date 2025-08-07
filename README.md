@@ -81,3 +81,9 @@ This repository is scanned with snyk and code scanning from github for vulnerabi
 - Use emails for authentication instead of usernames: <https://github.com/flaviuse/mern-authentication/issues/7>
 
 - I added a dependency but my docker container does not found it: <https://medium.com/@semur.nabiev/how-to-make-docker-compose-volumes-ignore-the-node-modules-directory-99f9ec224561> (either install the dependency in the container with the cli or reset the volume).
+
+## API
+
+### POST /user/register
+
+Possible HTTP error codes: 400, 500, 503. The 503 status is returned when the email service is unavailable.

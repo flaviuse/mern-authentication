@@ -7,7 +7,7 @@ router.get("/", UserController.getUser);
 
 //  Input : username, email, password via body;
 //  HTTP Success : 200 and message.
-//  HTTP Errors : 400,500.
+//  HTTP Errors : 400, 500, 503.
 router.post("/register", UserController.postUser);
 
 // Delete user with the email if is unverified
