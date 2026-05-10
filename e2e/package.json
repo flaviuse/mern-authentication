@@ -20,7 +20,7 @@
   "homepage": "https://github.com/flaviuse/mern-authentication#readme",
   "devDependencies": {},
   "dependencies": {
-    "@playwright/test": "^1.49.0",
+    "@playwright/test": "^1.59.1",
     "cross-env": "^7.0.3"
   }
 }
